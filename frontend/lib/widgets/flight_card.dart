@@ -105,7 +105,7 @@ class _CarrierBadge extends StatelessWidget {
       width: 44,
       height: 44,
       alignment: Alignment.center,
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         shape: BoxShape.circle,
         gradient: ConciergeColors.goldGradient,
       ),

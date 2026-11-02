@@ -11,7 +11,8 @@ import '../widgets/pnr_confirmation_sheet.dart';
 
 /// Scans the page text for airline confirmation codes and reports each new
 /// one to Flutter. Idempotent: re-injecting on the same document only rescans.
-/// A MutationObserver catches codes rendered after load (SPA checkouts).
+/// A MutationObserver (plus a slow periodic rescan) catches codes rendered or
+/// revealed after load, as on single-page checkouts.
 const String pnrScannerJs = r'''
 (function () {
   if (window.__conciergePnrWatcher) { window.__conciergePnrWatcher.scan(); return; }
@@ -44,7 +45,13 @@ const String pnrScannerJs = r'''
     clearTimeout(timer);
     timer = setTimeout(scan, 400);
   });
-  observer.observe(document.documentElement, { childList: true, subtree: true, characterData: true });
+  // Attribute changes matter: confirmations are often revealed by toggling
+  // style/class on an element that already holds the code.
+  observer.observe(document.documentElement, {
+    childList: true, subtree: true, characterData: true,
+    attributes: true, attributeFilter: ['style', 'class', 'hidden', 'aria-hidden']
+  });
+  setInterval(scan, 3000);
 
   window.__conciergePnrWatcher = { scan: scan };
   scan();

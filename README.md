@@ -123,44 +123,42 @@ Restart uvicorn after editing `.env`.
 
 ## 2. Frontend (Flutter)
 
-Requires Flutter 3.27+ (Dart 3.6+). The repo contains `pubspec.yaml`, `lib/` and `test/`. Generate the native Android and iOS projects once:
+Requires Flutter 3.27+ (Dart 3.6+). To run on a device you also need one of:
+
+- **iOS Simulator:** the full Xcode app from the App Store, then `sudo xcodebuild -runFirstLaunch`, and CocoaPods (`brew install cocoapods`).
+- **Android emulator:** Android Studio, with an emulator created in its Device Manager.
+
+`flutter doctor` shows what is missing.
+
+Android can also be set up entirely from the terminal without Android Studio and without admin rights. This is how the project was verified:
+
+```bash
+brew install --cask flutter android-commandlinetools
+brew install openjdk@17
+export JAVA_HOME=/opt/homebrew/opt/openjdk@17/libexec/openjdk.jdk/Contents/Home
+export ANDROID_HOME=/opt/homebrew/share/android-commandlinetools
+yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses
+$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "platform-tools" "emulator" \
+  "platforms;android-36" "build-tools;36.0.0" "system-images;android-36;google_apis;arm64-v8a"
+flutter config --android-sdk $ANDROID_HOME --jdk-dir $JAVA_HOME
+echo no | $ANDROID_HOME/cmdline-tools/latest/bin/avdmanager create avd \
+  -n concierge_pixel -k "system-images;android-36;google_apis;arm64-v8a" -d pixel_8
+$ANDROID_HOME/emulator/emulator -avd concierge_pixel &
+```
+
+`flutter_inappwebview` is pinned to the 6.2.0 beta because 6.1.x fails to build with Android Gradle Plugin 9, which current Flutter templates use.
 
 ```bash
 cd frontend
-flutter create . --platforms=android,ios --org com.concierge --project-name business_concierge
 flutter pub get
 ```
 
-### Native configuration for the WebView
+The `android/` and `ios/` projects are already configured for the WebView:
 
-**Android:** in `android/app/src/main/AndroidManifest.xml`, add the following inside `<manifest>`:
+- **Android** (`android/app/src/main/AndroidManifest.xml`): the `INTERNET` permission, `usesCleartextTraffic` so the app can reach the local HTTP backend, and `<queries>` so `url_launcher` can open https links, PDFs, mail and phone links.
+- **iOS** (`ios/Runner/Info.plist`): `NSAllowsLocalNetworking` and `NSAllowsArbitraryLoadsInWebContent` under `NSAppTransportSecurity`, and `LSApplicationQueriesSchemes`. The deployment target is iOS 15.
 
-```xml
-<uses-permission android:name="android.permission.INTERNET"/>
-<queries>
-  <intent><action android:name="android.intent.action.VIEW"/><data android:scheme="https"/></intent>
-</queries>
-```
-
-Then add these attributes to `<application>` for local HTTP development:
-
-```xml
-android:usesCleartextTraffic="true"
-```
-
-Make sure `minSdk` is at least 21 in `android/app/build.gradle(.kts)`. This is the default in recent Flutter templates.
-
-**iOS:** add the following to `ios/Runner/Info.plist` so the WebView can load the local backend:
-
-```xml
-<key>NSAppTransportSecurity</key>
-<dict>
-  <key>NSAllowsLocalNetworking</key><true/>
-  <key>NSAllowsArbitraryLoadsInWebContent</key><true/>
-</dict>
-```
-
-Then set `platform :ios, '12.0'` or higher in `ios/Podfile`.
+For production builds, remove `usesCleartextTraffic` and `NSAllowsLocalNetworking` and serve the API over HTTPS.
 
 ### Run
 

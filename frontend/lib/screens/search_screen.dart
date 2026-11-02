@@ -99,7 +99,7 @@ class SearchScreen extends ConsumerWidget {
     final theme = Theme.of(context);
     final results = state.results;
     if (results == null) {
-      return [
+      return const [
         SliverFillRemaining(
           hasScrollBody: false,
           child: _EmptyHint(

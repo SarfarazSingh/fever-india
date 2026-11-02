@@ -15,7 +15,7 @@ from urllib.parse import urlencode
 import httpx
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.airports import local_to_utc, utc_to_local
+from app.airports import distance_km, local_to_utc, utc_to_local
 from app.config import Settings, get_settings
 from app.models import FlightSearch
 from app.schemas import FlightOffer, FlightSearchResponse, FlightSegment
@@ -340,6 +340,11 @@ _MOCK_CARRIERS: list[tuple[str, str, int, float]] = [
 ]
 
 
+def _block_hours(km: float) -> float:
+    """Typical gate-to-gate time for a widebody at ~830 km/h plus taxi/climb."""
+    return km / 830 + 0.6
+
+
 class MockProvider:
     """Deterministic, realistic Business Class offers for offline development."""
 
@@ -351,15 +356,32 @@ class MockProvider:
     async def search(self, origin: str, destination: str, on: date) -> list[FlightOffer]:
         seed = int(hashlib.sha256(f"{origin}{destination}{on.isoformat()}".encode()).hexdigest()[:12], 16)
         rng = random.Random(seed)
-        base_hours = rng.uniform(6.5, 14.5)
-        base_price = 1800 + base_hours * rng.uniform(220, 340)
+        direct_km = distance_km(origin, destination) or rng.uniform(5000, 11000)
+        base_price = 1500 + direct_km * 0.42 * rng.uniform(0.9, 1.15)
 
-        hub_carriers = [c for c in _MOCK_CARRIERS if c[1] in (origin, destination)]
-        others = [c for c in _MOCK_CARRIERS if c not in hub_carriers]
-        carriers = hub_carriers + rng.sample(others, k=max(0, 7 - len(hub_carriers)))
+        # Hub carriers fly nonstop; others connect through their hub when the
+        # detour is plausible and the hub isn't in the same metro area.
+        routes: list[tuple[tuple[str, str, int, float], bool]] = [
+            (c, True) for c in _MOCK_CARRIERS if c[1] in (origin, destination)
+        ]
+        connecting = []
+        for carrier in _MOCK_CARRIERS:
+            hub = carrier[1]
+            if hub in (origin, destination):
+                continue
+            d1, d2 = distance_km(origin, hub), distance_km(hub, destination)
+            if d1 is None or d2 is None or min(d1, d2) < 250 or (d1 + d2) / direct_km > 1.25:
+                continue
+            connecting.append(carrier)
+        rng.shuffle(connecting)
+        routes += [(c, False) for c in connecting[: max(0, 7 - len(routes))]]
+        if len(routes) < 3:
+            # Thin route: add partner-operated nonstops so the demo always has choice.
+            spare = [c for c in _MOCK_CARRIERS if all(c != r[0] for r in routes)]
+            routes += [(c, True) for c in rng.sample(spare, k=3 - len(routes))]
+
         offers: list[FlightOffer] = []
-        for idx, (code, hub, fn_base, multiplier) in enumerate(carriers):
-            nonstop = hub in (origin, destination)
+        for idx, ((code, hub, fn_base, multiplier), nonstop) in enumerate(routes):
             dep_local = datetime.combine(on, datetime.min.time()) + timedelta(
                 hours=rng.choice([7, 9, 11, 13, 16, 18, 20, 22]), minutes=rng.choice([0, 10, 25, 40, 55])
             )
@@ -367,15 +389,13 @@ class MockProvider:
             flight_no = f"{code}{fn_base + rng.randint(0, 98)}"
 
             if nonstop:
-                arr_utc = dep_utc + timedelta(hours=base_hours, minutes=rng.randint(-25, 25))
+                arr_utc = dep_utc + timedelta(hours=_block_hours(direct_km), minutes=rng.randint(-15, 20))
                 segments = [self._segment(code, flight_no, origin, destination, dep_utc, arr_utc)]
                 price = base_price * multiplier * 1.12
             else:
-                leg1 = base_hours * rng.uniform(0.35, 0.6)
-                leg2 = base_hours * 1.08 - leg1
-                hub_arr = dep_utc + timedelta(hours=leg1)
-                hub_dep = hub_arr + timedelta(hours=rng.uniform(1.25, 4.0))
-                arr_utc = hub_dep + timedelta(hours=leg2)
+                hub_arr = dep_utc + timedelta(hours=_block_hours(distance_km(origin, hub)))
+                hub_dep = hub_arr + timedelta(hours=rng.uniform(1.25, 3.5))
+                arr_utc = hub_dep + timedelta(hours=_block_hours(distance_km(hub, destination)))
                 second_no = f"{code}{fn_base + rng.randint(100, 199)}"
                 segments = [
                     self._segment(code, flight_no, origin, hub, dep_utc, hub_arr),
@@ -383,12 +403,13 @@ class MockProvider:
                 ]
                 price = base_price * multiplier * 0.92
 
+            price += rng.uniform(-120, 120)
             offer_id = f"mock-{code}-{origin}{destination}-{on.strftime('%Y%m%d')}-{idx}"
             offers.append(
                 _build_offer(
                     offer_id=offer_id,
                     segments=segments,
-                    price=price + rng.uniform(-120, 120),
+                    price=price,
                     currency=self._settings.default_currency,
                     deep_link=self._demo_checkout_link(code, flight_no, origin, destination, on, price),
                     provider=self.name,

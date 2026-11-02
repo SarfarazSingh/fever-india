@@ -28,7 +28,7 @@ class _MyTripsDashboardState extends ConsumerState<MyTripsDashboard> {
     super.initState();
     _poller = Timer.periodic(const Duration(seconds: 30), (_) {
       // IndexedStack disables tickers for hidden tabs; only poll when visible.
-      if (mounted && TickerMode.of(context)) {
+      if (mounted && TickerMode.valuesOf(context).enabled) {
         ref.read(bookingsProvider.notifier).refresh();
       }
     });
@@ -171,7 +171,7 @@ class _TripCardState extends ConsumerState<TripCard> {
   Widget build(BuildContext context) {
     final b = widget.booking;
     final theme = Theme.of(context);
-    final departs = DateFormat('EEE d MMM yyyy · HH:mm').format(b.departureTime.toLocal());
+    final departs = '${DateFormat('EEE d MMM yyyy · HH:mm').format(b.departureTime.toLocal())} your time';
     final awaiting = b.status == CheckInStatus.pending || b.status == CheckInStatus.scheduled;
     final upcoming = b.departureTime.isAfter(DateTime.now().toUtc());
 
