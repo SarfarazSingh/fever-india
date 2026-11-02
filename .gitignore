@@ -1,6 +1,25 @@
-node_modules
-dist
+# Backend
+backend/.venv/
+backend/.env
+backend/*.db
+backend/*.db-journal
+backend/static/boarding_passes/*
+!backend/static/boarding_passes/.gitkeep
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Flutter
+frontend/.dart_tool/
+frontend/.flutter-plugins
+frontend/.flutter-plugins-dependencies
+frontend/build/
+frontend/pubspec.lock
+frontend/.idea/
+frontend/*.iml
+
 .DS_Store
-*.local
-.vite
+
+# Local tooling
 .vercel
+node_modules
