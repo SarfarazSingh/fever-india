@@ -1,8 +1,21 @@
 # Business Class Flight Concierge
 
+## Production web upgrade
+
+The new responsive **Elsewhere** web app is in [`web/`](web/). It uses React/TypeScript and an authenticated FastAPI `/api/v1` backend, with complete itinerary data, explainable recommendations, import review, a local-time travel calendar, and staged card checkout.
+
+Start the backend on port **8001** and the Vite app on **5173** using the [operating guide](docs/PRODUCTION.md). Choose **Explore the private preview** to try isolated fictional flights and bookings. Existing legacy records are preserved; the unsafe old purchase endpoint is disabled. The Flutter app below remains a native prototype.
+
+- [Configuration, deployment, migration, verification boundaries and recovery](docs/PRODUCTION.md)
+- [Service cost sheet for approval](docs/COSTS.md)
+
+Live payments, production mailbox access and paid deployments require the account configuration and acceptance checks described in that guide. The historical prototype documentation below does not describe the new production defaults.
+
+---
+
 A monorepo for a Business Class travel concierge:
 
-- **Search** Business Class fares (cabin `C`) and book **directly on the airline** through deep links.
+- **Search** live Business Class fares through the **Duffel** API and book them in-app (test token tonight, live token after KYC).
 - **Intercept the booking code** (PNR) inside the in-app airline WebView and offer to auto check-in.
 - **Automatically check in exactly 24 hours before departure**, first through the Flyo AI Web Check-in API and, if that is unavailable, through a Playwright browser bot. The boarding pass is delivered to the app.
 
@@ -16,8 +29,10 @@ business-concierge/
 flowchart LR
   App[Flutter app] -->|search| Search["GET /api/flights/search"]
   Search --> Provider{Provider}
-  Provider --> Tequila & Amadeus & Mock
-  App -->|deep_link| WebView[Airline WebView]
+  Provider --> Duffel & Tequila & Amadeus & Mock
+  App -->|Book with Concierge| Place["POST /api/bookings/place"]
+  Place --> DuffelAPI[Duffel orders]
+  App -->|airline site| WebView[Airline WebView]
   WebView -->|PNR detected| Register["POST /api/bookings/register-checkin"]
   Register --> DB[(DB)] & Scheduler[APScheduler]
   Scheduler -->|departure - 24h| Engine[CheckInEngine]
@@ -45,15 +60,18 @@ uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 - Health check: http://localhost:8000/health
 - Tests: `pytest` (from `backend/`, with the venv active)
 
-The server works without any API keys. Search returns realistic demo data, and every result links to a simulated airline checkout page at `/demo/checkout` that shows a confirmation code, so you can try the whole PNR-detection flow end to end.
+Set `DUFFEL_ACCESS_TOKEN` in `backend/.env` (a `duffel_test_…` token from [app.duffel.com](https://app.duffel.com/join)). Search and **Book with Concierge** then go through Duffel. Amadeus Self-Service was shut down in July 2026; do not try to get those keys.
+
+`FLIGHT_PROVIDER=mock` is an explicit offline fallback only.
 
 ### Configuration (`backend/.env`)
 
 | Variable | Purpose |
 | --- | --- |
-| `FLIGHT_PROVIDER` | `auto` (default), `tequila`, `amadeus` or `mock` |
-| `TEQUILA_API_KEY` | Kiwi.com Tequila metasearch key (returns native `deep_link`s) |
-| `AMADEUS_CLIENT_ID` / `AMADEUS_CLIENT_SECRET` | Amadeus Self-Service credentials; deep links go to the carrier's booking page |
+| `FLIGHT_PROVIDER` | `duffel` (default), `auto`, `tequila`, `amadeus` or `mock` |
+| `DUFFEL_ACCESS_TOKEN` | Duffel Flights API token (`duffel_test_…` or `duffel_live_…`) |
+| `TEQUILA_API_KEY` | Kiwi.com Tequila metasearch key (returns native `deep_link`s). New signups closed. |
+| `AMADEUS_CLIENT_ID` / `AMADEUS_CLIENT_SECRET` | Legacy Amadeus Self-Service. Portal shut 17 July 2026. |
 | `FLYO_API_KEY` / `FLYO_BASE_URL` | Flyo AI Web Check-in API. Leave the key blank to use only the Playwright bot |
 | `FLYO_WEBHOOK_SECRET` | If set, webhooks must carry `X-Flyo-Signature: sha256=<HMAC-SHA256 of body>` |
 | `PUBLIC_BASE_URL` | Public URL of this API, used for the Flyo `callback_url` and boarding-pass links |
@@ -61,16 +79,17 @@ The server works without any API keys. Search returns realistic demo data, and e
 | `CHECKIN_LEAD_HOURS` | Defaults to `24` |
 | `PLAYWRIGHT_HEADLESS` | `true` produces a PDF boarding pass; `false` shows the browser and saves a PNG |
 
-In `auto` mode the backend uses Tequila if its key is set, then Amadeus, then mock data. If a real provider errors, the search falls back to mock data and logs a warning.
+In `auto` mode the backend uses Duffel if a token is set, then Tequila, then Amadeus. If nothing is configured it returns HTTP 503 instead of fake flights.
 
-> Kiwi.com stopped onboarding new Tequila partners in 2024. If you can't get a key, use Amadeus Self-Service.
+> Amadeus Self-Service and Kiwi Tequila are closed to new developers. Use Duffel.
 
 ### API
 
 | Method | Path | Description |
 | --- | --- | --- |
-| `GET` | `/api/flights/search?origin=JFK&destination=LHR&date=2026-12-15` | Business Class offers with `deep_link` |
-| `POST` | `/api/bookings/register-checkin` | Save a booking + PNR and schedule check-in at `departure_time - 24h` |
+| `GET` | `/api/flights/search?origin=JFK&destination=LHR&date=2026-12-15` | Business Class offers (Duffel) |
+| `POST` | `/api/bookings/place` | Book a Duffel offer; returns PNR and schedules check-in |
+| `POST` | `/api/bookings/register-checkin` | Save a booking + PNR booked elsewhere and schedule check-in |
 | `POST` | `/api/bookings/{id}/trigger-checkin-now` | Run check-in immediately (returns `202`) |
 | `GET` | `/api/bookings` | All tracked bookings with status and boarding-pass links (`?email=` to filter) |
 | `GET` / `DELETE` | `/api/bookings/{id}` | Fetch a booking, or stop tracking it |

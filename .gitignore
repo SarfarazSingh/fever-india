@@ -23,3 +23,9 @@ frontend/*.iml
 # Local tooling
 .vercel
 node_modules
+web/dist/
+web/.env*
+!web/.env.example
+web/*.tsbuildinfo
+backend/.coverage
+backend/htmlcov/

@@ -1,0 +1,1927 @@
+[
+[
+"ATL",
+"Atlanta",
+"Hartsfield-Jackson"
+],
+[
+"BOS",
+"Boston",
+"Logan International"
+],
+[
+"BWI",
+"Baltimore",
+"Baltimore/Washington International"
+],
+[
+"CLT",
+"Charlotte",
+"Charlotte Douglas International"
+],
+[
+"DCA",
+"Washington",
+"Ronald Reagan National"
+],
+[
+"DEN",
+"Denver",
+"Denver International"
+],
+[
+"DFW",
+"Dallas",
+"Dallas/Fort Worth International"
+],
+[
+"DTW",
+"Detroit",
+"Detroit Metropolitan"
+],
+[
+"EWR",
+"Newark",
+"Newark Liberty International"
+],
+[
+"FLL",
+"Fort Lauderdale",
+"Fort Lauderdale-Hollywood"
+],
+[
+"HNL",
+"Honolulu",
+"Daniel K. Inouye International"
+],
+[
+"IAD",
+"Washington",
+"Dulles International"
+],
+[
+"IAH",
+"Houston",
+"George Bush Intercontinental"
+],
+[
+"JFK",
+"New York",
+"John F. Kennedy International"
+],
+[
+"LAS",
+"Las Vegas",
+"Harry Reid International"
+],
+[
+"LAX",
+"Los Angeles",
+"Los Angeles International"
+],
+[
+"LGA",
+"New York",
+"LaGuardia"
+],
+[
+"MCO",
+"Orlando",
+"Orlando International"
+],
+[
+"MIA",
+"Miami",
+"Miami International"
+],
+[
+"MSP",
+"Minneapolis",
+"Minneapolis-Saint Paul"
+],
+[
+"ORD",
+"Chicago",
+"O'Hare International"
+],
+[
+"PDX",
+"Portland",
+"Portland International"
+],
+[
+"PHL",
+"Philadelphia",
+"Philadelphia International"
+],
+[
+"PHX",
+"Phoenix",
+"Phoenix Sky Harbor"
+],
+[
+"SAN",
+"San Diego",
+"San Diego International"
+],
+[
+"SEA",
+"Seattle",
+"Seattle-Tacoma International"
+],
+[
+"SFO",
+"San Francisco",
+"San Francisco International"
+],
+[
+"SLC",
+"Salt Lake City",
+"Salt Lake City International"
+],
+[
+"TPA",
+"Tampa",
+"Tampa International"
+],
+[
+"AUS",
+"Austin",
+"Austin-Bergstrom"
+],
+[
+"BNA",
+"Nashville",
+"Nashville International"
+],
+[
+"RDU",
+"Raleigh",
+"Raleigh-Durham"
+],
+[
+"MSY",
+"New Orleans",
+"Louis Armstrong International"
+],
+[
+"STL",
+"St Louis",
+"St Louis Lambert"
+],
+[
+"PIT",
+"Pittsburgh",
+"Pittsburgh International"
+],
+[
+"CLE",
+"Cleveland",
+"Cleveland Hopkins"
+],
+[
+"IND",
+"Indianapolis",
+"Indianapolis International"
+],
+[
+"CMH",
+"Columbus",
+"John Glenn Columbus"
+],
+[
+"MCI",
+"Kansas City",
+"Kansas City International"
+],
+[
+"SAT",
+"San Antonio",
+"San Antonio International"
+],
+[
+"SJC",
+"San Jose",
+"San Jose International"
+],
+[
+"OAK",
+"Oakland",
+"Oakland International"
+],
+[
+"SNA",
+"Santa Ana",
+"John Wayne"
+],
+[
+"SMF",
+"Sacramento",
+"Sacramento International"
+],
+[
+"MDW",
+"Chicago",
+"Midway"
+],
+[
+"DAL",
+"Dallas",
+"Dallas Love Field"
+],
+[
+"HOU",
+"Houston",
+"William P. Hobby"
+],
+[
+"BDL",
+"Hartford",
+"Bradley International"
+],
+[
+"RSW",
+"Fort Myers",
+"Southwest Florida"
+],
+[
+"PBI",
+"West Palm Beach",
+"Palm Beach International"
+],
+[
+"JAX",
+"Jacksonville",
+"Jacksonville International"
+],
+[
+"MKE",
+"Milwaukee",
+"Milwaukee Mitchell"
+],
+[
+"CVG",
+"Cincinnati",
+"Cincinnati/Northern Kentucky"
+],
+[
+"ANC",
+"Anchorage",
+"Ted Stevens Anchorage"
+],
+[
+"OGG",
+"Maui",
+"Kahului"
+],
+[
+"SJU",
+"San Juan",
+"Luis Munoz Marin"
+],
+[
+"YYZ",
+"Toronto",
+"Pearson International"
+],
+[
+"YVR",
+"Vancouver",
+"Vancouver International"
+],
+[
+"YUL",
+"Montreal",
+"Montreal-Trudeau"
+],
+[
+"YYC",
+"Calgary",
+"Calgary International"
+],
+[
+"YOW",
+"Ottawa",
+"Ottawa Macdonald-Cartier"
+],
+[
+"YEG",
+"Edmonton",
+"Edmonton International"
+],
+[
+"YHZ",
+"Halifax",
+"Halifax Stanfield"
+],
+[
+"YWG",
+"Winnipeg",
+"Winnipeg Richardson"
+],
+[
+"YQB",
+"Quebec City",
+"Quebec City Jean Lesage"
+],
+[
+"MEX",
+"Mexico City",
+"Benito Juarez International"
+],
+[
+"CUN",
+"Cancun",
+"Cancun International"
+],
+[
+"GDL",
+"Guadalajara",
+"Miguel Hidalgo"
+],
+[
+"MTY",
+"Monterrey",
+"Mariano Escobedo"
+],
+[
+"SJD",
+"Los Cabos",
+"Los Cabos International"
+],
+[
+"PVR",
+"Puerto Vallarta",
+"Licenciado Gustavo Diaz Ordaz"
+],
+[
+"TIJ",
+"Tijuana",
+"Tijuana International"
+],
+[
+"SJO",
+"San Jose",
+"Juan Santamaria"
+],
+[
+"PTY",
+"Panama City",
+"Tocumen International"
+],
+[
+"GUA",
+"Guatemala City",
+"La Aurora"
+],
+[
+"SAL",
+"San Salvador",
+"Monsenor Oscar Arnulfo Romero"
+],
+[
+"HAV",
+"Havana",
+"Jose Marti International"
+],
+[
+"NAS",
+"Nassau",
+"Lynden Pindling"
+],
+[
+"MBJ",
+"Montego Bay",
+"Sangster International"
+],
+[
+"KIN",
+"Kingston",
+"Norman Manley"
+],
+[
+"PUJ",
+"Punta Cana",
+"Punta Cana International"
+],
+[
+"AUA",
+"Aruba",
+"Queen Beatrix"
+],
+[
+"SXM",
+"St Maarten",
+"Princess Juliana"
+],
+[
+"BGI",
+"Barbados",
+"Grantley Adams"
+],
+[
+"POS",
+"Port of Spain",
+"Piarco International"
+],
+[
+"GRU",
+"Sao Paulo",
+"Guarulhos International"
+],
+[
+"CGH",
+"Sao Paulo",
+"Congonhas"
+],
+[
+"GIG",
+"Rio de Janeiro",
+"Galeao International"
+],
+[
+"SDU",
+"Rio de Janeiro",
+"Santos Dumont"
+],
+[
+"BSB",
+"Brasilia",
+"Presidente Juscelino Kubitschek"
+],
+[
+"CNF",
+"Belo Horizonte",
+"Confins International"
+],
+[
+"SSA",
+"Salvador",
+"Deputado Luis Eduardo Magalhaes"
+],
+[
+"REC",
+"Recife",
+"Guararapes International"
+],
+[
+"FOR",
+"Fortaleza",
+"Pinto Martins"
+],
+[
+"POA",
+"Porto Alegre",
+"Salgado Filho"
+],
+[
+"CWB",
+"Curitiba",
+"Afonso Pena"
+],
+[
+"FLN",
+"Florianopolis",
+"Hercilio Luz"
+],
+[
+"BEL",
+"Belem",
+"Val de Cans"
+],
+[
+"MAO",
+"Manaus",
+"Eduardo Gomes"
+],
+[
+"EZE",
+"Buenos Aires",
+"Ministro Pistarini"
+],
+[
+"AEP",
+"Buenos Aires",
+"Aeroparque Jorge Newbery"
+],
+[
+"COR",
+"Cordoba",
+"Ingeniero Aeronautico Ambrosio Taravella"
+],
+[
+"SCL",
+"Santiago",
+"Arturo Merino Benitez"
+],
+[
+"BOG",
+"Bogota",
+"El Dorado"
+],
+[
+"MDE",
+"Medellin",
+"Jose Maria Cordova"
+],
+[
+"CTG",
+"Cartagena",
+"Rafael Nunez"
+],
+[
+"CLO",
+"Cali",
+"Alfonso Bonilla Aragon"
+],
+[
+"LIM",
+"Lima",
+"Jorge Chavez International"
+],
+[
+"CUZ",
+"Cusco",
+"Alejandro Velasco Astete"
+],
+[
+"UIO",
+"Quito",
+"Mariscal Sucre"
+],
+[
+"GYE",
+"Guayaquil",
+"Jose Joaquin de Olmedo"
+],
+[
+"ASU",
+"Asuncion",
+"Silvio Pettirossi"
+],
+[
+"MVD",
+"Montevideo",
+"Carrasco"
+],
+[
+"CCS",
+"Caracas",
+"Simon Bolivar"
+],
+[
+"LPB",
+"La Paz",
+"El Alto"
+],
+[
+"VVI",
+"Santa Cruz",
+"Viru Viru"
+],
+[
+"LHR",
+"London",
+"Heathrow"
+],
+[
+"LGW",
+"London",
+"Gatwick"
+],
+[
+"LCY",
+"London",
+"London City"
+],
+[
+"STN",
+"London",
+"Stansted"
+],
+[
+"LTN",
+"London",
+"Luton"
+],
+[
+"MAN",
+"Manchester",
+"Manchester Airport"
+],
+[
+"BHX",
+"Birmingham",
+"Birmingham Airport"
+],
+[
+"EDI",
+"Edinburgh",
+"Edinburgh Airport"
+],
+[
+"GLA",
+"Glasgow",
+"Glasgow Airport"
+],
+[
+"BRS",
+"Bristol",
+"Bristol Airport"
+],
+[
+"NCL",
+"Newcastle",
+"Newcastle Airport"
+],
+[
+"BFS",
+"Belfast",
+"Belfast International"
+],
+[
+"ABZ",
+"Aberdeen",
+"Aberdeen Airport"
+],
+[
+"DUB",
+"Dublin",
+"Dublin Airport"
+],
+[
+"ORK",
+"Cork",
+"Cork Airport"
+],
+[
+"SNN",
+"Shannon",
+"Shannon Airport"
+],
+[
+"CDG",
+"Paris",
+"Charles de Gaulle"
+],
+[
+"ORY",
+"Paris",
+"Orly"
+],
+[
+"NCE",
+"Nice",
+"Cote d'Azur"
+],
+[
+"LYS",
+"Lyon",
+"Lyon-Saint Exupery"
+],
+[
+"MRS",
+"Marseille",
+"Marseille Provence"
+],
+[
+"TLS",
+"Toulouse",
+"Toulouse-Blagnac"
+],
+[
+"BOD",
+"Bordeaux",
+"Bordeaux-Merignac"
+],
+[
+"NTE",
+"Nantes",
+"Nantes Atlantique"
+],
+[
+"FRA",
+"Frankfurt",
+"Frankfurt am Main"
+],
+[
+"MUC",
+"Munich",
+"Franz Josef Strauss"
+],
+[
+"BER",
+"Berlin",
+"Berlin Brandenburg"
+],
+[
+"DUS",
+"Dusseldorf",
+"Dusseldorf Airport"
+],
+[
+"HAM",
+"Hamburg",
+"Hamburg Airport"
+],
+[
+"STR",
+"Stuttgart",
+"Stuttgart Airport"
+],
+[
+"CGN",
+"Cologne",
+"Cologne Bonn"
+],
+[
+"HAJ",
+"Hannover",
+"Hannover Airport"
+],
+[
+"NUE",
+"Nuremberg",
+"Nuremberg Airport"
+],
+[
+"AMS",
+"Amsterdam",
+"Schiphol"
+],
+[
+"EIN",
+"Eindhoven",
+"Eindhoven Airport"
+],
+[
+"RTM",
+"Rotterdam",
+"Rotterdam The Hague"
+],
+[
+"BRU",
+"Brussels",
+"Brussels Airport"
+],
+[
+"CRL",
+"Brussels",
+"Charleroi"
+],
+[
+"LUX",
+"Luxembourg",
+"Luxembourg Airport"
+],
+[
+"ZRH",
+"Zurich",
+"Zurich Airport"
+],
+[
+"GVA",
+"Geneva",
+"Geneva Airport"
+],
+[
+"BSL",
+"Basel",
+"EuroAirport"
+],
+[
+"VIE",
+"Vienna",
+"Vienna International"
+],
+[
+"SZG",
+"Salzburg",
+"Salzburg Airport"
+],
+[
+"INN",
+"Innsbruck",
+"Innsbruck Airport"
+],
+[
+"MAD",
+"Madrid",
+"Adolfo Suarez Madrid-Barajas"
+],
+[
+"BCN",
+"Barcelona",
+"El Prat"
+],
+[
+"PMI",
+"Palma",
+"Palma de Mallorca"
+],
+[
+"AGP",
+"Malaga",
+"Malaga Airport"
+],
+[
+"ALC",
+"Alicante",
+"Alicante-Elche"
+],
+[
+"VLC",
+"Valencia",
+"Valencia Airport"
+],
+[
+"SVQ",
+"Seville",
+"Seville Airport"
+],
+[
+"BIO",
+"Bilbao",
+"Bilbao Airport"
+],
+[
+"TFS",
+"Tenerife",
+"Tenerife South"
+],
+[
+"LPA",
+"Gran Canaria",
+"Gran Canaria"
+],
+[
+"ACE",
+"Lanzarote",
+"Lanzarote Airport"
+],
+[
+"IBZ",
+"Ibiza",
+"Ibiza Airport"
+],
+[
+"LIS",
+"Lisbon",
+"Humberto Delgado"
+],
+[
+"OPO",
+"Porto",
+"Francisco Sa Carneiro"
+],
+[
+"FAO",
+"Faro",
+"Faro Airport"
+],
+[
+"FNC",
+"Funchal",
+"Cristiano Ronaldo"
+],
+[
+"PDL",
+"Ponta Delgada",
+"Joao Paulo II"
+],
+[
+"FCO",
+"Rome",
+"Fiumicino"
+],
+[
+"CIA",
+"Rome",
+"Ciampino"
+],
+[
+"MXP",
+"Milan",
+"Malpensa"
+],
+[
+"LIN",
+"Milan",
+"Linate"
+],
+[
+"BGY",
+"Milan",
+"Bergamo"
+],
+[
+"VCE",
+"Venice",
+"Marco Polo"
+],
+[
+"NAP",
+"Naples",
+"Naples International"
+],
+[
+"BLQ",
+"Bologna",
+"Guglielmo Marconi"
+],
+[
+"FLR",
+"Florence",
+"Amerigo Vespucci"
+],
+[
+"PSA",
+"Pisa",
+"Galileo Galilei"
+],
+[
+"TRN",
+"Turin",
+"Turin Caselle"
+],
+[
+"CTA",
+"Catania",
+"Catania Fontanarossa"
+],
+[
+"PMO",
+"Palermo",
+"Falcone Borsellino"
+],
+[
+"ATH",
+"Athens",
+"Eleftherios Venizelos"
+],
+[
+"SKG",
+"Thessaloniki",
+"Macedonia"
+],
+[
+"HER",
+"Heraklion",
+"Nikos Kazantzakis"
+],
+[
+"RHO",
+"Rhodes",
+"Diagoras"
+],
+[
+"JTR",
+"Santorini",
+"Santorini"
+],
+[
+"JMK",
+"Mykonos",
+"Mykonos"
+],
+[
+"CFU",
+"Corfu",
+"Ioannis Kapodistrias"
+],
+[
+"CPH",
+"Copenhagen",
+"Kastrup"
+],
+[
+"BLL",
+"Billund",
+"Billund Airport"
+],
+[
+"ARN",
+"Stockholm",
+"Arlanda"
+],
+[
+"GOT",
+"Gothenburg",
+"Landvetter"
+],
+[
+"OSL",
+"Oslo",
+"Gardermoen"
+],
+[
+"BGO",
+"Bergen",
+"Flesland"
+],
+[
+"TRD",
+"Trondheim",
+"Vaernes"
+],
+[
+"HEL",
+"Helsinki",
+"Helsinki-Vantaa"
+],
+[
+"KEF",
+"Reykjavik",
+"Keflavik"
+],
+[
+"TLL",
+"Tallinn",
+"Lennart Meri"
+],
+[
+"RIX",
+"Riga",
+"Riga International"
+],
+[
+"VNO",
+"Vilnius",
+"Vilnius Airport"
+],
+[
+"WAW",
+"Warsaw",
+"Chopin"
+],
+[
+"KRK",
+"Krakow",
+"John Paul II"
+],
+[
+"GDN",
+"Gdansk",
+"Lech Walesa"
+],
+[
+"WRO",
+"Wroclaw",
+"Copernicus"
+],
+[
+"PRG",
+"Prague",
+"Vaclav Havel"
+],
+[
+"BUD",
+"Budapest",
+"Ferenc Liszt"
+],
+[
+"OTP",
+"Bucharest",
+"Henri Coanda"
+],
+[
+"CLJ",
+"Cluj-Napoca",
+"Avram Iancu"
+],
+[
+"SOF",
+"Sofia",
+"Sofia Airport"
+],
+[
+"ZAG",
+"Zagreb",
+"Franjo Tudman"
+],
+[
+"SPU",
+"Split",
+"Split Airport"
+],
+[
+"DBV",
+"Dubrovnik",
+"Dubrovnik Airport"
+],
+[
+"BEG",
+"Belgrade",
+"Nikola Tesla"
+],
+[
+"LJU",
+"Ljubljana",
+"Joze Pucnik"
+],
+[
+"BTS",
+"Bratislava",
+"M. R. Stefanik"
+],
+[
+"SJJ",
+"Sarajevo",
+"Sarajevo International"
+],
+[
+"TGD",
+"Podgorica",
+"Podgorica Airport"
+],
+[
+"TIA",
+"Tirana",
+"Tirana International"
+],
+[
+"SKP",
+"Skopje",
+"Skopje International"
+],
+[
+"KBP",
+"Kyiv",
+"Boryspil"
+],
+[
+"IST",
+"Istanbul",
+"Istanbul Airport"
+],
+[
+"SAW",
+"Istanbul",
+"Sabiha Gokcen"
+],
+[
+"AYT",
+"Antalya",
+"Antalya Airport"
+],
+[
+"ESB",
+"Ankara",
+"Esenboga"
+],
+[
+"ADB",
+"Izmir",
+"Adnan Menderes"
+],
+[
+"DLM",
+"Dalaman",
+"Dalaman Airport"
+],
+[
+"LCA",
+"Larnaca",
+"Larnaca International"
+],
+[
+"PFO",
+"Paphos",
+"Paphos International"
+],
+[
+"MLA",
+"Malta",
+"Malta International"
+],
+[
+"SVO",
+"Moscow",
+"Sheremetyevo"
+],
+[
+"DME",
+"Moscow",
+"Domodedovo"
+],
+[
+"VKO",
+"Moscow",
+"Vnukovo"
+],
+[
+"LED",
+"St Petersburg",
+"Pulkovo"
+],
+[
+"TBS",
+"Tbilisi",
+"Tbilisi International"
+],
+[
+"EVN",
+"Yerevan",
+"Zvartnots"
+],
+[
+"GYD",
+"Baku",
+"Heydar Aliyev"
+],
+[
+"DOH",
+"Doha",
+"Hamad International"
+],
+[
+"DXB",
+"Dubai",
+"Dubai International"
+],
+[
+"AUH",
+"Abu Dhabi",
+"Zayed International"
+],
+[
+"SHJ",
+"Sharjah",
+"Sharjah International"
+],
+[
+"RUH",
+"Riyadh",
+"King Khalid International"
+],
+[
+"JED",
+"Jeddah",
+"King Abdulaziz"
+],
+[
+"DMM",
+"Dammam",
+"King Fahd International"
+],
+[
+"MED",
+"Medina",
+"Prince Mohammad bin Abdulaziz"
+],
+[
+"BAH",
+"Bahrain",
+"Bahrain International"
+],
+[
+"KWI",
+"Kuwait City",
+"Kuwait International"
+],
+[
+"MCT",
+"Muscat",
+"Muscat International"
+],
+[
+"AMM",
+"Amman",
+"Queen Alia"
+],
+[
+"BEY",
+"Beirut",
+"Rafic Hariri"
+],
+[
+"TLV",
+"Tel Aviv",
+"Ben Gurion"
+],
+[
+"IKA",
+"Tehran",
+"Imam Khomeini"
+],
+[
+"BGW",
+"Baghdad",
+"Baghdad International"
+],
+[
+"EBL",
+"Erbil",
+"Erbil International"
+],
+[
+"CAI",
+"Cairo",
+"Cairo International"
+],
+[
+"HRG",
+"Hurghada",
+"Hurghada International"
+],
+[
+"SSH",
+"Sharm El Sheikh",
+"Sharm El Sheikh"
+],
+[
+"ADD",
+"Addis Ababa",
+"Bole International"
+],
+[
+"NBO",
+"Nairobi",
+"Jomo Kenyatta International"
+],
+[
+"MBA",
+"Mombasa",
+"Moi International"
+],
+[
+"JRO",
+"Kilimanjaro",
+"Kilimanjaro International"
+],
+[
+"DAR",
+"Dar es Salaam",
+"Julius Nyerere"
+],
+[
+"EBB",
+"Entebbe",
+"Entebbe International"
+],
+[
+"KGL",
+"Kigali",
+"Kigali International"
+],
+[
+"JNB",
+"Johannesburg",
+"O. R. Tambo International"
+],
+[
+"CPT",
+"Cape Town",
+"Cape Town International"
+],
+[
+"DUR",
+"Durban",
+"King Shaka"
+],
+[
+"LOS",
+"Lagos",
+"Murtala Muhammed"
+],
+[
+"ABV",
+"Abuja",
+"Nnamdi Azikiwe"
+],
+[
+"ACC",
+"Accra",
+"Kotoka International"
+],
+[
+"ABJ",
+"Abidjan",
+"Felix Houphouet-Boigny"
+],
+[
+"DSS",
+"Dakar",
+"Blaise Diagne"
+],
+[
+"CMN",
+"Casablanca",
+"Mohammed V"
+],
+[
+"RAK",
+"Marrakech",
+"Marrakech Menara"
+],
+[
+"TUN",
+"Tunis",
+"Tunis-Carthage"
+],
+[
+"ALG",
+"Algiers",
+"Houari Boumediene"
+],
+[
+"DLA",
+"Douala",
+"Douala International"
+],
+[
+"LAD",
+"Luanda",
+"Quatro de Fevereiro"
+],
+[
+"MPM",
+"Maputo",
+"Maputo International"
+],
+[
+"HRE",
+"Harare",
+"Robert Gabriel Mugabe"
+],
+[
+"WDH",
+"Windhoek",
+"Hosea Kutako"
+],
+[
+"MRU",
+"Mauritius",
+"Sir Seewoosagur Ramgoolam"
+],
+[
+"SEZ",
+"Seychelles",
+"Seychelles International"
+],
+[
+"TNR",
+"Antananarivo",
+"Ivato"
+],
+[
+"DEL",
+"Delhi",
+"Indira Gandhi International"
+],
+[
+"BOM",
+"Mumbai",
+"Chhatrapati Shivaji Maharaj"
+],
+[
+"BLR",
+"Bengaluru",
+"Kempegowda International"
+],
+[
+"MAA",
+"Chennai",
+"Chennai International"
+],
+[
+"HYD",
+"Hyderabad",
+"Rajiv Gandhi International"
+],
+[
+"CCU",
+"Kolkata",
+"Netaji Subhas Chandra Bose"
+],
+[
+"COK",
+"Kochi",
+"Cochin International"
+],
+[
+"GOI",
+"Goa",
+"Goa International"
+],
+[
+"AMD",
+"Ahmedabad",
+"Sardar Vallabhbhai Patel"
+],
+[
+"TRV",
+"Thiruvananthapuram",
+"Thiruvananthapuram"
+],
+[
+"CMB",
+"Colombo",
+"Bandaranaike"
+],
+[
+"DAC",
+"Dhaka",
+"Hazrat Shahjalal"
+],
+[
+"KTM",
+"Kathmandu",
+"Tribhuvan"
+],
+[
+"ISB",
+"Islamabad",
+"Islamabad International"
+],
+[
+"KHI",
+"Karachi",
+"Jinnah International"
+],
+[
+"LHE",
+"Lahore",
+"Allama Iqbal"
+],
+[
+"MLE",
+"Male",
+"Velana International"
+],
+[
+"NRT",
+"Tokyo",
+"Narita"
+],
+[
+"HND",
+"Tokyo",
+"Haneda"
+],
+[
+"KIX",
+"Osaka",
+"Kansai"
+],
+[
+"ITM",
+"Osaka",
+"Itami"
+],
+[
+"NGO",
+"Nagoya",
+"Chubu Centrair"
+],
+[
+"FUK",
+"Fukuoka",
+"Fukuoka Airport"
+],
+[
+"CTS",
+"Sapporo",
+"New Chitose"
+],
+[
+"OKA",
+"Okinawa",
+"Naha"
+],
+[
+"ICN",
+"Seoul",
+"Incheon International"
+],
+[
+"GMP",
+"Seoul",
+"Gimpo"
+],
+[
+"PUS",
+"Busan",
+"Gimhae"
+],
+[
+"CJU",
+"Jeju",
+"Jeju International"
+],
+[
+"PEK",
+"Beijing",
+"Capital International"
+],
+[
+"PKX",
+"Beijing",
+"Daxing International"
+],
+[
+"PVG",
+"Shanghai",
+"Pudong International"
+],
+[
+"SHA",
+"Shanghai",
+"Hongqiao"
+],
+[
+"CAN",
+"Guangzhou",
+"Baiyun International"
+],
+[
+"SZX",
+"Shenzhen",
+"Shenzhen Bao'an"
+],
+[
+"CTU",
+"Chengdu",
+"Shuangliu"
+],
+[
+"TFU",
+"Chengdu",
+"Tianfu International"
+],
+[
+"CKG",
+"Chongqing",
+"Jiangbei"
+],
+[
+"HGH",
+"Hangzhou",
+"Xiaoshan"
+],
+[
+"XIY",
+"Xian",
+"Xianyang"
+],
+[
+"KMG",
+"Kunming",
+"Changshui"
+],
+[
+"NKG",
+"Nanjing",
+"Lukou"
+],
+[
+"WUH",
+"Wuhan",
+"Tianhe"
+],
+[
+"XMN",
+"Xiamen",
+"Gaoqi"
+],
+[
+"TAO",
+"Qingdao",
+"Jiaodong"
+],
+[
+"CSX",
+"Changsha",
+"Huanghua"
+],
+[
+"SHE",
+"Shenyang",
+"Taoxian"
+],
+[
+"DLC",
+"Dalian",
+"Zhoushuizi"
+],
+[
+"HAK",
+"Haikou",
+"Meilan"
+],
+[
+"URC",
+"Urumqi",
+"Diwopu"
+],
+[
+"HKG",
+"Hong Kong",
+"Hong Kong International"
+],
+[
+"MFM",
+"Macau",
+"Macau International"
+],
+[
+"TPE",
+"Taipei",
+"Taoyuan International"
+],
+[
+"TSA",
+"Taipei",
+"Songshan"
+],
+[
+"KHH",
+"Kaohsiung",
+"Kaohsiung International"
+],
+[
+"SIN",
+"Singapore",
+"Changi"
+],
+[
+"BKK",
+"Bangkok",
+"Suvarnabhumi"
+],
+[
+"DMK",
+"Bangkok",
+"Don Mueang"
+],
+[
+"HKT",
+"Phuket",
+"Phuket International"
+],
+[
+"CNX",
+"Chiang Mai",
+"Chiang Mai International"
+],
+[
+"KUL",
+"Kuala Lumpur",
+"KLIA"
+],
+[
+"PEN",
+"Penang",
+"Penang International"
+],
+[
+"BKI",
+"Kota Kinabalu",
+"Kota Kinabalu International"
+],
+[
+"CGK",
+"Jakarta",
+"Soekarno-Hatta"
+],
+[
+"DPS",
+"Bali",
+"Ngurah Rai"
+],
+[
+"SUB",
+"Surabaya",
+"Juanda"
+],
+[
+"MNL",
+"Manila",
+"Ninoy Aquino"
+],
+[
+"CEB",
+"Cebu",
+"Mactan-Cebu"
+],
+[
+"SGN",
+"Ho Chi Minh City",
+"Tan Son Nhat"
+],
+[
+"HAN",
+"Hanoi",
+"Noi Bai"
+],
+[
+"DAD",
+"Da Nang",
+"Da Nang International"
+],
+[
+"PNH",
+"Phnom Penh",
+"Phnom Penh International"
+],
+[
+"REP",
+"Siem Reap",
+"Siem Reap"
+],
+[
+"RGN",
+"Yangon",
+"Yangon International"
+],
+[
+"VTE",
+"Vientiane",
+"Wattay"
+],
+[
+"ALA",
+"Almaty",
+"Almaty International"
+],
+[
+"NQZ",
+"Astana",
+"Nursultan Nazarbayev"
+],
+[
+"TAS",
+"Tashkent",
+"Islam Karimov"
+],
+[
+"FRU",
+"Bishkek",
+"Manas"
+],
+[
+"SYD",
+"Sydney",
+"Kingsford Smith"
+],
+[
+"MEL",
+"Melbourne",
+"Tullamarine"
+],
+[
+"BNE",
+"Brisbane",
+"Brisbane Airport"
+],
+[
+"PER",
+"Perth",
+"Perth Airport"
+],
+[
+"ADL",
+"Adelaide",
+"Adelaide Airport"
+],
+[
+"CBR",
+"Canberra",
+"Canberra Airport"
+],
+[
+"OOL",
+"Gold Coast",
+"Gold Coast Airport"
+],
+[
+"CNS",
+"Cairns",
+"Cairns Airport"
+],
+[
+"AKL",
+"Auckland",
+"Auckland Airport"
+],
+[
+"WLG",
+"Wellington",
+"Wellington Airport"
+],
+[
+"CHC",
+"Christchurch",
+"Christchurch Airport"
+],
+[
+"NAN",
+"Nadi",
+"Nadi International"
+],
+[
+"PPT",
+"Papeete",
+"Faa'a International"
+]
+]

@@ -19,6 +19,7 @@ from app.airports import distance_km, local_to_utc, utc_to_local
 from app.config import Settings, get_settings
 from app.models import FlightSearch
 from app.schemas import FlightOffer, FlightSearchResponse, FlightSegment
+from app.services.airline_link import handoff_url
 
 logger = logging.getLogger(__name__)
 
@@ -55,22 +56,6 @@ AIRLINE_NAMES: dict[str, str] = {
     "VS": "Virgin Atlantic",
 }
 
-AIRLINE_BOOKING_SITES: dict[str, str] = {
-    "AA": "https://www.aa.com/booking/find-flights",
-    "AF": "https://wwws.airfrance.us/search/offers",
-    "BA": "https://www.britishairways.com/travel/book/public/en_us",
-    "CX": "https://www.cathaypacific.com/cx/en_US/book-a-trip.html",
-    "DL": "https://www.delta.com/flight-search/book-a-flight",
-    "EK": "https://www.emirates.com/us/english/book/",
-    "KL": "https://www.klm.us/search/offers",
-    "LH": "https://www.lufthansa.com/us/en/flight-search",
-    "QR": "https://www.qatarairways.com/en-us/book.html",
-    "SQ": "https://www.singaporeair.com/en_UK/us/plan-travel/book-flight/",
-    "TK": "https://www.turkishairlines.com/en-us/flights/booking/",
-    "UA": "https://www.united.com/en/us/fsr/choose-flights",
-}
-
-
 def airline_name(code: str) -> str:
     return AIRLINE_NAMES.get(code.upper(), code.upper())
 
@@ -94,7 +79,15 @@ def _build_offer(
     deep_link: str,
     provider: str,
     validating_carrier: str | None = None,
+    bookable: bool = False,
+    passenger_id: str | None = None,
+    expires_at: datetime | None = None,
+    refundable: bool | None = None,
+    manage_url: str | None = None,
+    cabin_class: str = BUSINESS_CABIN,
+    return_segments: list[FlightSegment] | None = None,
 ) -> FlightOffer:
+    return_segments = return_segments or []
     first, last = segments[0], segments[-1]
     carrier = (validating_carrier or first.airline_iata).upper()
     marketing_segment = next((s for s in segments if s.airline_iata == carrier), first)
@@ -113,13 +106,150 @@ def _build_offer(
         duration_minutes=duration,
         layovers=len(segments) - 1,
         layover_airports=[s.destination for s in segments[:-1]],
+        trip_type="round" if return_segments else "oneway",
+        return_flight_number=return_segments[0].flight_number if return_segments else None,
+        return_origin=return_segments[0].origin if return_segments else None,
+        return_destination=return_segments[-1].destination if return_segments else None,
+        return_departure_local=return_segments[0].departure_local if return_segments else None,
+        return_arrival_local=return_segments[-1].arrival_local if return_segments else None,
+        return_duration_minutes=(
+            int((return_segments[-1].arrival_time - return_segments[0].departure_time).total_seconds() // 60)
+            if return_segments
+            else None
+        ),
+        return_layovers=max(0, len(return_segments) - 1),
         price=round(price, 2),
         currency=currency,
-        cabin_class=BUSINESS_CABIN,
+        cabin_class=cabin_class,
         deep_link=deep_link,
-        segments=segments,
+        segments=[*segments, *return_segments],
         provider=provider,
+        bookable=bookable,
+        passenger_id=passenger_id,
+        expires_at=expires_at,
+        refundable=refundable,
+        manage_url=manage_url,
     )
+
+
+# ---------------------------------------------------------------------------
+# Duffel
+# ---------------------------------------------------------------------------
+
+
+class DuffelProvider:
+    name = "duffel"
+
+    def __init__(self, settings: Settings, client: httpx.AsyncClient | None = None):
+        from app.services.duffel import DuffelClient
+
+        self._settings = settings
+        self._duffel = DuffelClient(settings)
+
+    async def search(
+        self, origin: str, destination: str, on: date, *, cabin: str = "business", return_on: date | None = None
+    ) -> list[FlightOffer]:
+        from app.services.duffel import DuffelError
+
+        self._cabin = "first" if cabin == "first" else "business"
+        self._return_on = return_on
+        try:
+            payload = await self._duffel.search_offers(origin, destination, on, cabin=self._cabin, return_on=return_on)
+        except DuffelError as exc:
+            raise ProviderError(str(exc)) from exc
+
+        data = payload.get("data") or {}
+        offers: list[FlightOffer] = []
+        for item in data.get("offers") or []:
+            try:
+                offers.append(self._parse_offer(item, on))
+            except (KeyError, ValueError, IndexError, TypeError) as exc:
+                logger.debug("Skipping malformed Duffel offer %s: %s", item.get("id"), exc)
+        offers.sort(key=lambda o: o.price)
+        return offers[:25]
+
+    def _parse_offer(self, item: dict, on: date) -> FlightOffer:
+        from app.services.duffel import parse_duffel_datetime
+
+        owner = item.get("owner") or {}
+        carrier = (owner.get("iata_code") or "").upper()
+        if owner.get("name"):
+            AIRLINE_NAMES.setdefault(carrier, owner["name"])
+
+        slice_groups: list[list[FlightSegment]] = []
+        for slc in item.get("slices") or []:
+            grouped: list[FlightSegment] = []
+            for seg in slc.get("segments") or []:
+                origin_code = (seg["origin"]["iata_code"] if isinstance(seg.get("origin"), dict) else seg["origin"]).upper()
+                dest_code = (
+                    seg["destination"]["iata_code"] if isinstance(seg.get("destination"), dict) else seg["destination"]
+                ).upper()
+                marketing = seg.get("marketing_carrier") or {}
+                seg_carrier = (marketing.get("iata_code") or carrier).upper()
+                if marketing.get("name"):
+                    AIRLINE_NAMES.setdefault(seg_carrier, marketing["name"])
+                number = str(seg.get("marketing_carrier_flight_number") or seg.get("operating_carrier_flight_number") or "")
+                aircraft = (seg.get("aircraft") or {}).get("name") if isinstance(seg.get("aircraft"), dict) else None
+                dep_raw = parse_duffel_datetime(seg["departing_at"])
+                arr_raw = parse_duffel_datetime(seg["arriving_at"])
+                if dep_raw.tzinfo is None:
+                    dep_utc, dep_local = local_to_utc(origin_code, dep_raw), dep_raw.replace(tzinfo=None)
+                else:
+                    dep_utc, dep_local = dep_raw.astimezone(timezone.utc), utc_to_local(origin_code, dep_raw)
+                if arr_raw.tzinfo is None:
+                    arr_utc, arr_local = local_to_utc(dest_code, arr_raw), arr_raw.replace(tzinfo=None)
+                else:
+                    arr_utc, arr_local = arr_raw.astimezone(timezone.utc), utc_to_local(dest_code, arr_raw)
+                grouped.append(
+                    FlightSegment(
+                        airline_iata=seg_carrier,
+                        airline_name=airline_name(seg_carrier),
+                        flight_number=f"{seg_carrier}{number}".replace(" ", ""),
+                        origin=origin_code,
+                        destination=dest_code,
+                        departure_time=dep_utc,
+                        arrival_time=arr_utc,
+                        departure_local=dep_local,
+                        arrival_local=arr_local,
+                        aircraft=aircraft,
+                    )
+                )
+            if grouped:
+                slice_groups.append(grouped)
+        if not slice_groups:
+            raise ValueError("offer has no segments")
+        segments = slice_groups[0]
+        return_segments = slice_groups[1] if len(slice_groups) > 1 else []
+
+        passengers = item.get("passengers") or []
+        passenger_id = passengers[0].get("id") if passengers and isinstance(passengers[0], dict) else None
+        expires = item.get("expires_at")
+        refund = ((item.get("conditions") or {}).get("refund_before_departure") or {}).get("allowed")
+        code = "F" if getattr(self, "_cabin", "business") == "first" else BUSINESS_CABIN
+        return _build_offer(
+            offer_id=item["id"],
+            segments=segments,
+            price=float(item["total_amount"]),
+            currency=item.get("total_currency") or self._settings.default_currency,
+            deep_link=airline_deep_link(
+                carrier or segments[0].airline_iata,
+                segments[0].origin,
+                segments[-1].destination,
+                segments[0].departure_local.date(),
+                cabin=getattr(self, "_cabin", "business"),
+                flight_number=segments[0].flight_number,
+                return_on=return_segments[0].departure_local.date() if return_segments else None,
+                return_flight=return_segments[0].flight_number if return_segments else "",
+            ),
+            provider=self.name,
+            validating_carrier=carrier or None,
+            bookable=True,
+            passenger_id=passenger_id,
+            expires_at=parse_duffel_datetime(expires) if expires else None,
+            refundable=bool(refund) if refund is not None else None,
+            cabin_class=code,
+            return_segments=return_segments,
+        )
 
 
 # ---------------------------------------------------------------------------
@@ -302,22 +432,39 @@ class AmadeusProvider:
             segments=segments,
             price=float(price["grandTotal"]),
             currency=price.get("currency", self._settings.default_currency),
-            deep_link=airline_deep_link(validating, segments[0].origin, segments[-1].destination, on),
+            deep_link=airline_deep_link(
+                validating,
+                segments[0].origin,
+                segments[-1].destination,
+                on,
+                flight_number=segments[0].flight_number,
+            ),
             provider=self.name,
             validating_carrier=validating,
         )
 
 
-def airline_deep_link(carrier: str, origin: str, destination: str, on: date) -> str:
-    """Prefilled search URL on the carrier's own site (Amadeus has no deep links)."""
-    base = AIRLINE_BOOKING_SITES.get(carrier.upper())
-    query = urlencode(
-        {"origin": origin, "destination": destination, "departureDate": on.isoformat(), "cabin": "business", "adults": 1}
-    )
-    if base:
-        return f"{base}?{query}"
-    return "https://www.google.com/travel/flights?" + urlencode(
-        {"q": f"business class {carrier} {origin} to {destination} {on.isoformat()}"}
+def airline_deep_link(
+    carrier: str,
+    origin: str,
+    destination: str,
+    on: date,
+    cabin: str = "business",
+    flight_number: str = "",
+    return_on: date | None = None,
+    return_flight: str = "",
+) -> str:
+    """Our lookup address. The click resolves it to the airline's own page."""
+    return handoff_url(
+        get_settings().public_base_url,
+        carrier,
+        flight_number,
+        origin,
+        destination,
+        on,
+        cabin,
+        return_on=return_on,
+        return_flight=return_flight,
     )
 
 
@@ -353,7 +500,9 @@ class MockProvider:
     def __init__(self, settings: Settings):
         self._settings = settings
 
-    async def search(self, origin: str, destination: str, on: date) -> list[FlightOffer]:
+    async def search(
+        self, origin: str, destination: str, on: date, *, cabin: str = "business", return_on: date | None = None
+    ) -> list[FlightOffer]:
         seed = int(hashlib.sha256(f"{origin}{destination}{on.isoformat()}".encode()).hexdigest()[:12], 16)
         rng = random.Random(seed)
         direct_km = distance_km(origin, destination) or rng.uniform(5000, 11000)
@@ -404,11 +553,20 @@ class MockProvider:
                 price = base_price * multiplier * 0.92
 
             price += rng.uniform(-120, 120)
+            inbound: list[FlightSegment] = []
+            if return_on:
+                ret_no = f"{code}{fn_base + 300 + idx}"
+                ret_dep_local = datetime.combine(return_on, datetime.min.time()) + timedelta(hours=11, minutes=20)
+                ret_dep = local_to_utc(destination, ret_dep_local)
+                ret_arr = ret_dep + timedelta(hours=_block_hours(direct_km))
+                inbound = [self._segment(code, ret_no, destination, origin, ret_dep, ret_arr)]
+                price = round(price * 1.7, 2)
             offer_id = f"mock-{code}-{origin}{destination}-{on.strftime('%Y%m%d')}-{idx}"
             offers.append(
                 _build_offer(
                     offer_id=offer_id,
                     segments=segments,
+                    return_segments=inbound,
                     price=price,
                     currency=self._settings.default_currency,
                     deep_link=self._demo_checkout_link(code, flight_no, origin, destination, on, price),
@@ -467,19 +625,190 @@ def normalize_iata(code: str) -> str:
     return code
 
 
+class MissingProviderError(RuntimeError):
+    pass
+
+
 def select_provider(settings: Settings, client: httpx.AsyncClient) -> FlightProvider:
     choice = settings.flight_provider
+    if choice == "mock":
+        return MockProvider(settings)
+    if choice == "duffel" or (choice == "auto" and settings.duffel_enabled):
+        if not settings.duffel_enabled:
+            raise MissingProviderError("FLIGHT_PROVIDER=duffel but DUFFEL_ACCESS_TOKEN is empty")
+        return DuffelProvider(settings, client)
     if choice == "tequila" or (choice == "auto" and settings.tequila_api_key):
         if not settings.tequila_api_key:
-            logger.warning("FLIGHT_PROVIDER=tequila but TEQUILA_API_KEY is empty; using mock data")
-            return MockProvider(settings)
+            raise MissingProviderError("FLIGHT_PROVIDER=tequila but TEQUILA_API_KEY is empty")
         return TequilaProvider(settings, client)
     if choice == "amadeus" or (choice == "auto" and settings.amadeus_client_id and settings.amadeus_client_secret):
         if not (settings.amadeus_client_id and settings.amadeus_client_secret):
-            logger.warning("FLIGHT_PROVIDER=amadeus but Amadeus credentials are empty; using mock data")
-            return MockProvider(settings)
+            raise MissingProviderError("FLIGHT_PROVIDER=amadeus but Amadeus credentials are empty")
         return AmadeusProvider(settings, client)
+    if choice == "auto":
+        raise MissingProviderError(
+            "No flight API is configured. Set DUFFEL_ACCESS_TOKEN in backend/.env "
+            "(or FLIGHT_PROVIDER=mock for offline demo data)."
+        )
     return MockProvider(settings)
+
+
+_RECOMMENDATION_LIMIT = 3
+
+
+def _cabin_word(cabin: str) -> str:
+    if cabin == "first":
+        return "first"
+    if cabin == "either":
+        return "business or first"
+    return "business"
+
+
+def _cabin_ok(offer: FlightOffer, cabin: str) -> bool:
+    code = (offer.cabin_class or "").upper()
+    if cabin == "first":
+        return code in {"F", "FIRST"}
+    if cabin == "either":
+        return code in {"C", "F", "BUSINESS", "FIRST"}
+    return code in {"C", "BUSINESS"}
+
+
+def _airline_ok(offer: FlightOffer, wanted: set[str]) -> bool:
+    if not wanted:
+        return True
+    if offer.airline_iata in wanted:
+        return True
+    return any(segment.airline_iata in wanted for segment in offer.segments)
+
+
+def _aircraft_ok(offer: FlightOffer, plane: str) -> bool:
+    if not plane:
+        return True
+    names = " ".join((segment.aircraft or "") for segment in offer.segments).upper()
+    return plane in names or any(part in names for part in plane.split())
+
+
+def _time_ok(offer: FlightOffer, depart_after: int, depart_before: int) -> bool:
+    hour = offer.departure_local.hour
+    return depart_after <= hour < depart_before
+
+
+def _nonstop(offer: FlightOffer) -> bool:
+    return offer.layovers == 0 and offer.return_layovers == 0
+
+
+def _airline_rank(offer: FlightOffer, wanted: list[str]) -> int:
+    if not wanted:
+        return 0
+    if offer.airline_iata in wanted:
+        return wanted.index(offer.airline_iata)
+    for segment in offer.segments:
+        if segment.airline_iata in wanted:
+            return wanted.index(segment.airline_iata)
+    return len(wanted)
+
+
+def _and(parts: list[str]) -> str:
+    if len(parts) == 1:
+        return parts[0]
+    if len(parts) == 2:
+        return f"{parts[0]} and {parts[1]}"
+    return ", ".join(parts[:-1]) + f", and {parts[-1]}"
+
+
+def recommend_offers(
+    offers: list[FlightOffer],
+    *,
+    cabin: str = "business",
+    airlines: str = "",
+    aircraft: str = "",
+    depart_after: int = 0,
+    depart_before: int = 24,
+    flexible_only: bool = False,
+) -> tuple[list[FlightOffer], str]:
+    """Keep flights that match every saved rule, then the best three nonstops."""
+    wanted_list = [code.strip().upper() for code in airlines.split(",") if code.strip()]
+    wanted = set(wanted_list)
+    plane = aircraft.strip().upper()
+    cabin_name = _cabin_word(cabin)
+    if not offers:
+        return [], f"No {cabin_name} flights on this route for those dates."
+
+    steps: list[tuple[str, object]] = [
+        ("cabin", lambda offer: _cabin_ok(offer, cabin), f"No {cabin_name} flights on this route for those dates."),
+    ]
+    if wanted_list:
+        listed = ", ".join(wanted_list)
+        steps.append(("airlines", lambda offer: _airline_ok(offer, wanted), f"No {cabin_name} flights on {listed}."))
+    if plane:
+        steps.append(("aircraft", lambda offer: _aircraft_ok(offer, plane), f"No {cabin_name} flights on {plane}."))
+    if depart_after > 0 or depart_before < 24:
+        window = f"{depart_after:02d}:00 and {depart_before:02d}:00"
+        steps.append(
+            (
+                "time",
+                lambda offer: _time_ok(offer, depart_after, depart_before),
+                f"Nothing in {cabin_name} departs between {window}.",
+            )
+        )
+    if flexible_only:
+        steps.append(
+            ("flexible", lambda offer: offer.refundable is not False, f"No flexible {cabin_name} fares match.")
+        )
+
+    current = list(offers)
+    for _name, keep, empty_note in steps:
+        nxt = [offer for offer in current if keep(offer)]
+        if current and not nxt:
+            return [], empty_note
+        current = nxt
+
+    nonstops = [offer for offer in current if _nonstop(offer)]
+    pool = nonstops or current
+    pool.sort(key=lambda offer: (_airline_rank(offer, wanted_list), offer.price))
+    chosen = pool[:_RECOMMENDATION_LIMIT]
+
+    count_word = {1: "One", 2: "Two", 3: "Three"}.get(len(chosen), str(len(chosen)))
+    noun = "flight" if len(chosen) == 1 else "flights"
+    matched: list[str] = []
+    if wanted_list:
+        matched.append("your airlines")
+    if depart_after > 0 or depart_before < 24:
+        matched.append("your times")
+    if plane:
+        matched.append("your aircraft")
+    if flexible_only:
+        matched.append("flexible fares")
+    match = f" that match {_and(matched)}" if matched else ""
+    if nonstops:
+        note = f"{count_word} nonstop {cabin_name} {noun}{match}. Aisle requested."
+    else:
+        note = f"No nonstop matched. {count_word} {cabin_name} {noun} with a connection{match}. Aisle requested."
+    return chosen, note
+
+
+def apply_preferences(
+    offers: list[FlightOffer],
+    *,
+    cabin: str = "business",
+    direct_only: bool = False,
+    airlines: str = "",
+    aircraft: str = "",
+    depart_after: int = 0,
+    depart_before: int = 24,
+    flexible_only: bool = False,
+) -> list[FlightOffer]:
+    del direct_only
+    chosen, _note = recommend_offers(
+        offers,
+        cabin=cabin,
+        airlines=airlines,
+        aircraft=aircraft,
+        depart_after=depart_after,
+        depart_before=depart_before,
+        flexible_only=flexible_only,
+    )
+    return chosen
 
 
 async def search_business_flights(
@@ -488,22 +817,50 @@ async def search_business_flights(
     on: date,
     session: AsyncSession | None = None,
     settings: Settings | None = None,
+    *,
+    cabin: str = "business",
+    direct_only: bool = False,
+    airlines: str = "",
+    aircraft: str = "",
+    depart_after: int = 0,
+    depart_before: int = 24,
+    flexible_only: bool = False,
+    return_on: date | None = None,
 ) -> FlightSearchResponse:
     settings = settings or get_settings()
     origin, destination = normalize_iata(origin), normalize_iata(destination)
     if origin == destination:
         raise ValueError("origin and destination must differ")
+    if return_on is not None and return_on <= on:
+        raise ValueError("return date must be after the departure date")
 
-    async with httpx.AsyncClient(timeout=httpx.Timeout(20.0, connect=5.0)) as client:
+    cabins = ["business", "first"] if cabin == "either" else [cabin if cabin in {"business", "first"} else "business"]
+    async with httpx.AsyncClient(timeout=httpx.Timeout(90.0, connect=10.0)) as client:
         provider = select_provider(settings, client)
-        try:
-            offers = await provider.search(origin, destination, on)
-        except ProviderError as exc:
-            logger.warning("%s provider failed (%s); falling back to mock data", provider.name, exc)
-            provider = MockProvider(settings)
-            offers = await provider.search(origin, destination, on)
+        offers: list[FlightOffer] = []
+        seen: set[str] = set()
+        for one in cabins:
+            try:
+                batch = await provider.search(origin, destination, on, cabin=one, return_on=return_on)
+            except TypeError:
+                if return_on:
+                    raise ProviderError("This search provider cannot price a round trip.")
+                batch = await provider.search(origin, destination, on)
+            for offer in batch:
+                if offer.id not in seen:
+                    seen.add(offer.id)
+                    offers.append(offer)
 
-    offers = [o for o in offers if o.cabin_class == BUSINESS_CABIN]
+    offers, note = recommend_offers(
+        offers,
+        cabin=cabin,
+        airlines=airlines,
+        aircraft=aircraft,
+        depart_after=depart_after,
+        depart_before=depart_before,
+        flexible_only=flexible_only,
+    )
+    del direct_only
 
     if session is not None:
         session.add(
@@ -511,7 +868,7 @@ async def search_business_flights(
                 origin=origin,
                 destination=destination,
                 departure_date=on,
-                cabin_class=BUSINESS_CABIN,
+                cabin_class=cabin if cabin in {"C", "F"} else ("F" if cabin == "first" else BUSINESS_CABIN),
                 provider=provider.name,
                 result_count=len(offers),
             )
@@ -522,9 +879,11 @@ async def search_business_flights(
         origin=origin,
         destination=destination,
         date=on,
+        return_date=return_on,
         cabin_class=BUSINESS_CABIN,
         provider=provider.name,
         count=len(offers),
+        note=note,
         results=offers,
     )
 

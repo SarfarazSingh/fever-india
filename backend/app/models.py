@@ -56,6 +56,29 @@ class FlightSearch(Base):
     created_at: Mapped[datetime] = mapped_column(UTCDateTime, default=utcnow)
 
 
+class Preferences(Base):
+    """Single traveller profile. No login: there is one row."""
+
+    __tablename__ = "preferences"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    cabin: Mapped[str] = mapped_column(String(16), default="business")
+    direct_only: Mapped[bool] = mapped_column(default=False)
+    airlines: Mapped[str] = mapped_column(String(200), default="")
+    aircraft: Mapped[str] = mapped_column(String(200), default="")
+    depart_after: Mapped[int] = mapped_column(Integer, default=0)
+    depart_before: Mapped[int] = mapped_column(Integer, default=24)
+    flexible_only: Mapped[bool] = mapped_column(default=False)
+    seat: Mapped[str] = mapped_column(String(16), default="aisle")
+    hotel_stars: Mapped[int] = mapped_column(Integer, default=5)
+    wants_gym: Mapped[bool] = mapped_column(default=True)
+    wants_spa: Mapped[bool] = mapped_column(default=True)
+    home_airport: Mapped[str] = mapped_column(String(3), default="JFK")
+    traveller_first_name: Mapped[str] = mapped_column(String(100), default="")
+    traveller_last_name: Mapped[str] = mapped_column(String(100), default="")
+    email: Mapped[str] = mapped_column(String(255), default="")
+
+
 class Booking(Base):
     __tablename__ = "bookings"
 
@@ -65,8 +88,10 @@ class Booking(Base):
     passenger_last_name: Mapped[str] = mapped_column(String(100))
     airline_iata: Mapped[str] = mapped_column(String(2))
     flight_number: Mapped[str] = mapped_column(String(10))
+    origin: Mapped[str | None] = mapped_column(String(3), nullable=True)
+    destination: Mapped[str | None] = mapped_column(String(3), nullable=True)
     departure_time: Mapped[datetime] = mapped_column(UTCDateTime, index=True)
-    pnr_code: Mapped[str] = mapped_column(String(6), index=True)
+    pnr_code: Mapped[str] = mapped_column(String(16), index=True)
     check_in_status: Mapped[CheckInStatus] = mapped_column(
         Enum(CheckInStatus, native_enum=False, length=16),
         default=CheckInStatus.PENDING,

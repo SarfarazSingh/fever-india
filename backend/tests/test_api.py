@@ -5,8 +5,9 @@ from datetime import date, datetime, timedelta, timezone
 
 import httpx
 
-from app.config import get_settings
+from app.config import Settings, get_settings
 from app.services.check_in import get_engine
+from app.services.flight_search import DuffelProvider
 from app.services.scheduler import job_id, scheduler
 
 
@@ -31,7 +32,7 @@ def _booking_payload(**overrides) -> dict:
 def test_health(client):
     resp = client.get("/health")
     assert resp.status_code == 200
-    assert resp.json()["scheduler_running"] is True
+    assert resp.json()["status"] == "ok"
 
 
 def test_mock_search_returns_business_offers(client):
@@ -40,14 +41,197 @@ def test_mock_search_returns_business_offers(client):
     assert resp.status_code == 200
     body = resp.json()
     assert body["provider"] == "mock"
-    assert body["count"] == len(body["results"]) > 0
+    assert body["count"] == len(body["results"])
+    assert 1 <= body["count"] <= 3
+    assert "Aisle requested" in body["note"]
+    assert "nonstop" in body["note"].lower()
     prices = [o["price"] for o in body["results"]]
     assert prices == sorted(prices)
     for offer in body["results"]:
-        assert offer["cabin_class"] == "C"
+        assert offer["cabin_class"] in {"C", "F"}
+        assert offer["layovers"] == 0
         assert offer["deep_link"].startswith("http://testserver/demo/checkout?")
         assert offer["origin"] == "JFK" and offer["destination"] == "LHR"
-        assert offer["layovers"] == len(offer["segments"]) - 1
+
+
+def test_duffel_offer_parser_maps_segments_and_price():
+    provider = DuffelProvider.__new__(DuffelProvider)
+    provider._settings = Settings(flight_provider="mock", duffel_access_token="")
+    offer = provider._parse_offer(
+        {
+            "id": "off_test_1",
+            "total_amount": "4321.50",
+            "total_currency": "USD",
+            "expires_at": "2026-12-01T12:00:00Z",
+            "owner": {"iata_code": "BA", "name": "British Airways"},
+            "passengers": [{"id": "pas_1"}],
+            "slices": [
+                {
+                    "segments": [
+                        {
+                            "origin": {"iata_code": "JFK"},
+                            "destination": {"iata_code": "LHR"},
+                            "departing_at": "2026-12-15T18:00:00",
+                            "arriving_at": "2026-12-16T06:10:00",
+                            "marketing_carrier": {"iata_code": "BA", "name": "British Airways"},
+                            "marketing_carrier_flight_number": "112",
+                        }
+                    ]
+                }
+            ],
+        },
+        date(2026, 12, 15),
+    )
+    assert offer.bookable is True
+    assert offer.passenger_id == "pas_1"
+    assert offer.airline_iata == "BA"
+    assert offer.flight_number == "BA112"
+    assert offer.price == 4321.5
+    assert offer.layovers == 0
+    assert offer.origin == "JFK" and offer.destination == "LHR"
+
+
+def test_email_import_and_preferences(client):
+    saved = client.put(
+        "/api/preferences",
+        json={
+            "cabin": "business",
+            "direct_only": True,
+            "airlines": "BA,QR",
+            "aircraft": "",
+            "depart_after": 6,
+            "depart_before": 22,
+            "flexible_only": False,
+            "seat": "aisle",
+            "hotel_stars": 5,
+            "wants_gym": True,
+            "wants_spa": True,
+            "home_airport": "JFK",
+            "traveller_first_name": "Federico",
+            "traveller_last_name": "Rossi",
+            "email": "federico@example.com",
+        },
+    )
+    assert saved.status_code == 200, saved.text
+    assert saved.json()["direct_only"] is True
+
+    raw = (
+        "Passenger: Federico Rossi\n"
+        "Confirmation: KLM4421 is not it. Confirmation code: PNR88X\n"
+        "Flight BA178\n"
+        "JFK to LHR\n"
+        "Departure 15 December 2026 18:40\n"
+        "federico@example.com\n"
+    )
+    imported = client.post("/api/inbox/import", json={"raw_text": raw})
+    assert imported.status_code == 201, imported.text
+    body = imported.json()
+    assert body["pnr_code"] == "PNR88X"
+    assert body["flight_number"] == "BA178"
+    assert body["origin"] == "JFK" and body["destination"] == "LHR"
+    assert "britishairways.com" in body["manage_url"]
+
+    cal = client.get("/api/calendar")
+    assert cal.status_code == 200
+    assert any(e["pnr_code"] == "PNR88X" for e in cal.json())
+    guide = client.get("/api/destinations/LHR/guide")
+    assert guide.status_code == 200
+    assert guide.json()["hotels"]
+
+
+def test_duffel_airways_link_is_refused(client):
+    resp = client.get(
+        "/api/flights/airline-link",
+        params={
+            "airline": "ZZ",
+            "flight_number": "ZZ1",
+            "origin": "JFK",
+            "destination": "LHR",
+            "date": "2026-11-23",
+        },
+    )
+    assert resp.status_code == 404
+    assert "Book in the app" in resp.json()["detail"]
+
+
+def test_round_trip_is_one_fare_for_both_legs(client):
+    day = date.today() + timedelta(days=40)
+    back = day + timedelta(days=8)
+    one_way = client.get("/api/flights/search", params={"origin": "JFK", "destination": "LHR", "date": day.isoformat()})
+    both = client.get(
+        "/api/flights/search",
+        params={"origin": "JFK", "destination": "LHR", "date": day.isoformat(), "return_date": back.isoformat()},
+    )
+    assert both.status_code == 200, both.text
+    body = both.json()
+    assert body["return_date"] == back.isoformat()
+    assert body["results"]
+    one_prices = {item["id"]: item["price"] for item in one_way.json()["results"]}
+    offer = body["results"][0]
+    assert offer["trip_type"] == "round"
+    assert offer["origin"] == "JFK" and offer["destination"] == "LHR"
+    assert offer["return_origin"] == "LHR" and offer["return_destination"] == "JFK"
+    assert offer["return_flight_number"]
+    assert offer["return_layovers"] == 0
+    for item in body["results"]:
+        assert item["price"] > one_prices[item["id"]]
+    too_soon = client.get(
+        "/api/flights/search",
+        params={"origin": "JFK", "destination": "LHR", "date": day.isoformat(), "return_date": day.isoformat()},
+    )
+    assert too_soon.status_code == 422
+
+
+def test_preferred_airline_removes_everything_else(client):
+    saved = client.put(
+        "/api/preferences",
+        json={
+            "cabin": "business",
+            "direct_only": False,
+            "airlines": "XX",
+            "aircraft": "",
+            "depart_after": 0,
+            "depart_before": 24,
+            "flexible_only": False,
+            "seat": "window",
+            "hotel_stars": 5,
+            "wants_gym": True,
+            "wants_spa": True,
+            "home_airport": "JFK",
+            "traveller_first_name": "Federico",
+            "traveller_last_name": "Rossi",
+            "email": "federico@example.com",
+        },
+    )
+    assert saved.status_code == 200, saved.text
+    assert saved.json()["seat"] == "aisle"
+    day = (date.today() + timedelta(days=30)).isoformat()
+    resp = client.get("/api/flights/search", params={"origin": "JFK", "destination": "LHR", "date": day})
+    assert resp.status_code == 200, resp.text
+    body = resp.json()
+    assert body["results"] == []
+    assert "XX" in body["note"]
+    restored = client.put(
+        "/api/preferences",
+        json={
+            "cabin": "business",
+            "direct_only": True,
+            "airlines": "BA,QR",
+            "aircraft": "",
+            "depart_after": 6,
+            "depart_before": 22,
+            "flexible_only": False,
+            "seat": "aisle",
+            "hotel_stars": 5,
+            "wants_gym": True,
+            "wants_spa": True,
+            "home_airport": "JFK",
+            "traveller_first_name": "Federico",
+            "traveller_last_name": "Rossi",
+            "email": "federico@example.com",
+        },
+    )
+    assert restored.status_code == 200
 
 
 def test_search_rejects_bad_iata(client):

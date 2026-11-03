@@ -1,0 +1,537 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Business Class Concierge</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root { --bg:#eef1f8; --card:#fff; --line:#e7ebf2; --ink:#1c2430; --muted:#8b93a1; --accent:#1f8a4c; --accent-bg:#e7f6ee; --danger:#c2413a; --danger-bg:#fde8e6; --chip:#f3f5f8; }
+  * { box-sizing: border-box; }
+  body { margin:0; color:var(--ink); font-family:Inter,system-ui,sans-serif; background:linear-gradient(180deg,#f3f0fb 0%,#eef2f8 42%,#f7f8fb 100%); min-height:100vh; }
+  header, main { max-width:880px; margin:auto; }
+  header { padding:28px 20px 0; }
+  .eyebrow { color:var(--muted); letter-spacing:.16em; font-size:11px; font-weight:700; }
+  h1 { font-size:32px; margin:6px 0 0; font-weight:650; letter-spacing:-.03em; }
+  main { padding:8px 20px 80px; }
+  .card { background:var(--card); border-radius:22px; padding:18px 18px 16px; margin:14px 0; box-shadow:0 10px 30px rgba(40,50,80,.06); }
+  label { display:block; font-size:12px; color:var(--muted); margin:12px 0 6px; }
+  input, textarea, select { width:100%; background:#f7f8fb; border:1px solid var(--line); color:var(--ink); border-radius:12px; padding:12px 14px; font-size:15px; font-family:inherit; }
+  input:focus, select:focus, textarea:focus { outline:2px solid #d9e4ff; border-color:#b9c8ee; }
+  .row { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  .suggest { position:relative; }
+  .menu { position:absolute; z-index:6; left:0; right:0; top:calc(100% - 4px); background:#fff; border-radius:14px; box-shadow:0 14px 36px rgba(40,50,80,.14); overflow:hidden; }
+  .menu button { width:100%; text-align:left; background:#fff; color:var(--ink); border-radius:0; padding:10px 12px; font-weight:500; display:flex; gap:10px; align-items:center; }
+  .menu button.on, .menu button:hover { background:#f4f6fb; }
+  .menu .code { width:38px; font-weight:750; }
+  .menu small { display:block; color:var(--muted); font-size:12px; font-weight:500; }
+  button { cursor:pointer; border:0; border-radius:12px; font-weight:650; font-family:inherit; }
+  .primary { width:100%; margin-top:14px; background:#1c2430; color:#fff; padding:13px; font-size:15px; }
+  .ghost { width:100%; margin-top:8px; background:#fff; color:#1c2430; border:1px solid var(--line); padding:12px; }
+  .linkish { background:none; color:#5c6b82; font-weight:600; padding:0; width:auto; }
+  .muted { color:var(--muted); font-size:13px; }
+  .concierge { font-size:18px; line-height:1.4; margin:18px 4px 4px; letter-spacing:-.02em; }
+  .err { color:var(--danger); margin-top:10px; }
+  .ok { color:var(--accent); }
+  nav { display:flex; gap:6px; margin:18px 0 4px; background:#fff; padding:5px; border-radius:14px; box-shadow:0 8px 24px rgba(40,50,80,.05); }
+  nav button { flex:1; padding:10px 8px; background:transparent; color:var(--muted); border-radius:10px; }
+  nav button.on { background:#f3f5f8; color:var(--ink); }
+  dialog { border:0; background:#fff; color:var(--ink); border-radius:22px; padding:22px; width:min(440px, 92vw); box-shadow:0 20px 60px rgba(20,30,50,.18); }
+  dialog::backdrop { background:rgba(28,36,48,.35); }
+  .who { display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
+  .chip { background:var(--chip); color:#3d4654; border-radius:999px; padding:5px 10px; font-size:12px; font-weight:600; }
+  .logo-wrap { width:36px; height:36px; border-radius:10px; background:#f6f7fa; display:inline-flex; align-items:center; justify-content:center; overflow:hidden; }
+  .logo-wrap img { width:28px; height:28px; object-fit:contain; }
+  .logo-fallback { font-size:11px; font-weight:800; }
+  .flight { display:grid; grid-template-columns:auto 1fr auto; gap:14px; align-items:center; }
+  .times { display:flex; justify-content:space-between; align-items:center; margin:16px 0 8px; }
+  .times strong { font-size:22px; letter-spacing:-.03em; }
+  .price { font-size:22px; font-weight:700; letter-spacing:-.03em; }
+  .pill { display:inline-block; border-radius:999px; padding:4px 10px; font-size:12px; font-weight:650; }
+  .pill.ok { background:var(--accent-bg); color:var(--accent); }
+  .pill.wait { background:#f1f2f4; color:#6b7280; }
+  .pill.bad { background:var(--danger-bg); color:var(--danger); }
+  table.trips { width:100%; border-collapse:collapse; }
+  table.trips th { text-align:left; font-size:11px; letter-spacing:.08em; color:var(--muted); font-weight:650; padding:4px 8px 10px; }
+  table.trips td { padding:14px 8px; border-top:1px solid #f0f2f6; vertical-align:middle; }
+  .air { display:flex; align-items:center; gap:10px; font-weight:700; }
+  .bag { display:flex; align-items:center; gap:12px; padding:10px 0; }
+  .bag + .bag { border-top:1px solid #f3f5f8; }
+  .step { display:flex; align-items:center; gap:8px; margin-left:auto; }
+  .step button { width:28px; height:28px; border-radius:8px; background:#e7f6ee; color:var(--accent); font-size:16px; }
+  .step b { min-width:16px; text-align:center; }
+  .actions { display:flex; flex-direction:column; align-items:center; gap:8px; margin-top:12px; }
+  .actions .primary { margin-top:0; }
+  #status { font-size:13px; color:var(--muted); }
+  a { color:#1c2430; }
+</style>
+</head>
+<body>
+<header>
+  <div class="eyebrow">CONCIERGE</div>
+  <h1>Your flights, your way.</h1>
+  <p class="muted" id="status">Connecting…</p>
+</header>
+<main>
+  <nav>
+    <button class="on" id="tab-search" type="button">Search</button>
+    <button id="tab-trips" type="button">My Trips</button>
+    <button id="tab-cal" type="button">Calendar</button>
+    <button id="tab-prefs" type="button">Preferences</button>
+  </nav>
+
+  <section id="search-panel">
+    <form class="card" id="search-form">
+      <div class="row">
+        <div class="suggest">
+          <label>From</label>
+          <input id="origin" autocomplete="off" placeholder="City or airport" required>
+          <div class="menu" id="origin-menu" hidden></div>
+        </div>
+        <div class="suggest">
+          <label>To</label>
+          <input id="dest" autocomplete="off" placeholder="City or airport" required>
+          <div class="menu" id="dest-menu" hidden></div>
+        </div>
+      </div>
+      <label>Journey</label>
+      <select id="trip">
+        <option value="oneway">One way</option>
+        <option value="round">Round trip</option>
+      </select>
+      <div class="row">
+        <div><label>Departure</label><input id="date" type="date" required></div>
+        <div id="return-wrap" hidden><label>Return</label><input id="return-date" type="date"></div>
+      </div>
+      <button class="primary" type="submit">Search</button>
+      <p class="err" id="search-err"></p>
+    </form>
+    <div id="results"></div>
+  </section>
+
+  <section id="trips-panel" hidden>
+    <form class="card" id="email-form">
+      <label>Paste a booking email</label>
+      <textarea id="email-raw" rows="6" placeholder="Forward or paste the airline confirmation"></textarea>
+      <button class="primary" type="submit">Add to My Trips and calendar</button>
+      <p class="err" id="email-err"></p>
+    </form>
+    <div id="trips"></div>
+  </section>
+
+  <section id="cal-panel" hidden>
+    <div id="calendar"></div>
+  </section>
+
+  <section id="prefs-panel" hidden>
+    <form class="card" id="prefs-form">
+      <p class="muted">Enter these once. Search uses them. There is no login.</p>
+      <label>Cabin</label>
+      <select id="pref-cabin"><option value="business">Business</option><option value="first">First</option><option value="either">Business or first</option></select>
+      <label>Preferred airlines</label><input id="pref-airlines" placeholder="BA, QR, SQ">
+      <label>Preferred aircraft</label><input id="pref-aircraft" placeholder="A350, 777">
+      <div class="row">
+        <div><label>Depart after (hour)</label><input id="pref-after" type="number" min="0" max="23" value="0"></div>
+        <div><label>Depart before (hour)</label><input id="pref-before" type="number" min="1" max="24" value="24"></div>
+      </div>
+      <p class="muted">Seat: aisle. Search asks for an aisle. It is not held until the airline assigns it.</p>
+      <label>Home airport</label><input id="pref-home" value="JFK" maxlength="3">
+      <div class="row">
+        <div><label>First name</label><input id="pref-first"></div>
+        <div><label>Last name</label><input id="pref-last"></div>
+      </div>
+      <label>Booking email</label><input id="pref-email" type="email">
+      <label><input type="checkbox" id="pref-flex" style="width:auto"> Flexible or refundable fares</label>
+      <label><input type="checkbox" id="pref-gym" checked style="width:auto"> Hotels with a gym</label>
+      <label><input type="checkbox" id="pref-spa" checked style="width:auto"> Hotels with a spa</label>
+      <button class="primary" type="submit">Save preferences</button>
+      <p class="ok" id="pref-ok"></p>
+      <p class="err" id="pref-err"></p>
+    </form>
+  </section>
+</main>
+
+<dialog id="book">
+  <form method="dialog" id="book-form">
+    <h2 style="margin:0 0 8px">Book in the app</h2>
+    <p class="muted" id="book-summary"></p>
+    <p class="muted" id="book-who"></p>
+    <label>First name</label><input id="first" required>
+    <label>Last name</label><input id="last" required>
+    <label>Email</label><input id="email" type="email" required>
+    <p class="err" id="book-err"></p>
+    <button class="primary" id="book-go" type="submit">Confirm booking</button>
+    <button class="ghost" type="button" id="book-cancel">Cancel</button>
+  </form>
+</dialog>
+
+<script>
+const $ = (id) => document.getElementById(id);
+const fmtMoney = (n, c) => new Intl.NumberFormat(undefined, {style:'currency', currency:c||'USD', maximumFractionDigits:0}).format(n);
+const fmtTime = (iso) => {
+  const d = new Date(iso);
+  return isNaN(d) ? iso.slice(11,16) : d.toISOString().slice(11,16);
+};
+let currentOffer = null;
+let prefs = {};
+let AIRPORTS = [];
+const AIRPORTS_START = [
+  ['ATL','Atlanta','Hartsfield-Jackson'],['BOS','Boston','Logan International'],['DFW','Dallas','Dallas/Fort Worth International'],
+  ['DEN','Denver','Denver International'],['EWR','Newark','Newark Liberty International'],['IAD','Washington','Dulles International'],
+  ['IAH','Houston','George Bush Intercontinental'],['JFK','New York','John F. Kennedy International'],['LAX','Los Angeles','Los Angeles International'],
+  ['MIA','Miami','Miami International'],['ORD','Chicago',"O'Hare International"],['SEA','Seattle','Seattle-Tacoma International'],
+  ['SFO','San Francisco','San Francisco International'],['YYZ','Toronto','Pearson International'],['YVR','Vancouver','Vancouver International'],
+  ['MEX','Mexico City','Benito Juarez International'],['GRU','Sao Paulo','Guarulhos International'],['EZE','Buenos Aires','Ministro Pistarini'],
+  ['LHR','London','Heathrow'],['LGW','London','Gatwick'],['CDG','Paris','Charles de Gaulle'],['AMS','Amsterdam','Schiphol'],
+  ['FRA','Frankfurt','Frankfurt am Main'],['MUC','Munich','Franz Josef Strauss'],['ZRH','Zurich','Zurich Airport'],['GVA','Geneva','Geneva Airport'],
+  ['VIE','Vienna','Vienna International'],['MAD','Madrid','Adolfo Suarez Madrid-Barajas'],['BCN','Barcelona','El Prat'],['FCO','Rome','Fiumicino'],
+  ['MXP','Milan','Malpensa'],['LIS','Lisbon','Humberto Delgado'],['DUB','Dublin','Dublin Airport'],['CPH','Copenhagen','Kastrup'],
+  ['IST','Istanbul','Istanbul Airport'],['DOH','Doha','Hamad International'],['DXB','Dubai','Dubai International'],['AUH','Abu Dhabi','Zayed International'],
+  ['RUH','Riyadh','King Khalid International'],['DEL','Delhi','Indira Gandhi International'],['BOM','Mumbai','Chhatrapati Shivaji Maharaj'],
+  ['BLR','Bengaluru','Kempegowda International'],['SIN','Singapore','Changi'],['HKG','Hong Kong','Hong Kong International'],['BKK','Bangkok','Suvarnabhumi'],
+  ['KUL','Kuala Lumpur','KLIA'],['NRT','Tokyo','Narita'],['HND','Tokyo','Haneda'],['ICN','Seoul','Incheon International'],['PEK','Beijing','Capital International'],
+  ['PVG','Shanghai','Pudong International'],['TPE','Taipei','Taoyuan International'],['SYD','Sydney','Kingsford Smith'],['MEL','Melbourne','Tullamarine'],
+  ['AKL','Auckland','Auckland Airport'],['JNB','Johannesburg','O. R. Tambo International'],['CPT','Cape Town','Cape Town International'],
+  ['CAI','Cairo','Cairo International'],['NBO','Nairobi','Jomo Kenyatta International'],['ADD','Addis Ababa','Bole International']
+];
+function airportByCode(code) { return AIRPORTS.find(a => a[0] === String(code||'').toUpperCase()); }
+function airportLabel(a) { return a ? `${a[1]} (${a[0]})` : ''; }
+function matchAirports(query) {
+  let q = query.trim().toLowerCase();
+  const chosen = q.match(/^(.+?)\s*\(([a-z]{3})\)$/);
+  if (chosen) q = chosen[1].trim();
+  if (q.length < 2) return [];
+  const scored = [];
+  AIRPORTS.forEach((a, index) => {
+    const code = a[0].toLowerCase();
+    const city = a[1].toLowerCase();
+    const name = a[2].toLowerCase();
+    const word = (value) => value.split(/[\s/'-]/).some(part => part.startsWith(q));
+    let score = 9;
+    if (code === q) score = 0;
+    else if (code.startsWith(q)) score = 1;
+    else if (city === q) score = 2;
+    else if (city.startsWith(q)) score = 3;
+    else if (word(city)) score = 4;
+    else if (name.startsWith(q) || word(name)) score = 5;
+    if (score < 9) scored.push([score, index, a]);
+  });
+  scored.sort((x, y) => x[0] - y[0] || x[1] - y[1]);
+  return scored.slice(0, 8).map(row => row[2]);
+}
+function setAirport(input, code) {
+  const a = airportByCode(code);
+  if (!a) return;
+  input.dataset.iata = a[0];
+  input.value = airportLabel(a);
+}
+function chosenCode(input) {
+  const typed = input.value.trim();
+  if (input.dataset.iata && airportLabel(airportByCode(input.dataset.iata)) === typed) return input.dataset.iata;
+  const exact = AIRPORTS.find(a => a[0].toLowerCase() === typed.toLowerCase());
+  if (exact) return exact[0];
+  const matches = matchAirports(typed);
+  return matches.length === 1 ? matches[0][0] : '';
+}
+function bindAirport(input, menu) {
+  let items = [];
+  let active = 0;
+  function hide() { menu.hidden = true; menu.innerHTML = ''; }
+  function show(list) {
+    items = list;
+    active = 0;
+    if (!items.length) { hide(); return; }
+    menu.hidden = false;
+    menu.innerHTML = items.map((a, i) => `<button type="button" class="${i===active?'on':''}" data-i="${i}"><span class="code">${a[0]}</span><span>${a[1]}<small>${a[2]}</small></span></button>`).join('');
+  }
+  function paint() {
+    [...menu.children].forEach((btn, i) => btn.classList.toggle('on', i === active));
+  }
+  function pick(a) { setAirport(input, a[0]); input.dataset.touched = '1'; hide(); }
+  input.addEventListener('input', () => { input.dataset.touched = '1'; delete input.dataset.iata; show(matchAirports(input.value)); });
+  input.addEventListener('focus', () => show(matchAirports(input.value)));
+  input.addEventListener('keydown', (e) => {
+    if (menu.hidden) return;
+    if (e.key === 'ArrowDown') { e.preventDefault(); active = Math.min(items.length - 1, active + 1); paint(); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); active = Math.max(0, active - 1); paint(); }
+    else if (e.key === 'Enter' && items[active]) { e.preventDefault(); pick(items[active]); }
+    else if (e.key === 'Escape') hide();
+  });
+  menu.addEventListener('mousedown', (e) => {
+    const btn = e.target.closest('button');
+    if (!btn) return;
+    e.preventDefault();
+    pick(items[Number(btn.dataset.i)]);
+  });
+  input.addEventListener('blur', () => setTimeout(hide, 120));
+}
+const airportsReady = (async () => {
+  try {
+    const data = await (await fetch('/airports.json')).json();
+    if (Array.isArray(data) && data.length) AIRPORTS = data;
+  } catch (e) { /* the short list above still works */ }
+  if (!AIRPORTS.length) AIRPORTS = AIRPORTS_START;
+  bindAirport($('origin'), $('origin-menu'));
+  bindAirport($('dest'), $('dest-menu'));
+  setAirport($('origin'), 'JFK');
+  setAirport($('dest'), 'LHR');
+})();
+$('date').value = new Date(Date.now()+21*864e5).toISOString().slice(0,10);
+$('return-date').value = new Date(Date.now()+28*864e5).toISOString().slice(0,10);
+$('trip').onchange = () => { $('return-wrap').hidden = $('trip').value !== 'round'; };
+
+function logo(code) {
+  const c = String(code || '').slice(0, 2).toUpperCase() || '—';
+  return `<span class="logo-wrap"><img alt="" src="https://www.gstatic.com/flights/airline_logos/70px/${c}.png" onerror="this.hidden=true;this.nextElementSibling.hidden=false"><b class="logo-fallback" hidden>${c}</b></span>`;
+}
+function travellerLine() {
+  return [prefs.traveller_first_name, prefs.traveller_last_name].filter(Boolean).join(' ');
+}
+function applyTraveller() {
+  const home = (prefs.home_airport || 'JFK').toUpperCase();
+  if (!$('origin').dataset.touched) setAirport($('origin'), home);
+  if (prefs.traveller_first_name) $('first').value = prefs.traveller_first_name;
+  if (prefs.traveller_last_name) $('last').value = prefs.traveller_last_name;
+  if (prefs.email) $('email').value = prefs.email;
+  const who = travellerLine();
+  $('status').textContent = who ? who : 'Add your name once in Preferences.';
+}
+
+async function api(path, opts) {
+  const res = await fetch(path, Object.assign({headers:{'Accept':'application/json','Content-Type':'application/json'}}, opts||{}));
+  const text = await res.text();
+  let data; try { data = JSON.parse(text); } catch { data = {detail:text}; }
+  if (!res.ok) throw new Error(typeof data.detail === 'string' ? data.detail : JSON.stringify(data.detail||data));
+  return data;
+}
+
+(async () => {
+  try {
+    await airportsReady;
+    await api('/health');
+    prefs = await api('/api/preferences');
+    applyTraveller();
+  } catch (e) { $('status').textContent = 'Cannot reach API: ' + e.message; }
+})();
+
+function show(which) {
+  for (const id of ['search','trips','cal','prefs']) {
+    $(id+'-panel').hidden = id !== which;
+    $('tab-'+id).classList.toggle('on', id === which);
+  }
+  if (which === 'trips') loadTrips();
+  if (which === 'cal') loadCalendar();
+  if (which === 'prefs') loadPrefs();
+}
+$('tab-search').onclick = () => show('search');
+$('tab-trips').onclick = () => show('trips');
+$('tab-cal').onclick = () => show('cal');
+$('tab-prefs').onclick = () => show('prefs');
+
+$('search-form').onsubmit = async (e) => {
+  e.preventDefault();
+  $('search-err').textContent = '';
+  $('results').innerHTML = '<p class="muted">Looking for what fits you…</p>';
+  try {
+    const origin = chosenCode($('origin'));
+    const destination = chosenCode($('dest'));
+    if (!origin || !destination) {
+      $('search-err').textContent = 'Choose a city from the list.';
+      $('results').innerHTML = '';
+      return;
+    }
+    if (origin === destination) {
+      $('search-err').textContent = 'Choose two different cities.';
+      $('results').innerHTML = '';
+      return;
+    }
+    const q = new URLSearchParams({origin, destination, date:$('date').value});
+    if ($('trip').value === 'round') {
+      if (!$('return-date').value || $('return-date').value <= $('date').value) {
+        $('search-err').textContent = 'Choose a return date after departure.';
+        $('results').innerHTML = '';
+        return;
+      }
+      q.set('return_date', $('return-date').value);
+    }
+    const data = await api('/api/flights/search?' + q);
+    const note = data.note ? `<p class="concierge">${data.note}</p>` : '';
+    $('results').innerHTML = note + (data.results || []).map(o => offerCard(o)).join('');
+  } catch (err) {
+    $('results').innerHTML = '';
+    $('search-err').textContent = err.message;
+  }
+};
+
+function offerCard(o) {
+  const idx = currentIndex(o);
+  const cabin = o.cabin_class === 'F' ? 'First' : 'Business';
+  const route = o.return_flight_number
+    ? `Return ${fmtLocal(o.return_departure_local)}`
+    : (o.layovers ? `${o.layovers} stop` : 'Nonstop');
+  return `<article class="card">
+    <div class="flight">
+      ${logo(o.airline_iata)}
+      <div><strong>${o.airline_name}</strong><div class="muted">${cabin} · ${route}</div></div>
+      <div class="price">${fmtMoney(o.price, o.currency)}</div>
+    </div>
+    <div class="times">
+      <div><strong>${fmtLocal(o.departure_local)}</strong><div class="muted">${o.origin}</div></div>
+      <div class="muted">Aisle requested</div>
+      <div style="text-align:right"><strong>${o.destination}</strong></div>
+    </div>
+    <div class="actions">
+      ${o.deep_link ? `<button class="primary" data-airline="${idx}" type="button">Open airline site</button>` : ''}
+      ${o.bookable ? `<button class="linkish" data-book="${idx}" type="button">Book in the app</button>` : ''}
+    </div>
+  </article>`;
+}
+const _offers = [];
+function currentIndex(o) { let i = _offers.findIndex(x => x.id===o.id); if (i<0) { _offers.push(o); i=_offers.length-1; } return i; }
+function fmtLocal(s) { return (s||'').slice(11,16); }
+
+function openBook(o) {
+  currentOffer = _offers[typeof o === 'number' ? o : currentIndex(o)] || o;
+  if (!currentOffer.bookable) { window.open(currentOffer.deep_link, '_blank'); return; }
+  applyTraveller();
+  const back = currentOffer.return_flight_number ? ` · return ${currentOffer.return_flight_number}` : '';
+  $('book-summary').textContent = `${currentOffer.airline_name} ${currentOffer.flight_number} · ${currentOffer.origin} → ${currentOffer.destination}${back} · ${fmtMoney(currentOffer.price, currentOffer.currency)}`;
+  $('book-who').textContent = 'Aisle requested. The seat is not held until the airline assigns it.';
+  $('book-err').textContent = '';
+  $('book').showModal();
+}
+$('results').addEventListener('click', (e) => {
+  const bag = e.target.closest('[data-bag]');
+  if (!bag) return;
+  const qty = bag.parentElement.querySelector('[data-qty]');
+  const next = Math.max(0, Math.min(4, Number(qty.textContent) + (bag.dataset.bag === '+' ? 1 : -1)));
+  qty.textContent = String(next);
+});
+$('results').addEventListener('click', async (e) => {
+  const airline = e.target.closest('[data-airline]');
+  if (airline) { await openAirline(_offers[Number(airline.dataset.airline)], airline); return; }
+  const btn = e.target.closest('[data-book]');
+  if (!btn) return;
+  openBook(Number(btn.dataset.book));
+});
+async function openAirline(offer, btn) {
+  if (!offer.deep_link) return;
+  const label = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = 'Opening the airline…';
+  try {
+    const data = await api(offer.deep_link);
+    window.open(data.url, '_blank', 'noopener');
+  } catch (err) {
+    alert(err.message);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = label;
+  }
+}
+$('book-cancel').onclick = () => $('book').close();
+$('book-form').onsubmit = async (e) => {
+  e.preventDefault();
+  if (!currentOffer) return;
+  $('book-err').textContent = '';
+  $('book-go').disabled = true;
+  try {
+    const data = await api('/api/bookings/place', {method:'POST', body: JSON.stringify({
+      offer_id: currentOffer.id,
+      passenger_id: currentOffer.passenger_id,
+      user_email: $('email').value,
+      passenger_first_name: $('first').value,
+      passenger_last_name: $('last').value,
+      gender: 'm',
+      title: 'mr',
+    })});
+    $('book').close();
+    $('tab-trips').click();
+    alert(`Booked. PNR ${data.booking.pnr_code}. Auto check-in is scheduled.`);
+  } catch (err) {
+    $('book-err').textContent = err.message;
+  } finally {
+    $('book-go').disabled = false;
+  }
+};
+
+async function loadTrips() {
+  $('trips').innerHTML = '<p class="muted">Loading trips…</p>';
+  try {
+    const list = await api('/api/bookings');
+    if (!list.length) { $('trips').innerHTML = '<p class="muted">No trips yet. Search, book on the airline site, then paste the confirmation here.</p>'; return; }
+    const rows = list.map(b => {
+      const past = new Date(b.departure_time).getTime() < Date.now();
+      const failed = String(b.check_in_status).toUpperCase() === 'FAILED';
+      const pill = failed ? 'bad' : past ? 'wait' : 'ok';
+      const label = failed ? 'Needs attention' : past ? 'Past' : 'Confirmed';
+      return `<tr>
+        <td><div class="air">${logo(b.airline_iata)}<span>${b.airline_iata}<div class="muted">${b.flight_number}</div></span></div></td>
+        <td>${b.pnr_code}</td>
+        <td><span class="pill ${pill}">${label}</span></td>
+        <td>${b.origin ? b.origin+' → '+b.destination : ''}</td>
+        <td>${b.manage_url ? `<a href="${b.manage_url}" target="_blank" rel="noopener">See updates</a>` : ''}</td>
+      </tr>
+      ${b.destination ? `<tr><td colspan="5"><button class="linkish" data-guide="${b.destination}" type="button">Hotels and restaurants</button><div class="guide"></div>${b.last_error ? `<p class="err">${b.last_error}</p>` : ''}</td></tr>` : ''}`;
+    }).join('');
+    $('trips').innerHTML = `<article class="card" style="overflow:auto"><table class="trips"><thead><tr><th>AIRLINE</th><th>REFERENCE</th><th>STATUS</th><th>ROUTE</th><th></th></tr></thead><tbody>${rows}</tbody></table></article>`;
+  } catch (e) { $('trips').innerHTML = `<p class="err">${e.message}</p>`; }
+}
+$('trips').addEventListener('click', async (e) => {
+  const btn = e.target.closest('[data-guide]');
+  if (!btn) return;
+  const box = btn.nextElementSibling;
+  box.innerHTML = '<p class="muted">Looking up five-star stays…</p>';
+  try {
+    const g = await api('/api/destinations/' + btn.dataset.guide + '/guide');
+    const lines = [...(g.hotels||[]), ...(g.restaurants||[])].map(p => `<p><strong>${p.name}</strong> · ${p.note}</p>`).join('');
+    box.innerHTML = `<p class="muted">${g.intro||''}</p>${lines}`;
+  } catch (err) { box.innerHTML = `<p class="err">${err.message}</p>`; }
+});
+$('email-form').onsubmit = async (e) => {
+  e.preventDefault();
+  $('email-err').textContent = '';
+  try {
+    const data = await api('/api/inbox/import', {method:'POST', body: JSON.stringify({raw_text: $('email-raw').value})});
+    $('email-raw').value = '';
+    alert(`${data.flight_number} added. PNR ${data.pnr_code}.`);
+    loadTrips();
+  } catch (err) { $('email-err').textContent = err.message; }
+};
+async function loadCalendar() {
+  $('calendar').innerHTML = '<p class="muted">Loading…</p>';
+  try {
+    const events = await api('/api/calendar');
+    if (!events.length) { $('calendar').innerHTML = '<p class="muted">The calendar fills when you book in the app or paste a confirmation.</p>'; return; }
+    $('calendar').innerHTML = events.map(ev => `<article class="card"><strong>${ev.date}</strong><p>${ev.title}</p><p class="muted">${ev.detail} · PNR ${ev.pnr_code}</p>${ev.manage_url ? `<a href="${ev.manage_url}" target="_blank" rel="noopener" style="color:var(--gold)">Open the booking</a>` : ''}</article>`).join('');
+  } catch (e) { $('calendar').innerHTML = `<p class="err">${e.message}</p>`; }
+}
+async function loadPrefs() {
+  try {
+    const p = await api('/api/preferences');
+    $('pref-cabin').value = p.cabin; $('pref-airlines').value = p.airlines||''; $('pref-aircraft').value = p.aircraft||'';
+    $('pref-after').value = p.depart_after; $('pref-before').value = p.depart_before;
+    $('pref-home').value = p.home_airport||''; $('pref-first').value = p.traveller_first_name||''; $('pref-last').value = p.traveller_last_name||'';
+    $('pref-email').value = p.email||''; $('pref-flex').checked = !!p.flexible_only;
+    $('pref-gym').checked = !!p.wants_gym; $('pref-spa').checked = !!p.wants_spa;
+  } catch (e) { $('pref-err').textContent = e.message; }
+}
+$('prefs-form').onsubmit = async (e) => {
+  e.preventDefault(); $('pref-ok').textContent=''; $('pref-err').textContent='';
+  try {
+    await api('/api/preferences', {method:'PUT', body: JSON.stringify({
+      cabin: $('pref-cabin').value, airlines: $('pref-airlines').value, aircraft: $('pref-aircraft').value,
+      depart_after: Number($('pref-after').value), depart_before: Number($('pref-before').value), seat: 'aisle',
+      home_airport: $('pref-home').value, traveller_first_name: $('pref-first').value, traveller_last_name: $('pref-last').value,
+      email: $('pref-email').value, direct_only: false, flexible_only: $('pref-flex').checked,
+      wants_gym: $('pref-gym').checked, wants_spa: $('pref-spa').checked, hotel_stars: 5
+    })});
+    prefs = await api('/api/preferences');
+    applyTraveller();
+    $('pref-ok').textContent = 'Saved. Search and booking use these details.';
+  } catch (err) { $('pref-err').textContent = err.message; }
+};
+</script>
+</body>
+</html>

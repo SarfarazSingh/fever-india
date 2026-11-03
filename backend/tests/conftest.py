@@ -10,6 +10,10 @@ os.environ["FLIGHT_PROVIDER"] = "mock"
 os.environ["FLYO_API_KEY"] = ""
 os.environ["FLYO_WEBHOOK_SECRET"] = ""
 os.environ["PUBLIC_BASE_URL"] = "http://testserver"
+os.environ["ENVIRONMENT"] = "test"
+os.environ["LEGACY_API_ENABLED"] = "true"
+os.environ["AUTO_CHECKIN_ENABLED"] = "true"
+os.environ["DEMO_ENABLED"] = "true"
 
 from fastapi.testclient import TestClient  # noqa: E402
 
@@ -19,4 +23,6 @@ from app.main import app  # noqa: E402
 @pytest.fixture(scope="session")
 def client():
     with TestClient(app) as c:
+        data = c.post("/api/v1/auth/demo").json()
+        c.headers["x-csrf-token"] = data["csrf_token"]
         yield c

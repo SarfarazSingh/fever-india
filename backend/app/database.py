@@ -11,7 +11,11 @@ class Base(DeclarativeBase):
 
 
 _settings = get_settings()
-_connect_args = {"check_same_thread": False} if _settings.database_url.startswith("sqlite") else {}
+_connect_args = (
+    {"check_same_thread": False} if _settings.database_url.startswith("sqlite") else {}
+)
+if _settings.production and "ssl=" not in _settings.database_url:
+    _connect_args["ssl"] = "require"
 
 engine = create_async_engine(
     _settings.database_url,
@@ -28,6 +32,25 @@ async def get_session() -> AsyncIterator[AsyncSession]:
 
 async def init_db() -> None:
     from app import models  # noqa: F401  (register mappers)
+    from app.v1 import models as v1_models  # noqa: F401
+
+    if _settings.production:
+        # Deployments run `alembic upgrade head` explicitly before serving traffic.
+        return
 
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
+        if _settings.database_url.startswith("sqlite"):
+            await conn.exec_driver_sql("PRAGMA table_info(bookings)")
+            rows = (
+                await conn.exec_driver_sql("PRAGMA table_info(bookings)")
+            ).fetchall()
+            cols = {row[1] for row in rows}
+            if "origin" not in cols:
+                await conn.exec_driver_sql(
+                    "ALTER TABLE bookings ADD COLUMN origin VARCHAR(3)"
+                )
+            if "destination" not in cols:
+                await conn.exec_driver_sql(
+                    "ALTER TABLE bookings ADD COLUMN destination VARCHAR(3)"
+                )

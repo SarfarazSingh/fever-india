@@ -1,20 +1,22 @@
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
 
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Query, status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.config import get_settings
 from app.database import get_session
 from app.models import Booking, CheckInStatus
-from app.schemas import BookingCreate, BookingRead, TriggerResponse
+from app.schemas import BookingCreate, BookingRead, PlaceOrderRequest, PlaceOrderResponse, TriggerResponse
 from app.services.check_in import run_check_in
+from app.services.duffel import DuffelClient, DuffelError, parse_duffel_datetime
+from app.airports import local_to_utc
 from app.services.scheduler import cancel_checkin, schedule_checkin
 
 router = APIRouter(prefix="/api/bookings", tags=["bookings"])
 
 
-@router.post("/register-checkin", response_model=BookingRead, status_code=status.HTTP_201_CREATED)
-async def register_checkin(payload: BookingCreate, session: AsyncSession = Depends(get_session)) -> Booking:
+async def _save_and_schedule(session: AsyncSession, payload: BookingCreate) -> Booking:
     if payload.departure_time <= datetime.now(timezone.utc):
         raise HTTPException(status_code=422, detail="departure_time is in the past")
 
@@ -45,6 +47,16 @@ async def register_checkin(payload: BookingCreate, session: AsyncSession = Depen
     await session.commit()
     await session.refresh(booking)
     return booking
+
+
+@router.post("/register-checkin", response_model=BookingRead, status_code=status.HTTP_201_CREATED)
+async def register_checkin(payload: BookingCreate, session: AsyncSession = Depends(get_session)) -> Booking:
+    return await _save_and_schedule(session, payload)
+
+
+@router.post("/place", status_code=410)
+async def place_order():
+    raise HTTPException(status_code=410, detail="Use the authenticated /api/v1 checkout flow")
 
 
 @router.post(

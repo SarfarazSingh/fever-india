@@ -10,6 +10,12 @@ apscheduler>=3.10,<4
 httpx>=0.27
 playwright>=1.43
 python-dotenv>=1.0
+alembic>=1.14,<2
+procrastinate>=3.10,<4
+psycopg[binary,pool]>=3.2,<4
+cryptography>=44
+sentry-sdk[fastapi]>=2,<3
+svix>=1.60,<2
 
 # Testing
 pytest>=8.1

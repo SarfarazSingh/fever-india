@@ -1,0 +1,30 @@
+[
+  {
+    "name": "Four Seasons Hotel Madrid", "airports": ["MAD"], "area": "Centro · Calle de Sevilla",
+    "hotel_stars": 5, "classification": "2026 Forbes Travel Guide hotel rating", "gym": true, "spa": true,
+    "reason": "A central base with an on-site fitness centre and spa. The hotel reports a 2026 Forbes Five-Star hotel award.",
+    "url": "https://www.fourseasons.com/madrid/", "verified_at": "2026-11-03",
+    "sources": ["https://press.fourseasons.com/madrid/hotel-news/2026/forbes-five-star-hotel-and-spa/", "https://www.fourseasons.com/madrid/services-and-amenities/"]
+  },
+  {
+    "name": "Rosewood London", "airports": ["LHR", "LGW", "LCY"], "area": "Holborn · near Covent Garden",
+    "hotel_stars": 5, "classification": "Hotel-published five-star classification", "gym": true, "spa": true,
+    "reason": "A central London stay with Sense spa and a fitness suite. The hotel describes its services as five-star.",
+    "url": "https://www.rosewoodhotels.com/en/london", "verified_at": "2026-11-03",
+    "sources": ["https://www.rosewoodhotels.com/en/london/overview/services", "https://www.rosewoodhotels.com/en/london/wellness/fitness"]
+  },
+  {
+    "name": "Mandarin Oriental, Doha", "airports": ["DOH"], "area": "Msheireb Downtown Doha",
+    "hotel_stars": 5, "classification": "2026 Forbes Travel Guide hotel rating", "gym": true, "spa": true,
+    "reason": "A downtown base with an on-site spa, fitness centre and lap pool. The hotel reports a 2026 Forbes Five-Star hotel award.",
+    "url": "https://www.mandarinoriental.com/en/doha/msheireb", "verified_at": "2026-11-03",
+    "sources": ["https://www.mandarinoriental.com/de/doha/msheireb/about", "https://www.mandarinoriental.com/en/doha/msheireb/wellness"]
+  },
+  {
+    "name": "Mandarin Oriental, Singapore", "airports": ["SIN"], "area": "Marina Bay · Raffles Avenue",
+    "hotel_stars": 5, "classification": "Hotel-published five-star classification", "gym": true, "spa": true,
+    "reason": "A Marina Bay stay with a spa and Technogym-equipped fitness centre. The hotel publishes a five-star classification.",
+    "url": "https://www.mandarinoriental.com/en/singapore/marina-bay", "verified_at": "2026-11-03",
+    "sources": ["https://www.mandarinoriental.com/en/singapore/marina-bay", "https://www.mandarinoriental.com/en/singapore/marina-bay/wellness", "https://www.mandarinoriental.com/tr/singapore/marina-bay/wellness/fitness-and-wellness"]
+  }
+]

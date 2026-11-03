@@ -1,0 +1,191 @@
+services:
+- type: web
+  name: federico-staging-api
+  runtime: docker
+  repo: https://github.com/SarfarazSingh/fever-india
+  branch: release/federico-private-pilot
+  rootDir: backend
+  region: frankfurt
+  plan: starter
+  healthCheckPath: /health
+  preDeployCommand: python -m alembic upgrade head && python scripts/init_queue.py
+    && python scripts/release_preflight.py
+  envVars:
+  - key: ENVIRONMENT
+    value: staging
+  - key: DEMO_ENABLED
+    value: 'false'
+  - key: LIVE_CHECKOUT_ENABLED
+    value: 'false'
+  - key: DUFFEL_CARDS_APPROVED
+    value: 'false'
+  - key: LEGACY_API_ENABLED
+    value: 'false'
+  - key: AUTO_CHECKIN_ENABLED
+    value: 'false'
+  - key: AUTH_GOOGLE_ENABLED
+    value: 'true'
+  - key: AUTH_EMAIL_OTP_ENABLED
+    value: 'false'
+  - key: APP_URL
+    value: https://federico-travel-staging.vercel.app
+  - key: CORS_ORIGINS
+    value: https://federico-travel-staging.vercel.app
+  - key: DEFAULT_CURRENCY
+    value: EUR
+  - key: DATABASE_URL
+    sync: false
+  - key: ALLOWED_EMAILS
+    sync: false
+  - key: SUPABASE_URL
+    sync: false
+  - key: SUPABASE_ANON_KEY
+    sync: false
+  - key: SUPABASE_SERVICE_ROLE_KEY
+    sync: false
+  - key: TOKEN_ENCRYPTION_KEY
+    sync: false
+  - key: DUFFEL_ACCESS_TOKEN
+    sync: false
+- type: worker
+  name: federico-staging-worker
+  runtime: docker
+  repo: https://github.com/SarfarazSingh/fever-india
+  branch: release/federico-private-pilot
+  rootDir: backend
+  region: frankfurt
+  plan: starter
+  dockerCommand: python -m app.v1.jobs
+  preDeployCommand: python scripts/init_queue.py && python scripts/release_preflight.py
+  envVars:
+  - key: ENVIRONMENT
+    value: staging
+  - key: DEMO_ENABLED
+    value: 'false'
+  - key: LIVE_CHECKOUT_ENABLED
+    value: 'false'
+  - key: DUFFEL_CARDS_APPROVED
+    value: 'false'
+  - key: LEGACY_API_ENABLED
+    value: 'false'
+  - key: AUTO_CHECKIN_ENABLED
+    value: 'false'
+  - key: AUTH_GOOGLE_ENABLED
+    value: 'true'
+  - key: AUTH_EMAIL_OTP_ENABLED
+    value: 'false'
+  - key: APP_URL
+    value: https://federico-travel-staging.vercel.app
+  - key: CORS_ORIGINS
+    value: https://federico-travel-staging.vercel.app
+  - key: DEFAULT_CURRENCY
+    value: EUR
+  - key: DATABASE_URL
+    sync: false
+  - key: ALLOWED_EMAILS
+    sync: false
+  - key: SUPABASE_URL
+    sync: false
+  - key: SUPABASE_ANON_KEY
+    sync: false
+  - key: SUPABASE_SERVICE_ROLE_KEY
+    sync: false
+  - key: TOKEN_ENCRYPTION_KEY
+    sync: false
+  - key: DUFFEL_ACCESS_TOKEN
+    sync: false
+- type: web
+  name: federico-production-api
+  runtime: docker
+  repo: https://github.com/SarfarazSingh/fever-india
+  branch: release/federico-private-pilot
+  rootDir: backend
+  region: frankfurt
+  plan: starter
+  healthCheckPath: /health
+  preDeployCommand: python -m alembic upgrade head && python scripts/init_queue.py
+    && python scripts/release_preflight.py
+  envVars:
+  - key: ENVIRONMENT
+    value: production
+  - key: DEMO_ENABLED
+    value: 'false'
+  - key: LIVE_CHECKOUT_ENABLED
+    value: 'false'
+  - key: DUFFEL_CARDS_APPROVED
+    value: 'false'
+  - key: LEGACY_API_ENABLED
+    value: 'false'
+  - key: AUTO_CHECKIN_ENABLED
+    value: 'false'
+  - key: AUTH_GOOGLE_ENABLED
+    value: 'true'
+  - key: AUTH_EMAIL_OTP_ENABLED
+    value: 'false'
+  - key: APP_URL
+    value: https://business-class-concierge.vercel.app
+  - key: CORS_ORIGINS
+    value: https://business-class-concierge.vercel.app
+  - key: DEFAULT_CURRENCY
+    value: EUR
+  - key: DATABASE_URL
+    sync: false
+  - key: ALLOWED_EMAILS
+    sync: false
+  - key: SUPABASE_URL
+    sync: false
+  - key: SUPABASE_ANON_KEY
+    sync: false
+  - key: SUPABASE_SERVICE_ROLE_KEY
+    sync: false
+  - key: TOKEN_ENCRYPTION_KEY
+    sync: false
+  - key: DUFFEL_ACCESS_TOKEN
+    sync: false
+- type: worker
+  name: federico-production-worker
+  runtime: docker
+  repo: https://github.com/SarfarazSingh/fever-india
+  branch: release/federico-private-pilot
+  rootDir: backend
+  region: frankfurt
+  plan: starter
+  dockerCommand: python -m app.v1.jobs
+  preDeployCommand: python scripts/init_queue.py && python scripts/release_preflight.py
+  envVars:
+  - key: ENVIRONMENT
+    value: production
+  - key: DEMO_ENABLED
+    value: 'false'
+  - key: LIVE_CHECKOUT_ENABLED
+    value: 'false'
+  - key: DUFFEL_CARDS_APPROVED
+    value: 'false'
+  - key: LEGACY_API_ENABLED
+    value: 'false'
+  - key: AUTO_CHECKIN_ENABLED
+    value: 'false'
+  - key: AUTH_GOOGLE_ENABLED
+    value: 'true'
+  - key: AUTH_EMAIL_OTP_ENABLED
+    value: 'false'
+  - key: APP_URL
+    value: https://business-class-concierge.vercel.app
+  - key: CORS_ORIGINS
+    value: https://business-class-concierge.vercel.app
+  - key: DEFAULT_CURRENCY
+    value: EUR
+  - key: DATABASE_URL
+    sync: false
+  - key: ALLOWED_EMAILS
+    sync: false
+  - key: SUPABASE_URL
+    sync: false
+  - key: SUPABASE_ANON_KEY
+    sync: false
+  - key: SUPABASE_SERVICE_ROLE_KEY
+    sync: false
+  - key: TOKEN_ENCRYPTION_KEY
+    sync: false
+  - key: DUFFEL_ACCESS_TOKEN
+    sync: false
