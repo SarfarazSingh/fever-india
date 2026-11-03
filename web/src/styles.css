@@ -3409,6 +3409,12 @@ input::placeholder, textarea::placeholder { color: #65705f; }
  .search-fields > .date-field + .date-field { grid-column: 3/4; }
  .search-fields.oneway > .date-field { grid-column: 1/-1; }
 }
+@media (min-width: 761px) and (max-width: 900px) {
+ .site-header { height: auto; min-height: 76px; flex-wrap: wrap; padding-top: 12px; row-gap: 8px; }
+ .primary-nav { order: 3; width: 100%; height: 60px; justify-content: space-between; }
+ .profile-menu { flex-shrink: 0; }
+ .profile-button { white-space: nowrap; }
+}
 @media (max-width: 760px) {
  .site-header { height: 80px; margin-bottom: 76px; }
  .primary-nav { top: 80px; height: 76px; }
