@@ -6,6 +6,8 @@ The new responsive **Elsewhere** web app is in [`web/`](web/). It uses React/Typ
 
 Start the backend on port **8001** and the Vite app on **5173** using the [operating guide](docs/PRODUCTION.md). Choose **Explore the private preview** to try isolated fictional flights and bookings. Existing legacy records are preserved; the unsafe old purchase endpoint is disabled. The Flutter app below remains a native prototype.
 
+The hosted private pilot uses **Continue with Google**, limited to invited accounts. Google sign-in does not connect Gmail. Email codes, forwarding, reminders and live payments stay disabled for this release; its Duffel inventory is explicitly test data. Deployment uses separate EU database and API/worker environments.
+
 - [Configuration, deployment, migration, verification boundaries and recovery](docs/PRODUCTION.md)
 - [Service cost sheet for approval](docs/COSTS.md)
 

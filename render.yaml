@@ -47,6 +47,8 @@ services:
     sync: false
   - key: DUFFEL_ACCESS_TOKEN
     sync: false
+  - key: WORKER_CONCURRENCY
+    value: '1'
 - type: worker
   name: federico-staging-worker
   runtime: docker
@@ -94,6 +96,8 @@ services:
     sync: false
   - key: DUFFEL_ACCESS_TOKEN
     sync: false
+  - key: WORKER_CONCURRENCY
+    value: '1'
 - type: web
   name: federico-production-api
   runtime: docker
@@ -142,6 +146,8 @@ services:
     sync: false
   - key: DUFFEL_ACCESS_TOKEN
     sync: false
+  - key: WORKER_CONCURRENCY
+    value: '1'
 - type: worker
   name: federico-production-worker
   runtime: docker
@@ -189,3 +195,5 @@ services:
     sync: false
   - key: DUFFEL_ACCESS_TOKEN
     sync: false
+  - key: WORKER_CONCURRENCY
+    value: '1'

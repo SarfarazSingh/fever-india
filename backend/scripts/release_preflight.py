@@ -41,7 +41,10 @@ async def main():
             raise RuntimeError("Supabase Google provider is not ready")
         bucket = await client.get(
             s.supabase_url.rstrip("/") + "/storage/v1/bucket/travel-documents",
-            headers={"Authorization": "Bearer " + s.supabase_service_role_key},
+            headers={
+                "Authorization": "Bearer " + s.supabase_service_role_key,
+                "apikey": s.supabase_service_role_key,
+            },
         )
         if bucket.status_code != 200 or bucket.json().get("public") is not False:
             raise RuntimeError("Private document bucket is not ready")

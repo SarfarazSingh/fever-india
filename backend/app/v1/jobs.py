@@ -224,7 +224,9 @@ async def main():
             "Set ENVIRONMENT=staging or production and DATABASE_URL to PostgreSQL for the worker"
         )
     async with queue.open_async():
-        await queue.run_worker_async(queues=["travel"], concurrency=4)
+        await queue.run_worker_async(
+            queues=["travel"], concurrency=get_settings().worker_concurrency
+        )
 
 
 if __name__ == "__main__":

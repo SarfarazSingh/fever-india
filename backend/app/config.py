@@ -4,7 +4,7 @@ from pathlib import Path
 from typing import Literal
 from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 
-from pydantic import field_validator
+from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -72,6 +72,7 @@ class Settings(BaseSettings):
     search_daily_limit: int = 100
     places_daily_limit: int = 30
     session_days: int = 7
+    worker_concurrency: int = Field(default=1, ge=1, le=4)
 
     @property
     def production(self) -> bool:
