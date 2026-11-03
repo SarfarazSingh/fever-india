@@ -1,6 +1,6 @@
 # Service costs for approval
 
-Reviewed 3 November 2026. No new paid resources, subscriptions or live tickets have been purchased. Prices are USD before tax unless the provider states otherwise; the provider's checkout/contract governs.
+Reviewed 3 November 2026. The original estimates below are retained for context; the provisioned pilot configuration at the end records the current hosting. No live tickets have been purchased. Prices are USD before tax unless the provider states otherwise; the provider's checkout/contract governs.
 
 | Service | Proposed use | Published amount / approval item |
 | --- | --- | --- |
