@@ -91,6 +91,9 @@ async def resolve_handoff(offer: Offer) -> dict:
         if fallback
         else "No verified airline website is available for this itinerary.",
     }
+    if not offer.live_mode:
+        route_only["message"] = "This app is showing test inventory, not a real fare. " + route_only["message"]
+        return route_only
     s = get_settings()
     if not s.serpapi_api_key or len(offer.slices) > 2:
         return route_only

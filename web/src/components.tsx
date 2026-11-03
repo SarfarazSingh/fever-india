@@ -299,7 +299,12 @@ export function SliceSummary({
       <div className="flight-time end">
         <strong>
           {clock(last.arrival_local)}
-          {days > 0 && <sup>+{days}</sup>}
+          {days !== 0 && (
+            <sup>
+              {days > 0 ? "+" : ""}
+              {days}
+            </sup>
+          )}
         </strong>
         <span>{last.destination}</span>
         <small>{localDate(last.arrival_local)}</small>
@@ -314,7 +319,7 @@ export function FareRules({ offer }: { offer: Offer }) {
       ? `${action}: not provided`
       : !c.allowed
         ? `${action}: not permitted`
-        : `${action}: permitted${c.penalty_amount != null ? ` · ${money(c.penalty_amount, c.penalty_currency || offer.currency)} fee` : " · fee not provided"}`;
+        : `${action}: permitted${c.penalty_amount != null && c.penalty_currency ? ` · ${money(c.penalty_amount, c.penalty_currency)} fee` : " · fee not fully provided"}`;
   return (
     <div className="fare-rules">
       <span>{rule(offer.change, "Changes")}</span>
@@ -364,9 +369,7 @@ export function SegmentDetails({ segments }: { segments: Segment[] }) {
                 </span>
               </div>
               <div className="segment-meta">
-                <span>
-                  {seg.cabin_name || seg.cabin || "Cabin unconfirmed"}
-                </span>
+                <span>{cabinLabel(seg)}</span>
                 <span>{seg.aircraft || "Aircraft unconfirmed"}</span>
                 {seg.seat_type && (
                   <span>{seg.seat_type.replaceAll("_", " ")} seat</span>
@@ -375,6 +378,11 @@ export function SegmentDetails({ segments }: { segments: Segment[] }) {
                   {seg.checked_bags == null
                     ? "Baggage unconfirmed"
                     : `${seg.checked_bags} checked bag${seg.checked_bags === 1 ? "" : "s"}`}
+                </span>
+                <span>
+                  {seg.carry_on_bags == null
+                    ? "Cabin baggage unconfirmed"
+                    : `${seg.carry_on_bags} cabin bag${seg.carry_on_bags === 1 ? "" : "s"}`}
                 </span>
               </div>
             </div>
@@ -408,6 +416,16 @@ const airlineColors: Record<string, string> = {
   DL: "#a71d32",
   UA: "#1640a0",
 };
+function cabinLabel(segment: Segment) {
+  const labels: Record<string, string> = {
+    economy: "Economy",
+    premium_economy: "Premium economy",
+    business: "Business class",
+    first: "First class",
+  };
+  const actual = labels[segment.cabin || ""] || "Cabin unconfirmed";
+  return segment.cabin_name ? `${actual} · ${segment.cabin_name}` : actual;
+}
 export function AirlineMark({ code }: { code: string }) {
   return (
     <span
@@ -477,8 +495,7 @@ export function FlightCard({
           <div>
             <h3>{first.airline_name}</h3>
             <p>
-              {first.cabin_name ||
-                (first.cabin === "first" ? "First class" : "Business class")}
+              {cabinLabel(first)}
               <span> · </span>
               {first.flight_number}
             </p>
@@ -502,6 +519,12 @@ export function FlightCard({
           }
         />
       ))}
+      {!offer.live_mode && (
+        <p className="tradeoffs">
+          Test itinerary and price · verify real flights and fares on the
+          airline website.
+        </p>
+      )}
       <div className="match-reasons">
         {offer.reasons.slice(0, 3).map((r) => (
           <span key={r}>

@@ -253,6 +253,61 @@ def test_actual_cabin_codeshare_and_missing_data():
         normalize_offer(raw)
 
 
+def test_mixed_cabin_requires_premium_main_flight_in_each_direction():
+    offer = asyncio.run(demo_offers(SearchRequest.model_validate(request())))[0]
+    for segment in offer.slices[1].segments:
+        segment.cabin = "economy"
+    results, exclusions, _ = rank_offers([offer], Profile(allow_mixed_cabin=True))
+    assert not results and exclusions["cabin"] == 1
+
+
+@pytest.mark.parametrize("invalid", ["airport", "overlap"])
+def test_provider_connections_must_be_continuous(invalid):
+    import copy
+    raw = raw_offer()
+    previous = raw["slices"][0]["segments"][0]
+    following = copy.deepcopy(previous)
+    following["origin"] = copy.deepcopy(previous["destination"])
+    following["departing_at"] = previous["arriving_at"]
+    following["arriving_at"] = (datetime.fromisoformat(previous["arriving_at"]) + timedelta(hours=4)).isoformat()
+    if invalid == "airport":
+        following["origin"]["iata_code"] = "CDG"
+        following["departing_at"] = (datetime.fromisoformat(previous["arriving_at"]) + timedelta(hours=1)).isoformat()
+    raw["slices"][0]["segments"].append(following)
+    with pytest.raises(ValueError, match="Connections"):
+        normalize_offer(raw)
+
+
+@pytest.mark.parametrize("mismatch", ["airport", "date", "return"])
+def test_provider_search_rejects_a_different_requested_journey(monkeypatch, mismatch):
+    from app.v1.flights import fetch_offers
+    raw = raw_offer()
+    segment = raw["slices"][0]["segments"][0]
+    segment["passengers"] = [{"cabin_class": "business"}]
+    if mismatch == "airport":
+        segment["origin"]["iata_code"] = "EWR"
+    if mismatch == "date":
+        segment["departing_at"] = (datetime.fromisoformat(segment["departing_at"]) + timedelta(hours=24)).isoformat()
+        segment["arriving_at"] = (datetime.fromisoformat(segment["arriving_at"]) + timedelta(hours=24)).isoformat()
+    monkeypatch.setattr("app.v1.flights.DuffelClient.search_offers", AsyncMock(return_value={"data": {"offers": [raw]}}))
+    req = SearchRequest.model_validate(request(**({} if mismatch == "return" else {"return_date": None})))
+    offers, coverage, partial = asyncio.run(fetch_offers(req, False))
+    assert offers == [] and partial is True
+    assert "1 offers lacked usable itinerary data" in coverage
+
+
+def test_test_inventory_handoff_never_claims_a_real_exact_flight(monkeypatch):
+    from app.v1.handoff import resolve_handoff
+    lookup = AsyncMock()
+    monkeypatch.setattr("app.v1.handoff._serpapi", lookup)
+    raw = raw_offer()
+    raw["slices"][0]["segments"][0]["passengers"] = [{"cabin_class": "business"}]
+    handoff = asyncio.run(resolve_handoff(normalize_offer(raw)))
+    assert handoff["match"] == "route_only" and handoff["prefilled"] is True
+    assert "test inventory, not a real fare" in handoff["message"]
+    lookup.assert_not_called()
+
+
 def test_cabin_searches_are_concurrent_and_independent(monkeypatch):
     from app.v1.flights import fetch_offers
 
@@ -269,7 +324,8 @@ def test_cabin_searches_are_concurrent_and_independent(monkeypatch):
 
     monkeypatch.setattr("app.v1.flights.DuffelClient.search_offers", mocked)
     req = SearchRequest.model_validate(
-        request(preferences=Profile(cabin="either").model_dump())
+        request(preferences=Profile(cabin="either").model_dump(), return_date=None,
+                departure_date=raw_offer()["slices"][0]["segments"][0]["departing_at"][:10])
     )
     offers, _, _ = asyncio.run(fetch_offers(req, False))
     assert events[:2] == ["start-business", "start-first"]

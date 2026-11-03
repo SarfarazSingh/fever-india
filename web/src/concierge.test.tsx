@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { MemoryRouter } from "react-router-dom";
-import { AirportInput, FlightCard } from "./components";
+import { AirportInput, FlightCard, FareRules } from "./components";
 import {
   dayOffset,
   defaultProfile,
@@ -69,6 +69,41 @@ const offer: Offer = {
 };
 
 describe("flight presentation", () => {
+  it("shows the actual first-leg cabin and identifies test inventory", () => {
+    const mixed = structuredClone(offer);
+    mixed.slices[0].segments[0].cabin = "economy";
+    mixed.reasons = [];
+    render(
+      <FlightCard
+        offer={mixed}
+        selected={false}
+        onCompare={() => {}}
+        onBook={() => {}}
+        searchId="search"
+      />,
+    );
+    expect(screen.getByText(/Economy/)).toBeInTheDocument();
+    expect(screen.queryByText(/Business class/)).not.toBeInTheDocument();
+    expect(screen.getByText(/Test itinerary and price/)).toBeInTheDocument();
+  });
+  it("does not invent a fee currency from the fare currency", () => {
+    render(
+      <FareRules
+        offer={{
+          ...offer,
+          change: {
+            allowed: true,
+            penalty_amount: "150.00",
+            penalty_currency: null,
+          },
+        }}
+      />,
+    );
+    expect(
+      screen.getByText("Changes: permitted · fee not fully provided"),
+    ).toBeInTheDocument();
+    expect(screen.queryByText(/€150/)).not.toBeInTheDocument();
+  });
   it("lets a traveler type several preferred airlines without losing commas", () => {
     function Form() {
       const [prefs, setPrefs] = useState(defaultProfile);

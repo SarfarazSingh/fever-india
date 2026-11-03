@@ -219,8 +219,10 @@ def rank_offers(
         # The premium-long-haul rule still requires known cabins everywhere.
         cabin_ok = all(seg.cabin in allowed for seg in segs)
         if prefs.allow_mixed_cabin:
-            longest = max(segs, key=lambda s: s.arrival_at - s.departure_at)
-            cabin_ok = longest.cabin in allowed and all(
+            cabin_ok = all(
+                max(slc.segments, key=lambda s: s.arrival_at - s.departure_at).cabin in allowed
+                for slc in offer.slices
+            ) and all(
                 seg.cabin is not None for seg in segs
             )
         if not cabin_ok:
@@ -489,7 +491,18 @@ async def fetch_offers(req: SearchRequest, demo: bool) -> tuple[list[Offer], str
     offers, skipped = [], 0
     for item in raw.values():
         try:
-            offers.append(normalize_offer(item))
+            offer = normalize_offer(item)
+            expected = [(req.origin, req.destination, req.departure_date)]
+            if req.return_date:
+                expected.append((req.destination, req.origin, req.return_date))
+            if len(offer.slices) != len(expected) or any(
+                slc.segments[0].origin != origin
+                or slc.segments[-1].destination != destination
+                or datetime.fromisoformat(slc.segments[0].departure_local).date() != day
+                for slc, (origin, destination, day) in zip(offer.slices, expected)
+            ):
+                raise ValueError("Provider itinerary does not match the requested journey")
+            offers.append(offer)
         except (ValueError, KeyError, TypeError, IndexError):
             skipped += 1
     partial = bool(errors or skipped)

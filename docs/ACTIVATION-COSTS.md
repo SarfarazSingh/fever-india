@@ -1,5 +1,7 @@
 # Integration activation quote — 3 November 2026
 
+Decision recorded 4 November 2026: the owner requested **Keep new paid integrations off**. Google Places, Duffel live search and in-app purchases remain disabled. Completing Duffel billing does not authorize activation. Only the existing free SerpApi allowance and separately consented Gmail imports/reminders are configured; no provider upgrade is authorized.
+
 Existing hosting remains approximately $53/month before tax and usage, above the existing Vercel subscription.
 
 | Integration | Proposed activation boundary | Incremental charge |

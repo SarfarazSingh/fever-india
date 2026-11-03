@@ -146,6 +146,9 @@ class Slice(Model):
 
     @model_validator(mode="after")
     def canonical(self):
+        for previous, following in zip(self.segments, self.segments[1:]):
+            if previous.destination != following.origin or previous.arrival_at >= following.departure_at:
+                raise ValueError("Connections must use the same airport and depart after arrival")
         self.stops = len(self.segments) - 1
         self.duration_minutes = int(
             (

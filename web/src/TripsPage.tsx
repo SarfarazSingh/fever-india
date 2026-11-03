@@ -902,12 +902,21 @@ export function TripDetail() {
               {data.total_amount && (
                 <div>
                   <dt>Journey total</dt>
-                  <dd>{money(data.total_amount, data.currency || "USD")}</dd>
+                  <dd>
+                    {data.currency
+                      ? money(data.total_amount, data.currency)
+                      : `${data.total_amount} · currency unconfirmed`}
+                  </dd>
                 </div>
               )}
             </dl>
             {data.checkin_url && !data.is_demo && (
-              <a className="button primary full" href={data.checkin_url} target="_blank" rel="noopener noreferrer">
+              <a
+                className="button primary full"
+                href={data.checkin_url}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 Check in with airline <ExternalLink size={16} />
               </a>
             )}
