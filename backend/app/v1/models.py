@@ -118,6 +118,22 @@ class MailConnection(Base):
     status: Mapped[str] = mapped_column(String(30), default="disconnected")
     last_synced_at: Mapped[datetime | None] = mapped_column(UTCDateTime, nullable=True)
     forwarding_token: Mapped[str] = mapped_column(String(64), unique=True)
+    verifier_ciphertext: Mapped[str | None] = mapped_column(Text, nullable=True)
+    sync_state: Mapped[dict] = mapped_column(JSON, default=dict)
+
+
+class EmailDelivery(Base):
+    __tablename__ = "email_deliveries"
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    account_id: Mapped[str] = mapped_column(ForeignKey("accounts.id"), index=True)
+    trip_id: Mapped[str | None] = mapped_column(ForeignKey("trips.id"), nullable=True)
+    kind: Mapped[str] = mapped_column(String(24), default="trip_reminder")
+    state: Mapped[str] = mapped_column(String(24), default="queued", index=True)
+    message_id: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    error: Mapped[str | None] = mapped_column(Text, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(UTCDateTime, default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(UTCDateTime, default=utcnow, onupdate=utcnow)
+
 
 
 class EventReceipt(Base):

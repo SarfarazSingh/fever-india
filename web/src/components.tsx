@@ -627,7 +627,9 @@ export function FlightCard({
         title={
           handoff?.match === "exact_itinerary"
             ? "Continue with the airline"
-            : handoff?.prefilled ? "Your airline search is ready" : "Search with the airline"
+            : handoff?.prefilled
+              ? "Your airline search is ready"
+              : "Search with the airline"
         }
         description={handoff?.message}
       >
@@ -641,7 +643,9 @@ export function FlightCard({
           >
             {handoff.match === "exact_itinerary"
               ? "Continue at airline"
-              : handoff.prefilled ? "Open airline flight results" : "Search on airline"}
+              : handoff.prefilled
+                ? "Open airline flight results"
+                : "Search on airline"}
             <ExternalLink size={16} />
           </a>
         )}

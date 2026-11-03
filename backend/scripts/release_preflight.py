@@ -30,6 +30,8 @@ async def main():
         raise RuntimeError("Pilot origins must use HTTPS")
     if not s.duffel_access_token.startswith("duffel_test_"):
         raise RuntimeError("Pilot must use explicitly labeled Duffel test inventory")
+    if s.gmail_send_enabled and not (s.google_client_id and s.google_client_secret and s.token_encryption_key):
+        raise RuntimeError("Gmail reminders require a configured, separate OAuth connection")
     if s.resend_api_key or s.notification_from or s.forwarding_domain:
         raise RuntimeError("Email services require a separately approved sender")
     async with httpx.AsyncClient(timeout=15) as client:
@@ -50,7 +52,7 @@ async def main():
             raise RuntimeError("Private document bucket is not ready")
     async with engine.connect() as db:
         revision = (await db.execute(text("SELECT version_num FROM alembic_version"))).scalar()
-        if revision != "0002_google_login":
+        if revision != "0003_gmail_delivery":
             raise RuntimeError("Pilot migrations have not completed")
         missing = (await db.execute(text("""
             SELECT relname FROM pg_class JOIN pg_namespace n ON n.oid=relnamespace

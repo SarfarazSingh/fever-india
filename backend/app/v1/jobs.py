@@ -83,6 +83,23 @@ async def dispatch_search(search_id: str):
         await run_search(search_id)
 
 
+@queue.task(name="send_email", queue="travel", retry=2)
+async def email_task(delivery_id: str):
+    from app.v1.mail import send_delivery
+    await send_delivery(delivery_id)
+
+
+async def dispatch_email(delivery_id: str):
+    if get_settings().production:
+        try:
+            await email_task.defer_async(delivery_id=delivery_id)
+        except Exception as exc:
+            logger.error("Email enqueue pending recovery (%s)", type(exc).__name__)
+    else:
+        from app.v1.mail import send_delivery
+        await send_delivery(delivery_id)
+
+
 @queue.periodic(cron="*/2 * * * *")
 @queue.task(name="maintenance", queue="travel", lock="maintenance", retry=2)
 async def maintenance(timestamp: int):
@@ -199,6 +216,14 @@ async def maintenance(timestamp: int):
             except Exception as exc:
                 logger.warning("Order reconciliation pending (%s)", type(exc).__name__)
         await send_reminders(db)
+        from app.v1.mail import queue_due_reminders
+        from app.v1.models import EmailDelivery
+        await queue_due_reminders(db)
+        email_ids = (await db.execute(select(EmailDelivery.id).where(
+            EmailDelivery.state.in_(["queued", "sending", "confirming"])
+        ).order_by(EmailDelivery.created_at).limit(20))).scalars().all()
+        for delivery_id in email_ids:
+            await email_task.defer_async(delivery_id=delivery_id)
         # Limit retained search data and drafts; never delete unresolved booking attempts.
         from sqlalchemy import delete
         from app.v1.models import ImportDraft, LoginSession, OAuthLoginAttempt

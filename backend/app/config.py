@@ -62,6 +62,7 @@ class Settings(BaseSettings):
     token_encryption_key: str = ""
     google_client_id: str = ""
     google_client_secret: str = ""
+    gmail_send_enabled: bool = False
     gmail_redirect_uri: str = "http://localhost:8000/api/v1/connections/gmail/callback"
     resend_api_key: str = ""
     resend_webhook_secret: str = ""

@@ -28,6 +28,7 @@ export type Trip = TripData & {
   destination: string;
   destination_city: string;
   manage_url?: string;
+  checkin_url?: string;
 };
 export type Session = {
   csrf_token: string;
@@ -38,6 +39,7 @@ export type Session = {
     checkout: boolean;
     live_checkout: boolean;
     gmail: boolean;
+    gmail_send?: boolean;
     forwarding: boolean;
     places: boolean;
     notifications?: boolean;
@@ -75,7 +77,14 @@ export type Draft = {
   source?: string;
 };
 export type Connection = {
-  gmail: { status: string; last_synced_at?: string; configured: boolean };
+  gmail: {
+    status: string;
+    last_synced_at?: string;
+    configured: boolean;
+    can_send?: boolean;
+    sync_in_progress?: boolean;
+  };
+  email?: { available: boolean; ready: boolean; provider?: string };
   forwarding_address?: string;
 };
 export type Place = {

@@ -906,6 +906,11 @@ export function TripDetail() {
                 </div>
               )}
             </dl>
+            {data.checkin_url && !data.is_demo && (
+              <a className="button primary full" href={data.checkin_url} target="_blank" rel="noopener noreferrer">
+                Check in with airline <ExternalLink size={16} />
+              </a>
+            )}
             {data.manage_url && !data.is_demo && (
               <a
                 className="button primary full"

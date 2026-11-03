@@ -34,6 +34,7 @@ def trip_read(trip: Trip, demo: bool) -> dict:
         "origin": first["origin"],
         "destination": last["destination"],
         "destination_city": last["destination_city"],
+        "checkin_url": "https://www.britishairways.com/travel/olcilandingpageauthreq/public/en_gb" if (first.get("operating_airline") or first["airline"]) == "BA" else MANAGE_SITES.get(first.get("operating_airline") or first["airline"]),
         "manage_url": MANAGE_SITES.get(first["airline"])
         or official_site(first["airline"]),
         **data,

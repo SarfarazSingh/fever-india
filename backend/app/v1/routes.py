@@ -33,6 +33,7 @@ from app.v1.models import (
     ImportDraft,
     LoginSession,
     MailConnection,
+    EmailDelivery,
     SearchRecord,
     ServiceRequest,
     Trip,
@@ -98,7 +99,8 @@ def features(demo=False):
             s.google_client_id and s.google_client_secret and s.token_encryption_key
         ),
         "places": bool(s.google_places_api_key),
-        "notifications": bool(s.resend_api_key and s.notification_from),
+        "notifications": bool((s.resend_api_key and s.notification_from) or (s.gmail_send_enabled and s.google_client_id and s.google_client_secret)),
+        "gmail_send": bool(s.gmail_send_enabled),
         "forwarding": bool(
             s.forwarding_domain and s.resend_api_key and s.resend_webhook_secret
         ),
@@ -793,6 +795,7 @@ async def delete_data(
                 "Could not remove stored documents. Please try data deletion again.",
             )
     for model in [
+        EmailDelivery,
         ServiceRequest,
         ImportDraft,
         Checkout,

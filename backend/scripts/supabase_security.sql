@@ -6,7 +6,7 @@ DECLARE tab text;
 BEGIN
   FOREACH tab IN ARRAY ARRAY['accounts','login_sessions','search_sessions','trips','import_drafts',
     'checkout_sessions','mail_connections','service_requests','daily_usage','event_receipts',
-    'bookings','preferences','flight_searches','oauth_login_attempts']
+    'email_deliveries','bookings','preferences','flight_searches','oauth_login_attempts']
   LOOP
     EXECUTE format('ALTER TABLE public.%I ENABLE ROW LEVEL SECURITY', tab);
     EXECUTE format('REVOKE ALL ON TABLE public.%I FROM anon, authenticated', tab);

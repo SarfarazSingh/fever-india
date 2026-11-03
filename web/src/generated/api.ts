@@ -132,6 +132,14 @@ export interface paths {
     /** Sync Now */
     post: operations["sync_now_api_v1_connections_gmail_sync_post"];
   };
+  "/api/v1/notifications/test": {
+    /** Test Notification */
+    post: operations["test_notification_api_v1_notifications_test_post"];
+  };
+  "/api/v1/notifications/{delivery_id}": {
+    /** Notification Status */
+    get: operations["notification_status_api_v1_notifications__delivery_id__get"];
+  };
   "/api/v1/webhooks/inbound": {
     /** Inbound */
     post: operations["inbound_api_v1_webhooks_inbound_post"];
@@ -178,6 +186,14 @@ export interface components {
       currency: string;
       refund: components["schemas"]["Condition"];
       change: components["schemas"]["Condition"];
+    };
+    /** GmailConnectRequest */
+    GmailConnectRequest: {
+      /**
+       * Send Reminders
+       * @default false
+       */
+      send_reminders?: boolean;
     };
     /** GoogleStart */
     GoogleStart: {
@@ -1193,11 +1209,22 @@ export interface operations {
   };
   /** Connect Gmail */
   connect_gmail_api_v1_connections_gmail_connect_post: {
+    requestBody?: {
+      content: {
+        "application/json": components["schemas"]["GmailConnectRequest"] | null;
+      };
+    };
     responses: {
       /** @description Successful Response */
       200: {
         content: {
           "application/json": unknown;
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
         };
       };
     };
@@ -1244,6 +1271,39 @@ export interface operations {
       200: {
         content: {
           "application/json": unknown;
+        };
+      };
+    };
+  };
+  /** Test Notification */
+  test_notification_api_v1_notifications_test_post: {
+    responses: {
+      /** @description Successful Response */
+      202: {
+        content: {
+          "application/json": unknown;
+        };
+      };
+    };
+  };
+  /** Notification Status */
+  notification_status_api_v1_notifications__delivery_id__get: {
+    parameters: {
+      path: {
+        delivery_id: string;
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      200: {
+        content: {
+          "application/json": unknown;
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
         };
       };
     };

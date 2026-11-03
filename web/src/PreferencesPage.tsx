@@ -32,6 +32,24 @@ export default function PreferencesPage() {
   const [error, setError] = useState<unknown>();
   const [notice, setNotice] = useState("");
   const [deleteOpen, setDeleteOpen] = useState(false);
+  const [gmailReminders, setGmailReminders] = useState(
+    !!session.features.gmail_send,
+  );
+  const [testEmailId, setTestEmailId] = useState<string>();
+  const testEmail = useQuery({
+    queryKey: ["testEmail", testEmailId],
+    queryFn: () =>
+      api<{ id: string; state: string; message?: string }>(
+        "/notifications/" + testEmailId,
+      ),
+    enabled: !!testEmailId,
+    refetchInterval: (q) =>
+      ["queued", "sending"].includes(q.state.data?.state || "")
+        ? 2000
+        : q.state.data?.state === "confirming"
+          ? 10000
+          : false,
+  });
   const connections = useQuery({
     queryKey: ["connections"],
     queryFn: () => api<Connection>("/connections"),
@@ -55,10 +73,12 @@ export default function PreferencesPage() {
       setBusy(false);
     }
   }
-  async function connect() {
+  async function connect(sendReminders = gmailReminders) {
     setError(undefined);
     try {
-      const r = await post<{ url: string }>("/connections/gmail/connect");
+      const r = await post<{ url: string }>("/connections/gmail/connect", {
+        send_reminders: !!session.features.gmail_send && sendReminders,
+      });
       location.assign(r.url);
     } catch (e) {
       setError(e);
@@ -76,13 +96,29 @@ export default function PreferencesPage() {
   async function sync() {
     setBusy(true);
     try {
-      await post("/connections/gmail/sync");
+      const result = await post<{ more_pending?: boolean }>(
+        "/connections/gmail/sync",
+      );
       await client.invalidateQueries({ queryKey: ["connections"] });
       client.invalidateQueries({ queryKey: ["imports"] });
       client.invalidateQueries({ queryKey: ["trips"] });
       setNotice(
-        "Mailbox checked. Any uncertain bookings are waiting for review in My Trips.",
+        result.more_pending
+          ? "Bookings are being imported. More messages will be checked automatically; review any incomplete bookings in My Trips."
+          : "Mailbox checked. Any uncertain bookings are waiting for review in My Trips.",
       );
+    } catch (e) {
+      setError(e);
+    } finally {
+      setBusy(false);
+    }
+  }
+  async function sendTestEmail() {
+    setBusy(true);
+    setError(undefined);
+    try {
+      const result = await post<{ id: string }>("/notifications/test");
+      setTestEmailId(result.id);
     } catch (e) {
       setError(e);
     } finally {
@@ -232,9 +268,13 @@ export default function PreferencesPage() {
             </label>
             <Toggle
               label="Trip reminders"
-              hint={session.features.notifications ? "An email before your journey" : "Email reminders are not available in this pilot"}
-              disabled={!session.features.notifications}
-              checked={!!session.features.notifications && profile.reminders}
+              hint={
+                connections.data?.email?.ready
+                  ? "An email before your journey from your connected account"
+                  : "Connect Gmail with sending permission to receive reminders"
+              }
+              disabled={!connections.data?.email?.ready}
+              checked={!!connections.data?.email?.ready && profile.reminders}
               onChange={(v) => setProfile({ ...profile, reminders: v })}
             />
           </section>
@@ -261,8 +301,11 @@ export default function PreferencesPage() {
             <span className="settings-icon">
               <Mail size={20} />
             </span>
-            <h2>A little less forwarding.</h2>
-            <p>Let your bookings find their way to your itinerary.</p>
+            <h2>Connect your booking emails.</h2>
+            <p>
+              Import airline confirmations into My Trips. Incomplete details
+              stay in review.
+            </p>
             <div className="connection-status">
               <b>Gmail</b>
               <Badge
@@ -290,6 +333,50 @@ export default function PreferencesPage() {
                   <Unplug size={15} />
                   Disconnect Gmail
                 </button>
+                {connections.data.gmail.sync_in_progress && (
+                  <p className="fine-print">
+                    Initial import is in progress. The worker continues checking
+                    older messages automatically.
+                  </p>
+                )}
+                {session.features.gmail_send &&
+                  !connections.data.gmail.can_send && (
+                    <button
+                      className="button secondary full"
+                      onClick={() => connect(true)}
+                    >
+                      Enable Gmail reminders
+                    </button>
+                  )}
+                {connections.data.gmail.can_send && (
+                  <>
+                    <p className="fine-print">
+                      Trip emails are sent from your connected Gmail account to{" "}
+                      {session.account.email}.
+                    </p>
+                    <button
+                      className="button secondary full"
+                      disabled={
+                        busy ||
+                        ["queued", "sending"].includes(
+                          testEmail.data?.state || "",
+                        )
+                      }
+                      onClick={sendTestEmail}
+                    >
+                      Send a test email
+                    </button>
+                    {testEmail.data && (
+                      <p role="status" className="fine-print">
+                        {testEmail.data.state === "sent"
+                          ? "Gmail accepted your test email. Check your inbox."
+                          : testEmail.data.message ||
+                            "Your test email is queued for delivery."}
+                      </p>
+                    )}
+                    <ErrorNotice error={testEmail.error} />
+                  </>
+                )}
                 {connections.data.gmail.last_synced_at && (
                   <p className="fine-print">
                     Last checked{" "}
@@ -300,21 +387,33 @@ export default function PreferencesPage() {
                 )}
               </>
             ) : (
-              <button
-                className="button primary full"
-                onClick={connect}
-                disabled={
-                  !connections.data?.gmail.configured || session.account.is_demo
-                }
-              >
-                <Link2 size={15} />
-                Connect Gmail
-              </button>
+              <>
+                {session.features.gmail_send && (
+                  <Toggle
+                    label="Also send my trip reminders from Gmail"
+                    checked={gmailReminders}
+                    onChange={setGmailReminders}
+                    hint="Google will ask for separate email sending permission."
+                  />
+                )}
+                <button
+                  className="button primary full"
+                  onClick={() => connect()}
+                  disabled={
+                    !connections.data?.gmail.configured ||
+                    session.account.is_demo
+                  }
+                >
+                  <Link2 size={15} />
+                  Connect Gmail
+                </button>
+              </>
             )}
             <p className="fine-print">
-              Optional read-only access. Gmail authorization grants mailbox read
-              access; we query for booking-related messages. We cannot send or
-              delete your emails.
+              Google asks for mailbox read access so we can find booking-related
+              messages. If you choose Gmail reminders, it also asks for
+              permission to send email. We do not request permission to delete
+              mail. You can disconnect at any time.
             </p>
             {(!connections.data?.gmail.configured ||
               session.account.is_demo) && (
@@ -324,6 +423,10 @@ export default function PreferencesPage() {
                   : "Secure Gmail authorization needs to be configured before connecting."}
               </p>
             )}
+            <p className="fine-print">
+              This private Google pilot may require reconnection after seven
+              days.
+            </p>
             <ErrorNotice error={connections.error} />
           </section>
           <section className="settings-card">
