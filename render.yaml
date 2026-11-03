@@ -8,9 +8,9 @@ services:
   region: frankfurt
   plan: starter
   healthCheckPath: /health
-  preDeployCommand: python -m alembic upgrade head && python scripts/init_queue.py
-    && python scripts/release_preflight.py
+  preDeployCommand: python scripts/initialize_release.py
   envVars:
+  - fromGroup: federico-staging-secrets
   - key: ENVIRONMENT
     value: staging
   - key: DEMO_ENABLED
@@ -33,20 +33,6 @@ services:
     value: https://federico-travel-staging.vercel.app
   - key: DEFAULT_CURRENCY
     value: EUR
-  - key: DATABASE_URL
-    sync: false
-  - key: ALLOWED_EMAILS
-    sync: false
-  - key: SUPABASE_URL
-    sync: false
-  - key: SUPABASE_ANON_KEY
-    sync: false
-  - key: SUPABASE_SERVICE_ROLE_KEY
-    sync: false
-  - key: TOKEN_ENCRYPTION_KEY
-    sync: false
-  - key: DUFFEL_ACCESS_TOKEN
-    sync: false
   - key: WORKER_CONCURRENCY
     value: '1'
 - type: worker
@@ -58,8 +44,9 @@ services:
   region: frankfurt
   plan: starter
   dockerCommand: python -m app.v1.jobs
-  preDeployCommand: python scripts/init_queue.py && python scripts/release_preflight.py
+  preDeployCommand: python scripts/initialize_release.py
   envVars:
+  - fromGroup: federico-staging-secrets
   - key: ENVIRONMENT
     value: staging
   - key: DEMO_ENABLED
@@ -82,20 +69,6 @@ services:
     value: https://federico-travel-staging.vercel.app
   - key: DEFAULT_CURRENCY
     value: EUR
-  - key: DATABASE_URL
-    sync: false
-  - key: ALLOWED_EMAILS
-    sync: false
-  - key: SUPABASE_URL
-    sync: false
-  - key: SUPABASE_ANON_KEY
-    sync: false
-  - key: SUPABASE_SERVICE_ROLE_KEY
-    sync: false
-  - key: TOKEN_ENCRYPTION_KEY
-    sync: false
-  - key: DUFFEL_ACCESS_TOKEN
-    sync: false
   - key: WORKER_CONCURRENCY
     value: '1'
 - type: web
@@ -107,9 +80,9 @@ services:
   region: frankfurt
   plan: starter
   healthCheckPath: /health
-  preDeployCommand: python -m alembic upgrade head && python scripts/init_queue.py
-    && python scripts/release_preflight.py
+  preDeployCommand: python scripts/initialize_release.py
   envVars:
+  - fromGroup: federico-production-secrets
   - key: ENVIRONMENT
     value: production
   - key: DEMO_ENABLED
@@ -132,20 +105,6 @@ services:
     value: https://business-class-concierge.vercel.app
   - key: DEFAULT_CURRENCY
     value: EUR
-  - key: DATABASE_URL
-    sync: false
-  - key: ALLOWED_EMAILS
-    sync: false
-  - key: SUPABASE_URL
-    sync: false
-  - key: SUPABASE_ANON_KEY
-    sync: false
-  - key: SUPABASE_SERVICE_ROLE_KEY
-    sync: false
-  - key: TOKEN_ENCRYPTION_KEY
-    sync: false
-  - key: DUFFEL_ACCESS_TOKEN
-    sync: false
   - key: WORKER_CONCURRENCY
     value: '1'
 - type: worker
@@ -157,8 +116,9 @@ services:
   region: frankfurt
   plan: starter
   dockerCommand: python -m app.v1.jobs
-  preDeployCommand: python scripts/init_queue.py && python scripts/release_preflight.py
+  preDeployCommand: python scripts/initialize_release.py
   envVars:
+  - fromGroup: federico-production-secrets
   - key: ENVIRONMENT
     value: production
   - key: DEMO_ENABLED
@@ -181,19 +141,5 @@ services:
     value: https://business-class-concierge.vercel.app
   - key: DEFAULT_CURRENCY
     value: EUR
-  - key: DATABASE_URL
-    sync: false
-  - key: ALLOWED_EMAILS
-    sync: false
-  - key: SUPABASE_URL
-    sync: false
-  - key: SUPABASE_ANON_KEY
-    sync: false
-  - key: SUPABASE_SERVICE_ROLE_KEY
-    sync: false
-  - key: TOKEN_ENCRYPTION_KEY
-    sync: false
-  - key: DUFFEL_ACCESS_TOKEN
-    sync: false
   - key: WORKER_CONCURRENCY
     value: '1'

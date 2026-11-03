@@ -1,4 +1,4 @@
--- Run once as the database owner after Alembic, before enabling app traffic.
+-- Run as the role that owns the application tables after Alembic.
 -- The application uses a server-only database role and enforces account ownership.
 -- Supabase browser roles must have no direct access to travel or session tables.
 DO $$
@@ -12,7 +12,3 @@ BEGIN
     EXECUTE format('REVOKE ALL ON TABLE public.%I FROM anon, authenticated', tab);
   END LOOP;
 END $$;
-
-INSERT INTO storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
-VALUES ('travel-documents','travel-documents',false,10000000,ARRAY['application/pdf'])
-ON CONFLICT (id) DO UPDATE SET public=false;

@@ -21,7 +21,9 @@ queue = procrastinate.App(
         conninfo=dsn
         if dsn.startswith("postgresql")
         else "postgresql://localhost/concierge",
-        options="-c search_path=jobs,public",
+        kwargs={"options": "-c search_path=jobs,public"},
+        min_size=1,
+        max_size=4,
     )
 )
 
