@@ -175,9 +175,9 @@ export default function SearchPage() {
       <header className="search-intro">
         <span className="eyebrow">YOUR PRIVATE TRAVEL DESK</span>
         <h1>
-          Where to next, <span>{firstName}</span>?
+          Find your next flight, <span>{firstName}</span>.
         </h1>
-        <p>Find your next flight. We’ll take care of the details.</p>
+        <p>Choose your airports and dates to see your best flight options.</p>
       </header>
       <form className="search-box" onSubmit={search}>
         <div className="search-box-top">
@@ -209,7 +209,7 @@ export default function SearchPage() {
           </span>
         </div>
         <div className={`search-fields ${!round ? "oneway" : ""}`}>
-          <AirportInput label="FROM" value={origin} onChange={setOrigin} />
+          <AirportInput label="From" value={origin} onChange={setOrigin} />
           <button
             className="swap-button"
             type="button"
@@ -221,9 +221,9 @@ export default function SearchPage() {
           >
             <ArrowDownUp size={15} />
           </button>
-          <AirportInput label="TO" value={dest} onChange={setDest} />
+          <AirportInput label="To" value={dest} onChange={setDest} />
           <div className="date-field">
-            <label htmlFor="depart-date">DEPARTURE</label>
+            <label htmlFor="depart-date">Departure</label>
             <input
               id="depart-date"
               type="date"
@@ -235,7 +235,7 @@ export default function SearchPage() {
           </div>
           {round && (
             <div className="date-field">
-              <label htmlFor="return-date">RETURN</label>
+              <label htmlFor="return-date">Return</label>
               <input
                 id="return-date"
                 type="date"
@@ -255,7 +255,7 @@ export default function SearchPage() {
             ) : (
               <>
                 <Search size={17} />
-                Find my flight
+                Search flights
               </>
             )}
           </button>

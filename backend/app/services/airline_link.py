@@ -11,7 +11,7 @@ import html
 import re
 import time
 from datetime import date
-from urllib.parse import urlencode, urlparse
+from urllib.parse import urlencode, urlparse, parse_qs
 
 import httpx
 
@@ -197,6 +197,16 @@ _ECONOMY_MARKERS = (
 
 def page_matches_cabin(url: str, cabin: str) -> bool:
     """True when the airline page is business or first, never economy."""
+    # Airline metasearch links can specify each direction separately (cabin1,
+    # cabin2). Never accept an explicitly downgraded fare from those links.
+    aliases = {"eco": "economy", "economy": "economy", "y": "economy", "m": "economy", "w": "premium_economy", "premiumeconomy": "premium_economy", "business": "business", "club": "business", "c": "business", "j": "business", "first": "first", "f": "first"}
+    for key, values in parse_qs(urlparse(url).query).items():
+        if not re.fullmatch(r"cabin\d*|cabinclass|travelclass|travel_class", key.lower()):
+            continue
+        for value in values:
+            actual = aliases.get(re.sub(r"[\s_-]", "", value.lower()))
+            if actual and actual != cabin:
+                return False
     text = url.lower().replace("%20", "").replace("+", "")
     if any(marker in text for marker in _ECONOMY_MARKERS):
         return False

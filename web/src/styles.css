@@ -128,27 +128,27 @@ h2 {
   margin-bottom: 12px;
 }
 h3 {
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 600;
   margin-bottom: 10px;
 }
 h4 {
-  font-size: 14px;
+  font-size: 18px;
   font-weight: 600;
 }
 p {
   line-height: 1.65;
 }
 small {
-  font-size: 11px;
+  font-size: 14px;
 }
 .muted {
   color: var(--muted);
-  font-size: 13px;
+  font-size: 16px;
 }
 label {
   display: block;
-  font-size: 12px;
+  font-size: 16px;
   font-weight: 500;
   color: #606d61;
   line-height: 1.6;
@@ -164,7 +164,7 @@ textarea {
   color: #314337;
   padding: 11px 12px;
   margin-top: 6px;
-  font-size: 13px;
+  font-size: 16px;
   min-height: 42px;
 }
 input[type="checkbox"] {
@@ -189,7 +189,7 @@ input[type="datetime-local"] {
 }
 input::placeholder,
 textarea::placeholder {
-  color: #a1a69e;
+  color: #52614f;
 }
 form > label {
   margin: 16px 0;
@@ -228,7 +228,7 @@ form > label {
   min-height: 42px;
   padding: 11px 17px;
   font-weight: 500;
-  font-size: 12px;
+  font-size: 16px;
   line-height: 1.4;
   transition:
     background 0.18s,
@@ -269,7 +269,7 @@ form > label {
   padding: 0;
   border: 0;
   background: transparent;
-  font-size: 12px;
+  font-size: 16px;
   font-weight: 500;
   color: #5b6e54;
   line-height: 1.5;
@@ -295,10 +295,10 @@ form > label {
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  font-size: 9px;
+  font-size: 14px;
   letter-spacing: 0.17em;
   font-weight: 600;
-  color: #76806d;
+  color: #52614f;
   line-height: 1.6;
 }
 .little-line {
@@ -313,7 +313,7 @@ form > label {
   gap: 5px;
   white-space: nowrap;
   line-height: 1.4;
-  font-size: 10px;
+  font-size: 14px;
   font-weight: 500;
   color: #6c7665;
   border: 1px solid #e5e8dd;
@@ -334,8 +334,8 @@ form > label {
   height: 5px;
 }
 .fine-print {
-  font-size: 11px;
-  color: #7a8377;
+  font-size: 14px;
+  color: #52614f;
   line-height: 1.7;
   margin: 14px 0 0;
 }
@@ -348,7 +348,7 @@ form > label {
   border: 1px solid #eddbd1;
   border-radius: 8px;
   padding: 13px 17px;
-  font-size: 12px;
+  font-size: 16px;
   margin: 16px 0;
   line-height: 1.7;
 }
@@ -367,7 +367,7 @@ form > label {
   gap: 14px;
   border-radius: 9px;
   padding: 14px 18px;
-  font-size: 12px;
+  font-size: 16px;
   box-shadow: 0 5px 25px #24332316;
 }
 .success-notice.inline {
@@ -381,7 +381,7 @@ form > label {
   align-items: center;
   justify-content: center;
   gap: 10px;
-  font-size: 12px;
+  font-size: 16px;
 }
 .spin {
   animation: spin 1.2s linear infinite;
@@ -426,7 +426,7 @@ form > label {
   transform: rotate(-20deg);
 }
 .brand-period {
-  color: #a7b095;
+  color: #52614f;
 }
 .site-header {
   width: 100%;
@@ -448,7 +448,7 @@ form > label {
   gap: 5px;
 }
 .personal-brand > span:not(.brand) {
-  font-size: 8px;
+  font-size: 14px;
   font-weight: 500;
   letter-spacing: 0.13em;
   text-transform: uppercase;
@@ -461,11 +461,11 @@ form > label {
   gap: 26px;
 }
 .primary-nav > a {
-  font-size: 12px;
+  font-size: 16px;
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  color: #85897f;
+  color: #52614f;
   border-bottom: 2px solid transparent;
   padding-top: 2px;
   white-space: nowrap;
@@ -486,7 +486,7 @@ form > label {
   gap: 9px;
   border: 0;
   background: none;
-  font-size: 12px;
+  font-size: 16px;
 }
 .avatar {
   width: 31px;
@@ -498,7 +498,7 @@ form > label {
   border-radius: 50%;
   background: #ebeade;
   font-family: var(--serif);
-  font-size: 16px;
+  font-size: 18px;
 }
 .profile-options {
   position: absolute;
@@ -521,7 +521,7 @@ form > label {
   gap: 12px;
   width: 100%;
   padding: 12px;
-  font-size: 12px;
+  font-size: 16px;
   text-align: left;
 }
 .profile-options a:hover,
@@ -542,8 +542,8 @@ form > label {
   align-items: center;
   gap: 12px;
   background: #eeefe6;
-  color: #7c816e;
-  font-size: 10px;
+  color: #52614f;
+  font-size: 14px;
   padding: 8px 20px;
   line-height: 1.5;
   border-bottom: 1px solid #e7e8dd;
@@ -553,7 +553,7 @@ form > label {
   align-items: center;
   gap: 6px;
   letter-spacing: 0.09em;
-  font-size: 8px;
+  font-size: 14px;
   font-weight: 600;
 }
 .page {
@@ -569,7 +569,7 @@ form > label {
   margin-bottom: 34px;
 }
 .search-intro .eyebrow {
-  font-size: 10px;
+  font-size: 14px;
   color: #6b7767;
 }
 .search-intro h1 {
@@ -583,7 +583,7 @@ form > label {
 }
 .search-intro p {
   color: #6b7767;
-  font-size: 14px;
+  font-size: 18px;
   margin-bottom: 0;
 }
 .search-main {
@@ -618,8 +618,8 @@ form > label {
   padding: 8px 13px;
   background: transparent;
   border-radius: 4px;
-  font-size: 12px;
-  color: #7c8473;
+  font-size: 16px;
+  color: #52614f;
 }
 .trip-toggle button.active {
   background: #fff;
@@ -630,11 +630,11 @@ form > label {
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  font-size: 12px;
+  font-size: 16px;
   color: #6b7767;
 }
 .search-traveler > span:not(.green-dot) {
-  color: #ccd1c3;
+  color: #52614f;
 }
 .search-fields {
   display: grid;
@@ -651,7 +651,7 @@ form > label {
 }
 .airport-field > label,
 .date-field > label {
-  font-size: 10px;
+  font-size: 14px;
   letter-spacing: 0.12em;
   font-weight: 600;
   color: #6b7767;
@@ -662,7 +662,7 @@ form > label {
   border-radius: 0;
   padding: 0;
   background: transparent;
-  font-size: 17px;
+  font-size: 18px;
   font-weight: 500;
   color: #354d39;
   margin-top: 6px;
@@ -676,8 +676,8 @@ form > label {
 }
 .airport-field > small,
 .date-field > small {
-  font-size: 11px;
-  color: #75806e;
+  font-size: 14px;
+  color: #52614f;
   display: block;
   line-height: 1.5;
   margin-top: 3px;
@@ -688,7 +688,7 @@ form > label {
   min-width: 0;
 }
 .date-field > input {
-  font-size: 14px;
+  font-size: 18px;
 }
 .swap-button {
   width: 25px;
@@ -700,11 +700,11 @@ form > label {
   align-items: center;
   justify-content: center;
   transform: rotate(90deg);
-  color: #89947c;
+  color: #52614f;
 }
 .search-submit {
   height: 48px;
-  font-size: 12px;
+  font-size: 16px;
   gap: 8px;
   padding: 10px 16px;
 }
@@ -726,7 +726,7 @@ form > label {
   display: flex;
   gap: 13px;
   padding: 10px 12px;
-  font-size: 12px;
+  font-size: 16px;
   cursor: pointer;
   border-radius: 5px;
 }
@@ -737,12 +737,12 @@ form > label {
 .airport-options li b {
   min-width: 32px;
   padding-top: 3px;
-  font-size: 11px;
+  font-size: 14px;
 }
 .airport-options li small {
   display: block;
-  font-size: 10px;
-  color: #8c9286;
+  font-size: 14px;
+  color: #52614f;
   margin-top: 3px;
 }
 .filter-section {
@@ -750,17 +750,17 @@ form > label {
   padding: 18px 0 13px;
 }
 .filter-section > label {
-  font-size: 8px;
+  font-size: 14px;
   letter-spacing: 0.1em;
   font-weight: 600;
-  color: #8d9582;
+  color: #52614f;
   margin-bottom: 9px;
 }
 .filter-section input,
 .filter-section select {
   background: #f9faf5;
   border-color: #e7ebdf;
-  font-size: 10px;
+  font-size: 14px;
   min-height: 34px;
   padding: 8px;
 }
@@ -771,7 +771,7 @@ form > label {
   justify-content: space-between;
   gap: 10px;
   cursor: pointer;
-  font-size: 10px;
+  font-size: 14px;
   color: #626e59;
   font-weight: 400;
   margin: 12px 0 7px;
@@ -781,8 +781,8 @@ form > label {
 }
 .toggle-row small {
   display: block;
-  color: #a0a592;
-  font-size: 8px;
+  color: #52614f;
+  font-size: 14px;
   line-height: 1.7;
   margin-top: 2px;
 }
@@ -830,15 +830,15 @@ form > label {
   display: flex;
   align-items: center;
   gap: 8px;
-  color: #9ea68f;
+  color: #52614f;
 }
 .time-window > select {
   min-width: 0;
   flex: 1;
 }
 .filter-footnote {
-  font-size: 9px;
-  color: #939c86;
+  font-size: 14px;
+  color: #52614f;
   line-height: 1.8;
   margin: 16px 0 0;
 }
@@ -851,7 +851,7 @@ form > label {
   color: #687b58;
 }
 .concierge-note h4 {
-  font-size: 12px;
+  font-size: 16px;
   margin-top: 12px;
   margin-bottom: 7px;
   font-weight: 500;
@@ -863,15 +863,15 @@ form > label {
   font-weight: 400;
 }
 .concierge-note p {
-  font-size: 10px;
-  color: #929b84;
+  font-size: 14px;
+  color: #52614f;
   line-height: 1.85;
   margin-bottom: 12px;
 }
 .concierge-note > span {
-  font-size: 7px;
+  font-size: 14px;
   letter-spacing: 0.12em;
-  color: #9aa78b;
+  color: #52614f;
 }
 .results-heading {
   display: flex;
@@ -886,7 +886,7 @@ form > label {
   letter-spacing: -0.035em;
 }
 .results-heading .eyebrow {
-  font-size: 8px;
+  font-size: 14px;
 }
 .active-preferences {
   display: flex;
@@ -895,7 +895,7 @@ form > label {
   margin-bottom: 22px;
 }
 .active-preferences .badge {
-  font-size: 9px;
+  font-size: 14px;
   padding: 4px 7px;
 }
 .site-footer {
@@ -908,7 +908,7 @@ form > label {
   align-items: center;
   justify-content: space-between;
   gap: 25px;
-  color: #77846e;
+  color: #52614f;
 }
 .site-footer .brand {
   font-size: 22px;
@@ -932,13 +932,13 @@ form > label {
   display: flex;
   gap: 6px;
   align-items: center;
-  font-size: 11px;
+  font-size: 14px;
 }
 .result-summary {
   display: flex;
   justify-content: space-between;
-  font-size: 9px;
-  color: #919b84;
+  font-size: 14px;
+  color: #52614f;
   margin: 0 0 14px;
 }
 .flight-card {
@@ -959,17 +959,17 @@ form > label {
   display: flex;
   align-items: center;
   gap: 7px;
-  font-size: 8px;
+  font-size: 14px;
   letter-spacing: 0.08em;
   color: #5d754c;
   font-weight: 600;
 }
 .recommendation-ribbon > span {
   margin-left: auto;
-  font-size: 9px;
+  font-size: 14px;
   font-weight: 400;
   letter-spacing: 0;
-  color: #8c9b7a;
+  color: #52614f;
 }
 .flight-card-top {
   display: flex;
@@ -983,17 +983,17 @@ form > label {
   align-items: center;
 }
 .carrier h3 {
-  font-size: 13px;
+  font-size: 16px;
   margin: 0 0 5px;
   font-weight: 550;
 }
 .carrier p {
-  font-size: 10px;
-  color: #929b86;
+  font-size: 14px;
+  color: #52614f;
   margin: 0;
 }
 .carrier p > span {
-  color: #c6cdbd;
+  color: #52614f;
   padding: 0 4px;
 }
 .airline-mark {
@@ -1016,15 +1016,15 @@ form > label {
   position: absolute;
   bottom: 2px;
   right: 4px;
-  font-size: 6px;
+  font-size: 14px;
   font-weight: 700;
 }
 .compare-check {
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 9px;
-  color: #8d9980;
+  font-size: 14px;
+  color: #52614f;
   cursor: pointer;
 }
 .compare-check input {
@@ -1042,9 +1042,9 @@ form > label {
   position: absolute;
   top: 12px;
   left: 24px;
-  font-size: 7px;
+  font-size: 14px;
   letter-spacing: 0.1em;
-  color: #a4ad95;
+  color: #52614f;
 }
 .slice-summary:has(.slice-label) {
   padding-top: 33px;
@@ -1061,22 +1061,22 @@ form > label {
   line-height: 1.2;
 }
 .flight-time > span {
-  font-size: 11px;
-  color: #7d8b6f;
+  font-size: 14px;
+  color: #52614f;
   margin: 6px 0 4px;
   letter-spacing: 0.06em;
 }
 .flight-time > small {
-  font-size: 8px;
-  color: #a2aa95;
+  font-size: 14px;
+  color: #52614f;
 }
 .flight-time.end {
   text-align: right;
 }
 .flight-time sup {
-  font-size: 10px;
+  font-size: 14px;
   letter-spacing: 0;
-  color: #94a180;
+  color: #52614f;
   position: relative;
   top: -5px;
   margin-left: 4px;
@@ -1087,19 +1087,19 @@ form > label {
   padding: 0 20px;
 }
 .flight-line > span {
-  font-size: 10px;
-  color: #8b987d;
+  font-size: 14px;
+  color: #52614f;
 }
 .flight-line > small {
-  font-size: 9px;
-  color: #889678;
+  font-size: 14px;
+  color: #52614f;
 }
 .flight-line > div {
   display: flex;
   align-items: center;
   gap: 5px;
   margin: 9px 0;
-  color: #9fac8d;
+  color: #52614f;
 }
 .flight-line > div > span {
   height: 1px;
@@ -1124,15 +1124,15 @@ form > label {
   padding: 4px 24px 16px;
 }
 .match-reasons > span {
-  font-size: 9px;
-  color: #869677;
+  font-size: 14px;
+  color: #52614f;
   display: flex;
   gap: 4px;
   align-items: center;
 }
 .tradeoffs {
-  font-size: 9px;
-  color: #a29474;
+  font-size: 14px;
+  color: #52614f;
   padding: 0 24px 14px;
   margin: 0;
   line-height: 1.7;
@@ -1147,7 +1147,7 @@ form > label {
   gap: 16px;
 }
 .flight-card-bottom > .text-button {
-  font-size: 9px;
+  font-size: 14px;
   gap: 5px;
   white-space: nowrap;
 }
@@ -1168,12 +1168,12 @@ form > label {
   letter-spacing: -0.8px;
 }
 .price-block small {
-  font-size: 8px;
-  color: #9ca58e;
+  font-size: 14px;
+  color: #52614f;
   margin-top: 3px;
 }
 .price-block > .button {
-  font-size: 9px;
+  font-size: 14px;
   min-height: 36px;
   padding: 9px 11px;
   gap: 6px;
@@ -1190,14 +1190,14 @@ form > label {
   border-top: 1px solid var(--line);
 }
 .expanded-flight > div > h4 {
-  font-size: 10px;
+  font-size: 14px;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: #99a78a;
+  color: #52614f;
   margin-bottom: 18px;
 }
 .expanded-flight > .muted {
-  font-size: 10px;
+  font-size: 14px;
   margin-top: 14px;
 }
 .segment-list {
@@ -1221,7 +1221,7 @@ form > label {
   flex: 1;
 }
 .segment b {
-  font-size: 11px;
+  font-size: 14px;
   font-weight: 500;
 }
 .segment-route {
@@ -1229,16 +1229,16 @@ form > label {
   align-items: center;
   gap: 18px;
   margin-top: 10px;
-  font-size: 10px;
-  color: #738568;
+  font-size: 14px;
+  color: #52614f;
 }
 .segment-route > span {
   flex: 1;
 }
 .segment-route small {
   display: block;
-  font-size: 8px;
-  color: #a1ad94;
+  font-size: 14px;
+  color: #52614f;
   margin-top: 6px;
   line-height: 1.7;
 }
@@ -1252,16 +1252,16 @@ form > label {
   border: 1px solid #e5ebdd;
   padding: 4px 6px;
   border-radius: 4px;
-  font-size: 8px;
-  color: #9aa78d;
+  font-size: 14px;
+  color: #52614f;
   text-transform: capitalize;
 }
 .connection-note {
-  font-size: 9px;
+  font-size: 14px;
   background: #f2f5ec;
   padding: 8px 14px;
   margin: 2px 0 18px 20px;
-  color: #8b9a7a;
+  color: #52614f;
   border-radius: 4px;
 }
 .fare-rules {
@@ -1275,26 +1275,26 @@ form > label {
   margin-top: 10px;
 }
 .fare-rules > span {
-  font-size: 10px;
-  color: #7c8c6b;
+  font-size: 14px;
+  color: #52614f;
 }
 .fare-rules > small {
   display: block;
   flex-basis: 100%;
-  font-size: 9px;
-  color: #9aa98a;
+  font-size: 14px;
+  color: #52614f;
   line-height: 1.7;
 }
 .sort-select select {
   background: transparent;
   border: 0;
-  font-size: 10px;
-  color: #7b8b6b;
+  font-size: 14px;
+  color: #52614f;
   padding: 8px;
 }
 .coverage-note {
-  font-size: 9px;
-  color: #a0aa93;
+  font-size: 14px;
+  color: #52614f;
   margin: 16px 3px;
   line-height: 1.8;
 }
@@ -1314,7 +1314,7 @@ form > label {
   border: 1px solid #d9e2cc;
   width: 60px;
   height: 60px;
-  color: #90a178;
+  color: #52614f;
   background: #eff3e8;
   margin-bottom: 20px;
 }
@@ -1324,8 +1324,8 @@ form > label {
   font-weight: 400;
 }
 .search-loading p {
-  font-size: 11px;
-  color: #94a183;
+  font-size: 14px;
+  color: #52614f;
 }
 .skeleton-card {
   height: 120px;
@@ -1351,7 +1351,7 @@ form > label {
   border: 1px dashed #dce3ce;
   border-radius: 10px;
   background: #f4f6ee;
-  color: #91a07d;
+  color: #52614f;
 }
 .empty-state > svg {
   margin-bottom: 20px;
@@ -1364,8 +1364,8 @@ form > label {
   color: #536a44;
 }
 .empty-state p {
-  font-size: 12px;
-  color: #98a58b;
+  font-size: 16px;
+  color: #52614f;
   max-width: 420px;
   margin: 10px auto 18px;
 }
@@ -1379,7 +1379,7 @@ form > label {
   justify-content: center;
 }
 .adjustments .button {
-  font-size: 10px;
+  font-size: 14px;
 }
 .compare-bar {
   position: fixed;
@@ -1395,7 +1395,7 @@ form > label {
   border: 1px solid #d8e2ca;
   border-radius: 10px;
   box-shadow: 0 5px 35px #2433231f;
-  font-size: 11px;
+  font-size: 14px;
 }
 .compare-bar b {
   color: #66814f;
@@ -1406,7 +1406,7 @@ form > label {
 .comparison-table {
   border-collapse: collapse;
   width: 100%;
-  font-size: 12px;
+  font-size: 16px;
   min-width: 500px;
 }
 .comparison-table th,
@@ -1464,8 +1464,8 @@ form > label {
   margin-bottom: 9px;
 }
 .modal-head p {
-  font-size: 11px;
-  color: #929c86;
+  font-size: 14px;
+  color: #52614f;
   margin: 0;
   line-height: 1.8;
 }
@@ -1485,12 +1485,12 @@ form > label {
   margin-top: 13px;
 }
 .page-title-row p {
-  font-size: 12px;
-  color: #8b977e;
+  font-size: 16px;
+  color: #52614f;
   margin: 0;
 }
 .page-title-row > .button {
-  font-size: 11px;
+  font-size: 14px;
 }
 .tabs {
   display: flex;
@@ -1502,8 +1502,8 @@ form > label {
   background: none;
   border: 0;
   border-bottom: 2px solid transparent;
-  color: #939f86;
-  font-size: 11px;
+  color: #52614f;
+  font-size: 14px;
   padding: 14px 0;
   display: flex;
   align-items: center;
@@ -1515,7 +1515,7 @@ form > label {
   color: #4e6840;
 }
 .tabs > button > span {
-  font-size: 9px;
+  font-size: 14px;
   border-radius: 4px;
   background: #ebf0e1;
   padding: 2px 5px;
@@ -1561,7 +1561,7 @@ form > label {
   z-index: 1;
   background: #ffffffeb;
   border: 0;
-  font-size: 8px;
+  font-size: 14px;
   color: #5f7451;
 }
 .trip-photo-code {
@@ -1577,7 +1577,7 @@ form > label {
   padding: 22px;
 }
 .trip-card-body > .eyebrow {
-  font-size: 8px;
+  font-size: 14px;
 }
 .trip-card-body > h2 {
   font-size: 30px;
@@ -1587,13 +1587,13 @@ form > label {
   display: flex;
   align-items: center;
   gap: 10px;
-  font-size: 10px;
-  color: #7e916b;
+  font-size: 14px;
+  color: #52614f;
 }
 .trip-card-route > span {
   margin-left: auto;
-  font-size: 9px;
-  color: #9caa8c;
+  font-size: 14px;
+  color: #52614f;
 }
 .trip-card-footer {
   display: flex;
@@ -1602,8 +1602,8 @@ form > label {
   margin-top: 20px;
   padding-top: 17px;
   border-top: 1px solid #e9edde;
-  font-size: 9px;
-  color: #8c9e76;
+  font-size: 14px;
+  color: #52614f;
 }
 .trip-card-footer > span:last-child {
   display: flex;
@@ -1618,25 +1618,25 @@ form > label {
   background: #f7f2e6;
   border-radius: 8px;
   padding: 18px;
-  color: #92815b;
+  color: #52614f;
   margin-bottom: 25px;
 }
 .attention-banner > span {
   flex: 1;
-  font-size: 12px;
+  font-size: 16px;
 }
 .attention-banner small {
   display: block;
   margin-top: 4px;
-  font-size: 10px;
-  color: #a59b80;
+  font-size: 14px;
+  color: #52614f;
 }
 .divider-label {
   display: flex;
   align-items: center;
   gap: 12px;
-  color: #abb49f;
-  font-size: 10px;
+  color: #52614f;
+  font-size: 14px;
   margin: 20px 0 8px;
 }
 .divider-label:before,
@@ -1657,16 +1657,16 @@ form > label {
 }
 .form-grid > label {
   min-width: 0;
-  font-size: 11px;
-  color: #81916e;
+  font-size: 14px;
+  color: #52614f;
 }
 .review-note {
   padding: 16px;
   border: 1px solid #e8dec2;
   border-radius: 7px;
   background: #faf6e9;
-  font-size: 11px;
-  color: #a18c58;
+  font-size: 14px;
+  color: #52614f;
   line-height: 1.8;
   margin: 10px 0 23px;
 }
@@ -1685,7 +1685,7 @@ form > label {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 12px;
+  font-size: 16px;
 }
 .leg-editor .form-grid {
   margin: 15px 0;
@@ -1695,19 +1695,19 @@ form > label {
   gap: 10px;
   align-items: flex-start;
   margin: 22px 0;
-  font-size: 11px;
+  font-size: 14px;
   line-height: 1.7;
-  color: #7e906b;
+  color: #52614f;
 }
 .checkbox-row input {
   margin-top: 3px;
 }
 .back-link {
-  font-size: 11px;
+  font-size: 14px;
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  color: #8d9d79;
+  color: #52614f;
   margin-bottom: 26px;
 }
 .trip-detail-hero {
@@ -1726,14 +1726,14 @@ form > label {
   margin: 12px 0;
 }
 .trip-detail-hero p {
-  font-size: 12px;
-  color: #8a9e72;
+  font-size: 16px;
+  color: #52614f;
 }
 .detail-airport-code {
   font-family: var(--serif);
   font-size: 110px;
   letter-spacing: -5px;
-  color: #d5dfc5;
+  color: #52614f;
 }
 .trip-detail-layout {
   display: grid;
@@ -1751,7 +1751,7 @@ form > label {
   margin: 0;
 }
 .section-heading .text-button {
-  font-size: 10px;
+  font-size: 14px;
 }
 .itinerary-card {
   background: #fff;
@@ -1767,7 +1767,7 @@ form > label {
   margin-bottom: 22px;
 }
 .itinerary-card > .eyebrow {
-  font-size: 8px;
+  font-size: 14px;
 }
 .info-card {
   background: #fff;
@@ -1783,8 +1783,8 @@ form > label {
   margin: 14px 0 22px;
 }
 .info-card > label {
-  font-size: 9px;
-  color: #9baa88;
+  font-size: 14px;
+  color: #52614f;
 }
 .reference-copy {
   border: 1px solid #dce7cb;
@@ -1795,13 +1795,13 @@ form > label {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 16px;
+  font-size: 18px;
   letter-spacing: 0.13em;
-  color: #6d8753;
+  color: #52614f;
   margin-top: 7px;
 }
 .info-card dl {
-  font-size: 11px;
+  font-size: 14px;
   margin: 24px 0;
 }
 .info-card dl > div {
@@ -1812,12 +1812,12 @@ form > label {
   margin-bottom: 14px;
 }
 .info-card dt {
-  color: #9aaa89;
+  color: #52614f;
 }
 .info-card dd {
   margin: 0;
   text-transform: capitalize;
-  color: #70865b;
+  color: #52614f;
   text-align: right;
 }
 .document-button {
@@ -1828,7 +1828,7 @@ form > label {
   border: 1px solid #e2ebd5;
   border-radius: 5px;
   padding: 12px;
-  font-size: 10px;
+  font-size: 14px;
   margin-top: 10px;
   width: 100%;
   text-align: left;
@@ -1841,11 +1841,11 @@ form > label {
   border: 1px dashed #dfe7d1;
   border-radius: 9px;
   padding: 30px;
-  color: #8da276;
+  color: #52614f;
   background: #f4f8ed;
 }
 .discovery-placeholder p {
-  font-size: 11px;
+  font-size: 14px;
   margin: 17px auto;
   max-width: 300px;
 }
@@ -1872,28 +1872,28 @@ form > label {
   background: #f0f5e7;
   padding: 10px;
   border-radius: 6px;
-  color: #94a87a;
+  color: #52614f;
 }
 .place-card > div {
   flex: 1;
 }
 .place-card h4 {
-  font-size: 13px;
+  font-size: 16px;
   margin: 0 0 8px;
 }
 .place-card p {
-  font-size: 11px;
-  color: #9cae86;
+  font-size: 14px;
+  color: #52614f;
   margin: 5px 0;
 }
 .place-card small {
-  font-size: 9px;
-  color: #a6b595;
+  font-size: 14px;
+  color: #52614f;
   display: block;
   line-height: 1.8;
 }
 .place-card > svg {
-  color: #93a879;
+  color: #52614f;
 }
 .calendar-toolbar {
   display: flex;
@@ -1912,7 +1912,7 @@ form > label {
 }
 .month-selector > .text-button {
   margin-left: 15px;
-  font-size: 10px;
+  font-size: 14px;
 }
 .calendar-wrap {
   border: 1px solid #dde7ce;
@@ -1931,8 +1931,8 @@ form > label {
 .calendar-day-names > span {
   text-align: center;
   padding: 14px;
-  font-size: 10px;
-  color: #8a9f72;
+  font-size: 14px;
+  color: #52614f;
 }
 .calendar-day {
   min-height: 120px;
@@ -1945,8 +1945,8 @@ form > label {
   border-right: 0;
 }
 .day-number {
-  font-size: 10px;
-  color: #8e9f7b;
+  font-size: 14px;
+  color: #52614f;
   display: inline-flex;
   width: 22px;
   height: 22px;
@@ -1957,7 +1957,7 @@ form > label {
   background: #fafcf6;
 }
 .other-month .day-number {
-  color: #d0d8c4;
+  color: #52614f;
 }
 .today .day-number {
   background: #526e3d;
@@ -1971,9 +1971,9 @@ form > label {
   gap: 4px;
   padding: 7px 5px;
   border-radius: 4px;
-  font-size: 8px;
+  font-size: 14px;
   background: #edf4e2;
-  color: #809a62;
+  color: #52614f;
   margin: 6px -2px 0;
   line-height: 1.6;
 }
@@ -1989,8 +1989,8 @@ form > label {
   align-items: center;
   gap: 8px;
   margin-top: 22px;
-  color: #a1b18d;
-  font-size: 10px;
+  color: #52614f;
+  font-size: 14px;
   line-height: 1.8;
 }
 .agenda-event {
@@ -2015,28 +2015,28 @@ form > label {
   font-weight: 400;
 }
 .agenda-date span {
-  font-size: 9px;
+  font-size: 14px;
   text-transform: uppercase;
-  color: #95a97d;
+  color: #52614f;
 }
 .agenda-event > svg {
-  color: #a3b78d;
+  color: #52614f;
 }
 .agenda-event > div:last-of-type {
   flex: 1;
 }
 .agenda-event h3 {
-  font-size: 13px;
+  font-size: 16px;
   margin-bottom: 8px;
 }
 .agenda-event p {
-  font-size: 10px;
-  color: #95aa7e;
+  font-size: 14px;
+  color: #52614f;
   margin: 0 0 7px;
 }
 .agenda-event small {
-  font-size: 9px;
-  color: #b2bfa0;
+  font-size: 14px;
+  color: #52614f;
 }
 .preferences-layout {
   display: grid;
@@ -2054,7 +2054,7 @@ form > label {
   font-size: 27px;
 }
 .settings-card > h3 {
-  font-size: 16px;
+  font-size: 18px;
 }
 .settings-heading {
   display: flex;
@@ -2071,15 +2071,15 @@ form > label {
   background: #edf3e3;
   border: 1px solid #e1eacc;
   border-radius: 8px;
-  color: #8ba76d;
+  color: #52614f;
 }
 .settings-heading h2 {
   font-size: 26px;
   margin-bottom: 8px;
 }
 .settings-heading p {
-  font-size: 11px;
-  color: #a1b08d;
+  font-size: 14px;
+  color: #52614f;
   margin: 0;
 }
 .settings-card > .airport-field {
@@ -2107,23 +2107,23 @@ form > label {
   grid-column: 1/-1;
 }
 .settings-card .toggle-row {
-  font-size: 11px;
+  font-size: 14px;
   margin: 18px 0;
 }
 .settings-card .toggle-row small {
-  font-size: 9px;
+  font-size: 14px;
 }
 .settings-card .filter-section input,
 .settings-card .filter-section select {
-  font-size: 12px;
+  font-size: 16px;
   min-height: 38px;
 }
 .private-label {
   display: flex;
   align-items: center;
   gap: 7px;
-  font-size: 10px;
-  color: #92a17e;
+  font-size: 14px;
+  color: #52614f;
 }
 .connection-card > .settings-icon {
   margin-bottom: 20px;
@@ -2133,27 +2133,27 @@ form > label {
   line-height: 1.2;
 }
 .connection-card > p {
-  font-size: 11px;
-  color: #99aa84;
+  font-size: 14px;
+  color: #52614f;
 }
 .connection-status {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 20px 0 8px;
-  font-size: 12px;
+  font-size: 16px;
 }
 .setup-note {
-  font-size: 10px !important;
+  font-size: 14px !important;
   padding: 12px;
   background: #f3f7ed;
   border: 1px solid #e4ecd8;
   border-radius: 6px;
-  color: #9cae86 !important;
+  color: #52614f !important;
   line-height: 1.8;
 }
 .forwarding-address {
-  font-size: 10px;
+  font-size: 14px;
   display: flex;
   gap: 10px;
   align-items: center;
@@ -2167,7 +2167,7 @@ form > label {
   text-align: left;
 }
 .danger-text {
-  color: #ab8272;
+  color: #52614f;
 }
 .checkout-steps {
   display: flex;
@@ -2180,11 +2180,11 @@ form > label {
   display: flex;
   align-items: center;
   gap: 9px;
-  font-size: 11px;
-  color: #b3c0a0;
+  font-size: 14px;
+  color: #52614f;
 }
 .checkout-steps > span > b {
-  font-size: 9px;
+  font-size: 14px;
   width: 22px;
   height: 22px;
   display: inline-flex;
@@ -2200,7 +2200,7 @@ form > label {
 .checkout-steps > .active > b,
 .checkout-steps > .done > b {
   background: #e7f0da;
-  color: #79965d;
+  color: #52614f;
   border-color: #d7e5c5;
 }
 .checkout-layout {
@@ -2223,8 +2223,8 @@ form > label {
   align-items: center;
 }
 .checkout-summary > p {
-  font-size: 11px;
-  color: #93a67d;
+  font-size: 14px;
+  color: #52614f;
 }
 .total-row {
   border-top: 1px solid #e5ecda;
@@ -2239,8 +2239,8 @@ form > label {
   display: flex;
   gap: 8px;
   align-items: center;
-  font-size: 10px;
-  color: #9aaf81;
+  font-size: 14px;
+  color: #52614f;
   margin-top: 24px;
 }
 .passenger-review {
@@ -2252,32 +2252,32 @@ form > label {
   background: #f8fbf3;
   border-radius: 7px;
   margin: 25px 0;
-  color: #849f68;
+  color: #52614f;
 }
 .passenger-review > div {
   flex: 1;
 }
 .passenger-review b {
-  font-size: 12px;
+  font-size: 16px;
 }
 .passenger-review p {
-  font-size: 10px;
+  font-size: 14px;
   margin: 6px 0 0;
-  color: #a4b58e;
+  color: #52614f;
 }
 .demo-payment {
   display: flex;
   align-items: center;
   gap: 15px;
   padding: 25px 0;
-  color: #8da875;
+  color: #52614f;
 }
 .demo-payment b {
-  font-size: 12px;
+  font-size: 16px;
 }
 .demo-payment p {
-  font-size: 10px;
-  color: #a5b591;
+  font-size: 14px;
+  color: #52614f;
   margin: 8px 0 0;
 }
 .booking-result {
@@ -2297,7 +2297,7 @@ form > label {
   align-items: center;
   justify-content: center;
   background: #e6efd9;
-  color: #81a260;
+  color: #52614f;
   border: 1px solid #d8e5c7;
   margin-bottom: 35px;
 }
@@ -2306,8 +2306,8 @@ form > label {
   margin-top: 17px;
 }
 .booking-result > p {
-  font-size: 12px;
-  color: #9ab282;
+  font-size: 16px;
+  color: #52614f;
   line-height: 1.8;
 }
 .booking-result > .button {
@@ -2329,7 +2329,7 @@ form > label {
   padding: 65px 0;
 }
 .login-copy > .eyebrow {
-  font-size: 8px;
+  font-size: 14px;
 }
 .login-copy h1 {
   font-size: 58px;
@@ -2343,7 +2343,7 @@ form > label {
   font-style: italic;
 }
 .login-copy > p {
-  font-size: 14px;
+  font-size: 18px;
   color: #6b7767;
   line-height: 1.9;
 }
@@ -2355,21 +2355,21 @@ form > label {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 10px;
-  color: #9ba88c;
+  font-size: 14px;
+  color: #52614f;
   margin-bottom: 15px;
 }
 .login-form .button {
-  font-size: 11px;
+  font-size: 14px;
 }
 .login-form form label {
-  font-size: 10px;
+  font-size: 14px;
   margin-top: 15px;
 }
 .login-footer {
-  font-size: 7px;
+  font-size: 14px;
   letter-spacing: 0.15em;
-  color: #acb79b;
+  color: #52614f;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -2380,10 +2380,10 @@ form > label {
 }
 .preferences-page input,
 .preferences-page select {
-  font-size: 12px;
+  font-size: 16px;
 }
 .login-page .error-notice {
-  font-size: 11px;
+  font-size: 14px;
 }
 
 @media (min-width: 1400px) {
@@ -2412,14 +2412,14 @@ form > label {
     gap: 11px;
   }
   .search-fields .airport-field > input {
-    font-size: 16px;
+    font-size: 18px;
   }
 
   .price-block {
     gap: 7px;
   }
   .price-block > .button {
-    font-size: 8px;
+    font-size: 14px;
     padding: 9px;
   }
   .price-block strong {
@@ -2429,7 +2429,7 @@ form > label {
     padding: 14px 20px;
   }
   .flight-card-bottom > .text-button {
-    font-size: 8px;
+    font-size: 14px;
   }
   .primary-nav {
     gap: 23px;
@@ -2457,7 +2457,7 @@ form > label {
     gap: 20px;
   }
   .primary-nav > a {
-    font-size: 11px;
+    font-size: 14px;
   }
   .page,
   .site-footer {
@@ -2511,7 +2511,7 @@ form > label {
     padding: 30px;
   }
   .calendar-flight {
-    font-size: 7px;
+    font-size: 14px;
   }
   .calendar-day {
     min-height: 100px;
@@ -2557,7 +2557,7 @@ form > label {
     flex: 1;
     justify-content: center;
     flex-direction: column;
-    font-size: 10px;
+    font-size: 14px;
     gap: 5px;
     padding: 7px 4px;
   }
@@ -2585,13 +2585,13 @@ form > label {
   }
   .demo-banner {
     gap: 7px;
-    font-size: 8px;
+    font-size: 14px;
     padding: 7px 15px;
     text-align: center;
     line-height: 1.6;
   }
   .demo-banner > span {
-    font-size: 7px;
+    font-size: 14px;
     white-space: nowrap;
     gap: 4px;
   }
@@ -2616,11 +2616,11 @@ form > label {
     font-size: 37px;
   }
   .search-intro p {
-    font-size: 13px;
+    font-size: 16px;
     max-width: 280px;
   }
   .search-intro .eyebrow {
-    font-size: 9px;
+    font-size: 14px;
   }
   .search-main {
     margin-top: 32px;
@@ -2629,7 +2629,7 @@ form > label {
     gap: 3px;
   }
   .personal-brand > span:not(.brand) {
-    font-size: 7px;
+    font-size: 14px;
   }
   .search-box {
     margin: 0;
@@ -2654,16 +2654,16 @@ form > label {
     padding-left: 8px;
   }
   .search-fields > .date-field input {
-    font-size: 13px;
+    font-size: 16px;
   }
   .search-fields.oneway > .date-field {
     grid-column: 1/-1;
   }
   .search-fields .airport-field input {
-    font-size: 16px;
+    font-size: 18px;
   }
   .search-fields .airport-field small {
-    font-size: 10px;
+    font-size: 14px;
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
@@ -2675,24 +2675,24 @@ form > label {
     gap: 14px;
   }
   .search-traveler {
-    font-size: 10px;
+    font-size: 14px;
     gap: 6px;
   }
   .trip-toggle button {
-    font-size: 11px;
+    font-size: 14px;
     padding: 7px 8px;
   }
   .search-submit {
     margin-top: 0;
     min-height: 42px;
-    font-size: 11px;
+    font-size: 14px;
   }
   .results-heading h2 {
     font-size: 28px;
     margin-top: 7px;
   }
   .results-heading .eyebrow {
-    font-size: 7px;
+    font-size: 14px;
   }
   .results-heading {
     flex-wrap: wrap;
@@ -2703,14 +2703,14 @@ form > label {
     margin-left: auto;
   }
   .sort-select select {
-    font-size: 9px;
+    font-size: 14px;
   }
   .active-preferences {
     margin-bottom: 20px;
     gap: 5px;
   }
   .active-preferences .badge {
-    font-size: 8px;
+    font-size: 14px;
     padding: 4px 6px;
   }
   .site-footer {
@@ -2727,10 +2727,10 @@ form > label {
     text-align: right;
   }
   .site-footer > span {
-    font-size: 10px;
+    font-size: 14px;
   }
   .result-summary {
-    font-size: 8px;
+    font-size: 14px;
     line-height: 1.7;
     gap: 12px;
   }
@@ -2741,17 +2741,17 @@ form > label {
     padding: 18px 17px 0;
   }
   .carrier h3 {
-    font-size: 12px;
+    font-size: 16px;
   }
   .carrier p {
-    font-size: 9px;
+    font-size: 14px;
   }
   .airline-mark {
     width: 34px;
     height: 34px;
   }
   .compare-check {
-    font-size: 8px;
+    font-size: 14px;
   }
   .carrier {
     gap: 10px;
@@ -2762,7 +2762,7 @@ form > label {
   }
   .slice-label {
     left: 17px;
-    font-size: 6px;
+    font-size: 14px;
   }
   .flight-time {
     min-width: 60px;
@@ -2774,13 +2774,13 @@ form > label {
     padding: 0 15px;
   }
   .flight-line > span {
-    font-size: 9px;
+    font-size: 14px;
   }
   .flight-line > small {
-    font-size: 8px;
+    font-size: 14px;
   }
   .flight-time > span {
-    font-size: 10px;
+    font-size: 14px;
     margin-top: 5px;
   }
   .match-reasons {
@@ -2788,18 +2788,18 @@ form > label {
     padding: 4px 17px 14px;
   }
   .match-reasons > span {
-    font-size: 8px;
+    font-size: 14px;
   }
   .tradeoffs {
     padding: 0 17px 13px;
-    font-size: 8px;
+    font-size: 14px;
   }
   .flight-card-bottom {
     padding: 13px 17px;
     gap: 13px;
   }
   .flight-card-bottom > .text-button {
-    font-size: 9px;
+    font-size: 14px;
   }
   .price-block {
     width: 100%;
@@ -2813,7 +2813,7 @@ form > label {
     font-size: 22px;
   }
   .price-block > .button {
-    font-size: 9px;
+    font-size: 14px;
     padding: 10px 11px;
     min-height: 39px;
   }
@@ -2822,22 +2822,22 @@ form > label {
   }
   .segment-route {
     gap: 10px;
-    font-size: 9px;
+    font-size: 14px;
     flex-wrap: wrap;
   }
   .segment-route small {
-    font-size: 7px;
+    font-size: 14px;
     overflow-wrap: anywhere;
   }
   .segment-meta > span {
-    font-size: 7px;
+    font-size: 14px;
   }
   .recommendation-ribbon {
-    font-size: 7px;
+    font-size: 14px;
     padding: 9px 17px;
   }
   .recommendation-ribbon > span {
-    font-size: 8px;
+    font-size: 14px;
   }
   .compare-bar {
     gap: 12px;
@@ -2845,14 +2845,14 @@ form > label {
     width: calc(100% - 28px);
     padding: 12px;
     justify-content: space-between;
-    font-size: 9px;
+    font-size: 14px;
   }
   .compare-bar .button {
-    font-size: 10px;
+    font-size: 14px;
     padding: 10px;
   }
   .compare-bar .text-button {
-    font-size: 9px;
+    font-size: 14px;
   }
   .modal {
     padding: 23px 20px;
@@ -2865,19 +2865,19 @@ form > label {
     margin-top: -12px;
   }
   .modal .filter-section > label {
-    font-size: 9px;
+    font-size: 14px;
   }
   .modal .filter-section input,
   .modal .filter-section select {
-    font-size: 12px;
+    font-size: 16px;
     min-height: 40px;
   }
   .modal .toggle-row {
-    font-size: 12px;
+    font-size: 16px;
     margin-top: 18px;
   }
   .modal .toggle-row small {
-    font-size: 10px;
+    font-size: 14px;
   }
   .standard-page {
     padding-top: 33px;
@@ -2894,13 +2894,13 @@ form > label {
     margin-top: 12px;
   }
   .page-title-row p {
-    font-size: 11px;
+    font-size: 14px;
   }
   .page-title-row .eyebrow {
-    font-size: 8px;
+    font-size: 14px;
   }
   .page-title-row > .button {
-    font-size: 10px;
+    font-size: 14px;
     min-height: 38px;
     padding: 10px 13px;
   }
@@ -2918,27 +2918,27 @@ form > label {
     font-size: 31px;
   }
   .trip-card-route {
-    font-size: 11px;
+    font-size: 14px;
   }
   .tabs {
     gap: 22px;
     margin-bottom: 22px;
   }
   .tabs > button {
-    font-size: 10px;
+    font-size: 14px;
   }
   .attention-banner {
     padding: 15px;
     gap: 10px;
   }
   .attention-banner > span {
-    font-size: 10px;
+    font-size: 14px;
   }
   .attention-banner small {
-    font-size: 9px;
+    font-size: 14px;
   }
   .attention-banner .text-button {
-    font-size: 10px;
+    font-size: 14px;
   }
   .trip-detail-hero {
     padding: 26px;
@@ -2948,7 +2948,7 @@ form > label {
     font-size: 44px;
   }
   .trip-detail-hero p {
-    font-size: 10px;
+    font-size: 14px;
     max-width: 220px;
   }
   .detail-airport-code {
@@ -2982,7 +2982,7 @@ form > label {
     font-size: 25px;
   }
   .section-heading .text-button {
-    font-size: 9px;
+    font-size: 14px;
   }
   .calendar-toolbar {
     align-items: center;
@@ -2996,11 +2996,11 @@ form > label {
     font-size: 23px;
   }
   .month-selector > .text-button {
-    font-size: 9px;
+    font-size: 14px;
     margin-left: 7px;
   }
   .calendar-day-names > span {
-    font-size: 8px;
+    font-size: 14px;
     padding: 11px 4px;
   }
   .calendar-day {
@@ -3008,12 +3008,12 @@ form > label {
     padding: 8px 3px;
   }
   .day-number {
-    font-size: 8px;
+    font-size: 14px;
     width: 19px;
     height: 19px;
   }
   .calendar-flight {
-    font-size: 6px;
+    font-size: 14px;
     padding: 4px 3px;
     gap: 1px;
   }
@@ -3024,10 +3024,10 @@ form > label {
     white-space: normal;
     word-break: break-word;
     line-height: 1.6;
-    font-size: 6px;
+    font-size: 14px;
   }
   .calendar-note {
-    font-size: 9px;
+    font-size: 14px;
     align-items: flex-start;
     line-height: 1.8;
   }
@@ -3042,10 +3042,10 @@ form > label {
     width: 17px;
   }
   .agenda-event h3 {
-    font-size: 11px;
+    font-size: 14px;
   }
   .agenda-event p {
-    font-size: 8px;
+    font-size: 14px;
     line-height: 1.9;
   }
   .agenda-date strong {
@@ -3062,22 +3062,22 @@ form > label {
     font-size: 25px;
   }
   .settings-card > .airport-field > small {
-    font-size: 10px;
+    font-size: 14px;
   }
   .settings-card .filter-content {
     display: block;
   }
   .settings-card .filter-section > label {
-    font-size: 9px;
+    font-size: 14px;
   }
   .settings-card .toggle-row {
-    font-size: 12px;
+    font-size: 16px;
   }
   .settings-card .toggle-row small {
-    font-size: 10px;
+    font-size: 14px;
   }
   .private-label {
-    font-size: 9px;
+    font-size: 14px;
   }
   .form-grid {
     gap: 15px 12px;
@@ -3089,11 +3089,11 @@ form > label {
     grid-column: 1/-1;
   }
   .form-grid label {
-    font-size: 10px;
+    font-size: 14px;
   }
   .form-grid input,
   .form-grid select {
-    font-size: 11px;
+    font-size: 14px;
     padding: 10px;
   }
   .leg-editor {
@@ -3125,13 +3125,13 @@ form > label {
     padding-bottom: 20px;
   }
   .checkout-steps > span {
-    font-size: 9px;
+    font-size: 14px;
     gap: 6px;
   }
   .checkout-steps > span > b {
     width: 20px;
     height: 20px;
-    font-size: 8px;
+    font-size: 14px;
     flex-shrink: 0;
   }
   .checkout-main {
@@ -3145,11 +3145,11 @@ form > label {
     gap: 10px;
   }
   .passenger-review p {
-    font-size: 8px;
+    font-size: 14px;
     word-break: break-all;
   }
   .passenger-review b {
-    font-size: 11px;
+    font-size: 14px;
   }
   .booking-result {
     padding-top: 55px;
@@ -3162,7 +3162,7 @@ form > label {
     left: 15px;
     right: 15px;
     max-width: none;
-    font-size: 11px;
+    font-size: 14px;
   }
   .login-page {
     display: grid;
@@ -3182,24 +3182,24 @@ form > label {
     margin-bottom: 17px;
   }
   .login-copy > p {
-    font-size: 11px;
+    font-size: 14px;
   }
   .login-form {
     margin-top: 28px;
     max-width: none;
   }
   .login-copy > .eyebrow {
-    font-size: 7px;
+    font-size: 14px;
   }
   .login-form .button {
-    font-size: 12px;
+    font-size: 16px;
     min-height: 46px;
   }
   .login-form .fine-print {
-    font-size: 9px;
+    font-size: 14px;
   }
   .login-footer {
-    font-size: 6px;
+    font-size: 14px;
   }
   .login-content > .brand {
     font-size: 26px;
@@ -3222,7 +3222,7 @@ form > label {
   margin-top: 22px;
 }
 .fare-options > h4 {
-  font-size: 12px;
+  font-size: 16px;
 }
 .fare-option {
   display: flex;
@@ -3236,26 +3236,26 @@ form > label {
 }
 .fare-option b,
 .fare-option strong {
-  font-size: 12px;
+  font-size: 16px;
 }
 .fare-option p {
-  font-size: 10px;
+  font-size: 14px;
   color: #65705f;
   margin: 6px 0;
 }
 .fare-option small {
-  font-size: 9px;
+  font-size: 14px;
   color: #65705f;
 }
 .fare-option .button {
-  font-size: 10px;
+  font-size: 14px;
 }
 .source-links {
   display: flex;
   gap: 14px;
   flex-wrap: wrap;
   margin: 4px 0 20px;
-  font-size: 10px;
+  font-size: 14px;
   color: #65705f;
 }
 .source-links a {
@@ -3278,7 +3278,7 @@ form > label {
 
 @media (max-width: 760px) {
   .calendar-flight b {
-    font-size: 8px;
+    font-size: 14px;
   }
   .calendar-flight > span {
     display: none;
@@ -3287,51 +3287,51 @@ form > label {
 
 @media (max-width: 760px) {
   .agenda-event h3 {
-    font-size: 13px;
+    font-size: 16px;
   }
   .agenda-event p,
   .agenda-event small {
-    font-size: 10px;
+    font-size: 14px;
   }
   .agenda-date span {
-    font-size: 10px;
+    font-size: 14px;
   }
   .search-fields .airport-field input {
-    font-size: 14px;
+    font-size: 18px;
   }
   .search-fields .airport-field small,
   .date-field > small {
-    font-size: 10px;
+    font-size: 14px;
   }
   .airport-field > label,
   .date-field > label {
-    font-size: 10px;
+    font-size: 14px;
   }
   .carrier h3 {
-    font-size: 14px;
+    font-size: 18px;
   }
   .carrier p,
   .flight-time > small,
   .flight-line > small {
-    font-size: 10px;
+    font-size: 14px;
   }
   .match-reasons > span,
   .tradeoffs {
-    font-size: 10px;
+    font-size: 14px;
   }
   .price-block > .button {
-    font-size: 10px;
+    font-size: 14px;
     min-height: 44px;
   }
   .flight-card-bottom > .text-button,
   .compare-check {
-    font-size: 11px;
+    font-size: 14px;
   }
 }
 
 .google-sign-in {
   min-height: 48px;
-  font-size: 13px;
+  font-size: 16px;
 }
 .google-letter {
   font-family: Arial, sans-serif;
@@ -3341,4 +3341,121 @@ form > label {
 }
 .google-sign-in > svg {
   margin-left: auto;
+}
+
+/* Readable, spacious controls across the private travel desk. */
+:root { font-size: 18px; --muted: #52614f; }
+body { font-size: 18px; line-height: 1.55; }
+h3 { font-size: 20px; } h4 { font-size: 18px; }
+label { font-size: 16px; color: #435744; }
+input, select, textarea { font-size: 18px; min-height: 48px; }
+input::placeholder, textarea::placeholder { color: #65705f; }
+.button { min-height: 48px; font-size: 16px; }
+.icon-button { width: 44px; height: 44px; }
+.primary-nav > a { font-size: 16px; color: #52614f; }
+.personal-brand > span:not(.brand) { font-size: 13px; letter-spacing: .05em; }
+.search-page { padding-top: 48px; }
+.search-intro { margin-bottom: 28px; }
+.search-intro h1 { font-size: clamp(38px, 4.2vw, 54px); max-width: 920px; }
+.search-intro p { font-size: 20px; max-width: 760px; color: #52614f; }
+.search-intro .eyebrow { font-size: 14px; letter-spacing: .10em; }
+.search-box { padding: 30px; border-radius: 14px; }
+.search-box-top { gap: 18px; flex-wrap: wrap; }
+.trip-toggle button { min-height: 46px; font-size: 16px; color: #435744; }
+.search-traveler { font-size: 16px; color: #52614f; }
+.search-fields { grid-template-columns: minmax(0,1.25fr) 44px minmax(0,1.25fr) minmax(0,1fr) minmax(0,1fr); gap: 20px; align-items: start; }
+.search-fields.oneway { grid-template-columns: minmax(0,1.3fr) 44px minmax(0,1.3fr) minmax(0,1.1fr); }
+.airport-field > label, .date-field > label { font-size: 16px; letter-spacing: .02em; color: #435744; text-transform: none; }
+.search-fields .airport-field > input { font-size: 22px; min-height: 38px; font-weight: 600; }
+.search-fields .airport-field small, .date-field > small { font-size: 14px; color: #52614f; white-space: normal; max-width: none; }
+.search-fields .date-field > input { font-size: 18px; min-height: 38px; }
+.swap-button { width: 44px; height: 44px; margin-top: 28px; color: #435744; }
+.search-submit { grid-column: 1/-1; width: 100%; margin-top: 6px; min-height: 56px; font-size: 18px; }
+.result-summary { font-size: 16px; flex-wrap: wrap; gap: 12px; }
+.active-preferences .badge, .badge { font-size: 14px; white-space: normal; }
+.carrier h3 { font-size: 22px; } .carrier p { font-size: 16px; color: #52614f; }
+.airline-mark { width: 52px; height: 52px; }
+.airline-mark > small { font-size: 12px; }
+.compare-check { font-size: 16px; color: #52614f; min-height: 44px; }
+.compare-check input, input[type=checkbox] { width: 20px; height: 20px; }
+.slice-summary { gap: 20px; padding-top: 32px; }
+.slice-summary:has(.slice-label) { padding-top: 46px; }
+.slice-label { font-size: 14px; color: #52614f; }
+.flight-time { min-width: 100px; }
+.flight-time strong { font-size: 36px; }
+.flight-time > span { font-size: 18px; color: #52614f; }
+.flight-time > small, .flight-line > span, .flight-line > small { font-size: 16px; color: #52614f; }
+.match-reasons > span, .tradeoffs { font-size: 16px; color: #52614f; }
+.flight-card-bottom { flex-wrap: wrap; }
+.flight-card-bottom > .text-button { font-size: 16px; min-height: 44px; }
+.price-block { flex-wrap: wrap; gap: 14px; }
+.price-block strong { font-size: 30px; }
+.price-block small { font-size: 14px; color: #52614f; }
+.price-block > .button { min-height: 48px; font-size: 16px; padding: 12px 18px; }
+.expanded-flight h4, .segment b { font-size: 18px; color: #435744; }
+.segment-route, .segment-route small, .segment-meta > span, .fare-rules > span { font-size: 16px; color: #52614f; }
+.recommendation-ribbon { font-size: 14px; flex-wrap: wrap; }
+.recommendation-ribbon > span { font-size: 14px; color: #52614f; }
+.login-form .eyebrow { font-size: 14px; }
+.login-form > p, .login-form .fine-print, .login-note { font-size: 16px; color: #52614f; }
+.google-sign-in { min-height: 56px; font-size: 18px; }
+@media (max-width: 1100px) and (min-width: 761px) {
+ .site-header { padding-inline: 24px; gap: 16px; }
+ .primary-nav { gap: 16px; }
+ .primary-nav > a { font-size: 15px; }
+ .personal-brand > span:not(.brand) { font-size: 12px; }
+ .search-fields, .search-fields.oneway { grid-template-columns: minmax(0,1fr) 44px minmax(0,1fr); }
+ .search-fields > .date-field { grid-column: 1/2; border-left: 0; padding-left: 0; }
+ .search-fields > .date-field + .date-field { grid-column: 3/4; }
+ .search-fields.oneway > .date-field { grid-column: 1/-1; }
+}
+@media (max-width: 760px) {
+ .site-header { height: 80px; margin-bottom: 76px; }
+ .primary-nav { top: 80px; height: 76px; }
+ .primary-nav > a { font-size: 14px; white-space: normal; text-align: center; line-height: 1.3; }
+ .personal-brand > span:not(.brand) { font-size: 12px; }
+ .primary-nav > a > svg { width: 20px; height: 20px; }
+ .search-page { padding-top: 30px; }
+ .search-intro h1 { font-size: 40px; max-width: none; }
+ .search-intro p { font-size: 18px; max-width: none; }
+ .search-intro .eyebrow { font-size: 14px; }
+ .search-box { padding: 22px 18px; }
+ .search-box-top { gap: 14px; margin-bottom: 24px; }
+ .trip-toggle button { font-size: 16px; padding-inline: 14px; }
+ .search-traveler { font-size: 16px; }
+ .search-fields, .search-fields.oneway { grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 18px 12px; }
+ .search-fields > .airport-field { grid-column: 1/-1; }
+ .search-fields .airport-field input { font-size: 22px; }
+ .search-fields > .swap-button { grid-column: 1/-1; margin: -8px 0; justify-self: center; transform: none; }
+ .search-fields > .date-field { grid-column: 1/2; padding-top: 16px; padding-left: 0; }
+ .search-fields > .date-field + .date-field { grid-column: 2/3; padding-left: 0; }
+ .search-fields .date-field > input { font-size: 17px; }
+ .search-fields.oneway > .date-field { grid-column: 1/-1; }
+ .search-submit { font-size: 18px; min-height: 56px; }
+ .airport-options { left: 0; min-width: 0; width: 100%; }
+ .carrier h3 { font-size: 20px; } .carrier p { font-size: 16px; }
+ .flight-card-top { align-items: flex-start; gap: 12px; flex-wrap: wrap; }
+ .compare-check { font-size: 16px; margin-left: auto; }
+ .slice-summary { gap: 8px; }
+ .flight-time { min-width: 85px; }
+ .flight-time strong { font-size: 32px; }
+ .flight-time > span { font-size: 16px; }
+ .flight-time > small, .flight-line > span, .flight-line > small { font-size: 14px; }
+ .flight-line { padding-inline: 3px; }
+ .flight-line > div { margin-block: 12px; }
+ .slice-label { font-size: 14px; }
+ .flight-card-bottom { align-items: stretch; }
+ .price-block { display: grid; grid-template-columns: 1fr; width: 100%; }
+ .price-block > span { text-align: left; margin: 0 0 6px; }
+ .price-block > span strong { font-size: 30px; }
+ .price-block > .button { font-size: 16px; width: 100%; min-height: 50px; }
+ .flight-card-bottom > .text-button { font-size: 16px; }
+ .match-reasons > span, .tradeoffs, .segment-route, .segment-route small, .segment-meta > span { font-size: 16px; }
+ .segment-route { flex-direction: column; align-items: flex-start; }
+ .recommendation-ribbon { font-size: 14px; }
+ .recommendation-ribbon > span { display: none; }
+ .login-form .fine-print { font-size: 16px; }
+ .form-grid { grid-template-columns: 1fr; }
+ .form-grid.three { grid-template-columns: 1fr; }
+ .form-grid.three > label:first-child { grid-column: auto; }
 }

@@ -438,6 +438,7 @@ export function FlightCard({
   const [expanded, setExpanded] = useState(false);
   const [handoff, setHandoff] = useState<{
     match: string;
+    prefilled?: boolean;
     url?: string;
     message: string;
   }>();
@@ -538,7 +539,7 @@ export function FlightCard({
             ) : (
               <ExternalLink size={15} />
             )}
-            Airline options
+            View airline flights
           </button>
           {canBook && offer.card_eligible && (
             <button
@@ -626,7 +627,7 @@ export function FlightCard({
         title={
           handoff?.match === "exact_itinerary"
             ? "Continue with the airline"
-            : "Search with the airline"
+            : handoff?.prefilled ? "Your airline search is ready" : "Search with the airline"
         }
         description={handoff?.message}
       >
@@ -640,7 +641,7 @@ export function FlightCard({
           >
             {handoff.match === "exact_itinerary"
               ? "Continue at airline"
-              : "Search on airline"}
+              : handoff.prefilled ? "Open airline flight results" : "Search on airline"}
             <ExternalLink size={16} />
           </a>
         )}

@@ -176,7 +176,7 @@ it("enters the demo immediately after sign-in without requiring a reload", async
   );
   await waitFor(() =>
     expect(
-      screen.getByRole("heading", { name: /Where to next, Federico/ }),
+      screen.getByRole("heading", { name: /Find your next flight, Federico/ }),
     ).toBeInTheDocument(),
   );
   expect(screen.getByText(/fictional trips and fares/)).toBeInTheDocument();

@@ -585,3 +585,35 @@ def test_verified_hotels_require_fresh_sources(monkeypatch):
 
     monkeypatch.setattr(places, "date", ExpiredDate)
     assert places.verified_hotels("LHR", Profile()) == []
+
+
+def test_handoff_understands_provider_class_labels_and_rejects_downgrades():
+    from app.services.airline_link import page_matches_cabin
+    raw = raw_offer()
+    raw['slices'][0]['segments'][0]['passengers'][0]['cabin_class'] = 'business'
+    segment = normalize_offer(raw).slices[0].segments[0]
+    candidate = {'flights': [{
+        'flight_number': segment.flight_number, 'travel_class': 'Business Class',
+        'departure_airport': {'id': segment.origin, 'time': segment.departure_local[:19]},
+        'arrival_airport': {'id': segment.destination, 'time': segment.arrival_local[:19]},
+    }]}
+    assert matches(candidate, normalize_offer(raw).slices[0])
+    candidate['flights'][0]['travel_class'] = 'Premium Economy'
+    assert not matches(candidate, normalize_offer(raw).slices[0])
+    assert not page_matches_cabin('https://www.britishairways.com/book?cabin1=eco&cabin2=business', 'business')
+    assert page_matches_cabin('https://www.britishairways.com/book?cabin1=business&cabin2=business', 'business')
+
+
+def test_ba_handoff_preserves_route_dates_cabin_without_selecting_another_flight():
+    from app.v1.handoff import airline_search_url
+    from urllib.parse import parse_qs, urlsplit
+    raw = raw_offer()
+    raw['slices'][0]['segments'][0]['passengers'][0]['cabin_class'] = 'business'
+    offer = normalize_offer(raw)
+    url = airline_search_url(offer)
+    query = parse_qs(urlsplit(url).query)
+    assert query['from'] == ['JFK'] and query['to'] == ['LHR']
+    assert query['departureDate'] == [offer.slices[0].segments[0].departure_local[:10]]
+    assert query['travelClass'] == ['business'] and query['adults'] == ['1']
+    assert query['trip'] == ['oneway']
+    assert 'flight_number' not in query and 'ond1' not in query

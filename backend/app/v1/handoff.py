@@ -1,4 +1,6 @@
 from datetime import datetime
+from urllib.parse import urlencode
+import re
 
 import httpx
 
@@ -12,6 +14,43 @@ from app.services.airline_link import (
 )
 from app.v1.schemas import Offer, Slice
 from app.v1.trips import official_site
+
+
+def cabin_code(value: str | None) -> str | None:
+    key = re.sub(r"[\s_-]", "", (value or "").lower())
+    return {
+        "economy": "economy", "economyclass": "economy",
+        "premiumeconomy": "premium_economy", "premiumeconomyclass": "premium_economy",
+        "business": "business", "businessclass": "business",
+        "first": "first", "firstclass": "first",
+    }.get(key)
+
+
+def airline_search_url(offer: Offer) -> str | None:
+    """Official BA route search verified against its current booking form.
+
+    This carries the search, without selecting a substitute itinerary or fare.
+    """
+    first = offer.slices[0].segments[0]
+    destination = offer.slices[0].segments[-1].destination
+    if first.airline != "BA" or len(offer.slices) > 2:
+        return None
+    cabins = {segment.cabin for slc in offer.slices for segment in slc.segments}
+    if len(cabins) != 1 or first.cabin not in {"business", "first", "economy", "premium_economy"}:
+        return None
+    query = {
+        "trip": "round" if len(offer.slices) == 2 else "oneway",
+        "departureDate": first.departure_local[:10],
+        "from": first.origin, "to": destination,
+        "travelClass": first.cabin, "adults": "1", "youngAdults": "0",
+        "children": "0", "infants": "0", "bound": "outbound",
+    }
+    if len(offer.slices) == 2:
+        back = offer.slices[1]
+        if back.segments[0].origin != destination or back.segments[-1].destination != first.origin:
+            return None
+        query["arrivalDate"] = back.segments[0].departure_local[:10]
+    return "https://www.britishairways.com/nx/b/airselect/en/esp/book/search/?" + urlencode(query)
 
 
 def matches(candidate: dict, slc: Slice) -> bool:
@@ -35,21 +74,20 @@ def matches(candidate: dict, slc: Slice) -> bool:
                     return False
             except (ValueError, KeyError):
                 return False
-        if (leg.get("travel_class") or "").lower() not in {
-            segment.cabin,
-            segment.cabin_name.lower() if segment.cabin_name else "",
-        }:
+        if cabin_code(leg.get("travel_class")) != segment.cabin or segment.cabin is None:
             return False
     return True
 
 
 async def resolve_handoff(offer: Offer) -> dict:
     first = offer.slices[0].segments[0]
-    fallback = official_site(first.airline)
+    prefilled = airline_search_url(offer)
+    fallback = prefilled or official_site(first.airline)
     route_only = {
         "match": "route_only" if fallback else "unavailable",
         "url": fallback,
-        "message": "Reselect your route, dates, and cabin on the airline website. Its prices and fare rules may differ."
+        "prefilled": bool(prefilled),
+        "message": "Your route, dates, passenger count, and cabin are filled in. Choose your flights and fare on the airline’s results page; availability and prices may differ." if prefilled else "The airline does not offer a verified prefilled link for this itinerary. Enter your route and dates on its website; availability and prices may differ."
         if fallback
         else "No verified airline website is available for this itinerary.",
     }
@@ -68,6 +106,7 @@ async def resolve_handoff(offer: Offer) -> dict:
                 "adults": "1",
                 "currency": offer.currency,
                 "hl": "en",
+                "include_airlines": first.airline,
             }
             if len(offer.slices) == 2:
                 common["return_date"] = offer.slices[1].segments[0].departure_local[:10]
