@@ -22,6 +22,8 @@ Application quotas and caching are implemented. Financial spend caps and 50/80/1
 
 ## Private pilot quote — 3 November 2026
 
+The owner approved this incremental hosting quote on 3 November 2026. Live flight/payment fees and optional services still require their separate activation reviews.
+
 The existing Vercel team is already on Pro; this release needs no additional seat or plan upgrade. Existing Vercel subscription charges and metered usage remain.
 
 | New service | Staging and production configuration | Monthly base |
