@@ -37,3 +37,9 @@ The existing Vercel team is already on Pro; this release needs no additional sea
 This quote includes both environments and excludes tax, excess bandwidth/storage/build usage, optional monitoring and provider metering. Supabase compute is billed hourly; its spend cap does not cap compute. Render’s $7 worker price and Supabase’s $25 plan were checked in the signed-in dashboards. The second Micro project’s $10 is confirmed by the public Supabase pricing page. Existing unrelated Supabase/Render projects are not upgraded or altered. Confirm the provider’s final purchase summary before any charge. No paid resources have been created.
 
 Use the application’s quotas, Supabase spend cap, and provider budget alerts. Do not enable autoscaling, paid extras, or automatic plan upgrades. Duffel remains in test mode with live payments off; activating live inventory requires a separate provider-cost review.
+
+## Provisioned pilot configuration — 3 November 2026
+
+The owner supplied a Pro organization named **Federico Travel_1** for production (Ireland, EU). The earlier **Federico Travel** project remains the isolated Free staging environment in Frankfurt. This avoids purchasing another Pro organization. The incremental base is now approximately **$53/month**: $25 Supabase production + four $7 Render services; existing Vercel Pro and metered usage remain additional as previously described. Staging Free can pause and does not have Pro backup retention. Do not upgrade it automatically.
+
+Four Starter Render services were provisioned from the release Blueprint in Frankfurt with one worker per environment, concurrency one, and no autoscaling. Optional email, mailbox, Places, monitoring subscriptions, live payment and live-fare services remain disabled.

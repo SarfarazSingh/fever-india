@@ -106,11 +106,13 @@ export function Toggle({
   checked,
   onChange,
   hint,
+  disabled = false,
 }: {
   label: string;
   checked: boolean;
   onChange: (v: boolean) => void;
   hint?: string;
+  disabled?: boolean;
 }) {
   const id = useId();
   return (
@@ -123,6 +125,7 @@ export function Toggle({
         id={id}
         type="checkbox"
         role="switch"
+        disabled={disabled}
         checked={checked}
         onChange={(e) => onChange(e.target.checked)}
       />

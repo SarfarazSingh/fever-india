@@ -40,6 +40,7 @@ export type Session = {
     gmail: boolean;
     forwarding: boolean;
     places: boolean;
+    notifications?: boolean;
   };
 };
 export type Checkout = {

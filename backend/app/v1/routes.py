@@ -98,6 +98,7 @@ def features(demo=False):
             s.google_client_id and s.google_client_secret and s.token_encryption_key
         ),
         "places": bool(s.google_places_api_key),
+        "notifications": bool(s.resend_api_key and s.notification_from),
         "forwarding": bool(
             s.forwarding_domain and s.resend_api_key and s.resend_webhook_secret
         ),

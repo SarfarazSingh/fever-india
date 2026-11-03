@@ -232,8 +232,9 @@ export default function PreferencesPage() {
             </label>
             <Toggle
               label="Trip reminders"
-              hint="An email before your journey"
-              checked={profile.reminders}
+              hint={session.features.notifications ? "An email before your journey" : "Email reminders are not available in this pilot"}
+              disabled={!session.features.notifications}
+              checked={!!session.features.notifications && profile.reminders}
               onChange={(v) => setProfile({ ...profile, reminders: v })}
             />
           </section>
