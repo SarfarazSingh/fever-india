@@ -24,6 +24,8 @@ async def main():
         raise RuntimeError("Unsafe or unapproved pilot feature flags are enabled")
     if s.login_methods != ["google"] or not s.email_allowlist:
         raise RuntimeError("Pilot requires allowlisted Google sign-in")
+    if not s.supabase_service_role_key:
+        raise RuntimeError("Private document storage requires a backend service key")
     if not s.app_url.startswith("https://") or not s.supabase_url.startswith("https://"):
         raise RuntimeError("Pilot origins must use HTTPS")
     if not s.duffel_access_token.startswith("duffel_test_"):
@@ -37,6 +39,12 @@ async def main():
         )
         if result.status_code != 200 or not result.json().get("external", {}).get("google"):
             raise RuntimeError("Supabase Google provider is not ready")
+        bucket = await client.get(
+            s.supabase_url.rstrip("/") + "/storage/v1/bucket/travel-documents",
+            headers={"Authorization": "Bearer " + s.supabase_service_role_key},
+        )
+        if bucket.status_code != 200 or bucket.json().get("public") is not False:
+            raise RuntimeError("Private document bucket is not ready")
     async with engine.connect() as db:
         revision = (await db.execute(text("SELECT version_num FROM alembic_version"))).scalar()
         if revision != "0002_google_login":

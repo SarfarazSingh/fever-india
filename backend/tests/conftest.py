@@ -7,6 +7,7 @@ import pytest
 _tmp = Path(tempfile.mkdtemp(prefix="concierge-test-"))
 os.environ["DATABASE_URL"] = f"sqlite+aiosqlite:///{_tmp / 'test.db'}"
 os.environ["FLIGHT_PROVIDER"] = "mock"
+os.environ["DUFFEL_ACCESS_TOKEN"] = "duffel_test_unit_test_only"
 os.environ["FLYO_API_KEY"] = ""
 os.environ["FLYO_WEBHOOK_SECRET"] = ""
 os.environ["PUBLIC_BASE_URL"] = "http://testserver"
