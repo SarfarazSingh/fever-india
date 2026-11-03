@@ -149,6 +149,7 @@ function Shell() {
         <div className="profile-menu">
           <button
             className="profile-button"
+            aria-label="Your account"
             aria-expanded={menu}
             aria-controls="profile-options"
             onClick={() => setMenu((v) => !v)}
