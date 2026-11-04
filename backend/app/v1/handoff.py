@@ -9,10 +9,11 @@ from app.services.airline_link import (
     _serpapi,
     _follow_booking,
     airline_booking_requests,
+    flight_identity,
     host_is_airline,
     page_matches_cabin,
 )
-from app.v1.schemas import Offer, Slice
+from app.v1.schemas import Offer, Segment, Slice
 from app.v1.trips import official_site
 
 
@@ -53,14 +54,19 @@ def airline_search_url(offer: Offer) -> str | None:
     return "https://www.britishairways.com/nx/b/airselect/en/esp/book/search/?" + urlencode(query)
 
 
-def flight_identity(value: str) -> str:
-    """Airline flight numbers may be zero-padded differently by providers."""
-    value = re.sub(r"\s+", "", value).upper()
-    match = re.fullmatch(r"([A-Z0-9]{2})([0-9]+)([A-Z]?)", value)
-    if not match:
-        return value
-    carrier, number, suffix = match.groups()
-    return f"{carrier}{int(number)}{suffix}"
+def same_flight(listed: str, segment: Segment) -> bool:
+    """Google Flights lists a codeshare under its operating flight number."""
+    listed = flight_identity(listed)
+    if listed == flight_identity(segment.flight_number):
+        return True
+    operating = segment.operating_airline
+    if not operating or operating == segment.airline:
+        return False
+    if segment.operating_flight_number:
+        return listed == flight_identity(segment.operating_flight_number)
+    # Saved before operating numbers were kept: the operating carrier with the
+    # exact airports and times checked below still identifies the flight.
+    return listed[:2] == operating
 
 
 def matches(candidate: dict, slc: Slice) -> bool:
@@ -68,7 +74,7 @@ def matches(candidate: dict, slc: Slice) -> bool:
     if len(flights) != len(slc.segments):
         return False
     for leg, segment in zip(flights, slc.segments):
-        if flight_identity(leg.get("flight_number") or "") != flight_identity(segment.flight_number):
+        if not same_flight(leg.get("flight_number") or "", segment):
             return False
         for field, code, time in [
             ("departure_airport", segment.origin, segment.departure_local),
@@ -155,7 +161,10 @@ async def resolve_handoff(offer: Offer) -> dict:
             options = booking.get("booking_options") or []
             if len(offer.slices) == 2:
                 options = [o for o in options if isinstance(o.get("together"), dict)]
-            for req in airline_booking_requests(options, float(offer.total_amount), required_cabin=first.cabin)[:3]:
+            marketed_as = [flight_identity(s.flight_number) for slc in offer.slices for s in slc.segments]
+            for req in airline_booking_requests(
+                options, float(offer.total_amount), required_cabin=first.cabin, marketed_as=marketed_as
+            )[:3]:
                 url, status = await _follow_booking(
                     client, req["url"], req.get("post_data") or "", first.airline
                 )

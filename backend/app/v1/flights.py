@@ -73,6 +73,7 @@ def normalize_offer(raw: dict) -> Offer:
                 or ""
             )
             plane = seg.get("aircraft") or {}
+            operating_number = seg.get("operating_carrier_flight_number")
             segments.append(
                 Segment(
                     id=seg.get("id") or f"{slc.get('id', i)}-{j}",
@@ -90,6 +91,9 @@ def normalize_offer(raw: dict) -> Offer:
                     airline_name=marketing.get("name") or airline_name(carrier),
                     operating_airline=operating.get("iata_code"),
                     operating_airline_name=operating.get("name"),
+                    operating_flight_number=operating["iata_code"] + str(operating_number)
+                    if operating_number and operating.get("iata_code")
+                    else None,
                     flight_number=carrier
                     + str(seg.get("marketing_carrier_flight_number") or ""),
                     aircraft=plane.get("name") if isinstance(plane, dict) else None,

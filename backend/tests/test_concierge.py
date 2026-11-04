@@ -753,3 +753,56 @@ def test_production_saved_test_search_requires_refresh(monkeypatch):
     assert response.status == 'failed'
     assert response.results == []
     assert 'Search again for live flights' in response.error
+
+
+def test_codeshare_handoff_opens_the_marketing_airlines_exact_flight(monkeypatch):
+    from copy import deepcopy
+    from app.v1.handoff import resolve_handoff
+    raw = raw_offer()
+    raw['live_mode'] = True
+    segment = raw['slices'][0]['segments'][0]
+    segment.update({
+        'marketing_carrier': {'iata_code': 'LH', 'name': 'Lufthansa'},
+        'marketing_carrier_flight_number': '7772',
+        'operating_carrier': {'iata_code': 'UA', 'name': 'United Airlines'},
+        'operating_carrier_flight_number': '27',
+        'passengers': [{'cabin_class': 'business'}],
+    })
+    offer = normalize_offer(raw)
+    seg = offer.slices[0].segments[0]
+    assert seg.operating_flight_number == 'UA27'
+    listed = {'booking_token': 'tok', 'flights': [{
+        'flight_number': 'UA 27', 'travel_class': 'Business Class',
+        'departure_airport': {'id': seg.origin, 'time': seg.departure_local[:19]},
+        'arrival_airport': {'id': seg.destination, 'time': seg.arrival_local[:19]},
+    }]}
+    assert matches(listed, offer.slices[0])
+    other = deepcopy(listed)
+    other['flights'][0]['flight_number'] = 'UA 29'
+    assert not matches(other, offer.slices[0])
+    # Searches saved before operating numbers were kept still match the operating carrier.
+    saved = offer.model_copy(deep=True)
+    saved.slices[0].segments[0].operating_flight_number = None
+    assert matches(listed, saved.slices[0])
+    other['flights'][0]['flight_number'] = 'AA 27'
+    assert not matches(other, saved.slices[0])
+
+    deeplink = 'https://www.lufthansa.com/deeplink/partner?FlightOut1=LH7772&OperatingFlightOut1=UA27&Mode=CART'
+    options = [
+        {'together': {'airline': True, 'book_with': 'Austrian', 'price': 4567, 'marketed_as': ['OS 7991'],
+                      'booking_request': {'url': 'https://www.google.com/travel/clk', 'post_data': 'austrian'}}},
+        {'together': {'airline': True, 'book_with': 'Lufthansa', 'price': 4900, 'marketed_as': ['LH 7772'],
+                      'booking_request': {'url': 'https://www.google.com/travel/clk', 'post_data': 'lufthansa'}}},
+    ]
+
+    async def serpapi(client, settings, params):
+        return {'booking_options': options} if 'booking_token' in params else {'best_flights': [listed]}
+
+    async def follow(client, url, post_data, carrier):
+        return (deeplink, 200) if post_data == 'lufthansa' else ('https://www.austrian.com/', 200)
+
+    monkeypatch.setattr('app.v1.handoff._serpapi', serpapi)
+    monkeypatch.setattr('app.v1.handoff._follow_booking', follow)
+    monkeypatch.setattr(get_settings(), 'serpapi_api_key', 'unit-test-only')
+    handoff = asyncio.run(resolve_handoff(offer))
+    assert handoff['match'] == 'exact_itinerary' and handoff['url'] == deeplink

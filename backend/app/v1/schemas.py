@@ -104,6 +104,7 @@ class Segment(Model):
     airline_name: str
     operating_airline: str | None = None
     operating_airline_name: str | None = None
+    operating_flight_number: str | None = None
     flight_number: str
     aircraft: str | None = None
     cabin: str | None = None

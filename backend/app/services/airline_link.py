@@ -126,6 +126,16 @@ def handoff_url(
     return f"{base.rstrip('/')}/api/flights/airline-link?{query}"
 
 
+def flight_identity(value: str) -> str:
+    """Airline flight numbers may be zero-padded differently by providers."""
+    value = re.sub(r"\s+", "", value).upper()
+    match = re.fullmatch(r"([A-Z0-9]{2})([0-9]+)([A-Z]?)", value)
+    if not match:
+        return value
+    carrier, number, suffix = match.groups()
+    return f"{carrier}{int(number)}{suffix}"
+
+
 def pick_itinerary(payload: dict, flight_number: str, airline: str = "", *, token: str = "booking_token") -> dict | None:
     want = _norm_flight(flight_number)
     code = airline.upper()
@@ -160,9 +170,16 @@ def booking_cabin(ticket: dict) -> str | None:
     return None
 
 
-def airline_booking_requests(options: list, target_price: float | None = None, *, required_cabin: str | None = None) -> list[dict]:
-    """Carrier handoffs. Prefer the fare closest to the flight we showed."""
-    found: list[tuple[float, dict]] = []
+def airline_booking_requests(
+    options: list,
+    target_price: float | None = None,
+    *,
+    required_cabin: str | None = None,
+    marketed_as: list[str] | None = None,
+) -> list[dict]:
+    """Carrier handoffs. Prefer the fare sold under our flight numbers, then
+    the fare closest to the flight we showed."""
+    found: list[tuple[bool, float, dict]] = []
     for option in options:
         if not isinstance(option, dict):
             continue
@@ -172,24 +189,27 @@ def airline_booking_requests(options: list, target_price: float | None = None, *
             request = ticket.get("booking_request") or {}
             if not request.get("url"):
                 continue
+            # The itinerary's cabin was already checked leg by leg, so an
+            # untitled fare sold under exactly our flight numbers is that fare.
+            same_fare = bool(marketed_as) and [flight_identity(str(n)) for n in ticket.get("marketed_as") or []] == marketed_as
             if required_cabin:
                 actual_cabin = booking_cabin(ticket)
                 if actual_cabin is not None and actual_cabin != required_cabin:
                     continue
-                request = {**request, "cabin_verified": actual_cabin == required_cabin}
+                request = {**request, "cabin_verified": actual_cabin == required_cabin or (actual_cabin is None and same_fare)}
             try:
                 price = float(ticket.get("price"))
             except (TypeError, ValueError):
                 price = 1e18
-            found.append((price, request))
+            found.append((same_fare, price, request))
 
     def rank(price: float) -> tuple[float, float]:
         if target_price is None:
             return (price, price)
         return (abs(price - float(target_price)), price)
 
-    found.sort(key=lambda item: rank(item[0]))
-    return [request for _, request in found]
+    found.sort(key=lambda item: (not item[0], rank(item[1])))
+    return [request for _, _, request in found]
 
 
 def pick_airline_booking(options: list) -> dict | None:

@@ -533,6 +533,8 @@ export interface components {
       operating_airline?: string | null;
       /** Operating Airline Name */
       operating_airline_name?: string | null;
+      /** Operating Flight Number */
+      operating_flight_number?: string | null;
       /** Flight Number */
       flight_number: string;
       /** Aircraft */

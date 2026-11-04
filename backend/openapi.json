@@ -2116,6 +2116,17 @@
             ],
             "title": "Operating Airline Name"
           },
+          "operating_flight_number": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Operating Flight Number"
+          },
           "flight_number": {
             "type": "string",
             "title": "Flight Number"
