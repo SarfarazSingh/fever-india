@@ -53,12 +53,22 @@ def airline_search_url(offer: Offer) -> str | None:
     return "https://www.britishairways.com/nx/b/airselect/en/esp/book/search/?" + urlencode(query)
 
 
+def flight_identity(value: str) -> str:
+    """Airline flight numbers may be zero-padded differently by providers."""
+    value = re.sub(r"\s+", "", value).upper()
+    match = re.fullmatch(r"([A-Z0-9]{2})([0-9]+)([A-Z]?)", value)
+    if not match:
+        return value
+    carrier, number, suffix = match.groups()
+    return f"{carrier}{int(number)}{suffix}"
+
+
 def matches(candidate: dict, slc: Slice) -> bool:
     flights = candidate.get("flights") or []
     if len(flights) != len(slc.segments):
         return False
     for leg, segment in zip(flights, slc.segments):
-        if (leg.get("flight_number") or "").replace(" ", "") != segment.flight_number:
+        if flight_identity(leg.get("flight_number") or "") != flight_identity(segment.flight_number):
             return False
         for field, code, time in [
             ("departure_airport", segment.origin, segment.departure_local),
@@ -145,14 +155,14 @@ async def resolve_handoff(offer: Offer) -> dict:
             options = booking.get("booking_options") or []
             if len(offer.slices) == 2:
                 options = [o for o in options if isinstance(o.get("together"), dict)]
-            for req in airline_booking_requests(options)[:3]:
+            for req in airline_booking_requests(options, float(offer.total_amount), required_cabin=first.cabin)[:3]:
                 url, status = await _follow_booking(
                     client, req["url"], req.get("post_data") or "", first.airline
                 )
                 if (
                     status == 200
                     and host_is_airline(url, first.airline)
-                    and page_matches_cabin(url, first.cabin)
+                    and page_matches_cabin(url, first.cabin, require_explicit=not req.get("cabin_verified"))
                 ):
                     return {
                         "match": "exact_itinerary",

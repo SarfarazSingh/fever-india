@@ -696,3 +696,60 @@ def test_live_search_monthly_budget_is_shared_and_enforced(client):
             await db.commit()
 
     asyncio.run(check())
+
+
+def test_handoff_matches_zero_padded_flight_numbers_without_relaxing_itinerary():
+    from copy import deepcopy
+    from app.v1.handoff import flight_identity
+    raw = raw_offer()
+    raw['slices'][0]['segments'][0]['marketing_carrier_flight_number'] = '0114'
+    raw['slices'][0]['segments'][0]['passengers'][0]['cabin_class'] = 'business'
+    slc = normalize_offer(raw).slices[0]
+    seg = slc.segments[0]
+    candidate = {'flights': [{
+        'flight_number': 'BA 114', 'travel_class': 'Business',
+        'departure_airport': {'id': seg.origin, 'time': seg.departure_local[:19]},
+        'arrival_airport': {'id': seg.destination, 'time': seg.arrival_local[:19]},
+    }]}
+    assert matches(candidate, slc)
+    for key, value in [('flight_number', 'BA 115'), ('travel_class', 'Economy')]:
+        changed = deepcopy(candidate)
+        changed['flights'][0][key] = value
+        assert not matches(changed, slc)
+    changed = deepcopy(candidate)
+    changed['flights'][0]['departure_airport']['time'] = seg.departure_local[:11] + '21:00:00'
+    assert not matches(changed, slc)
+    assert flight_identity('6E 0012') == '6E12'
+    assert flight_identity('BA0114A') != flight_identity('BA0114')
+
+
+def test_live_search_never_returns_sandbox_inventory(monkeypatch):
+    from copy import deepcopy
+    from app.v1.flights import fetch_offers
+    monkeypatch.setattr(get_settings(), 'duffel_access_token', 'duffel_live_unit_test_only')
+    reserve = AsyncMock()
+    monkeypatch.setattr('app.v1.flights.reserve_live_search', reserve)
+    sandbox = raw_offer()
+    live = deepcopy(sandbox)
+    live.update(id='off_live', live_mode=True)
+    monkeypatch.setattr('app.v1.flights.DuffelClient.search_offers', AsyncMock(
+        return_value={'data': {'offers': [sandbox, live]}}))
+    req = SearchRequest.model_validate(request(return_date=None))
+    offers, _, partial = asyncio.run(fetch_offers(req, False))
+    assert [o.id for o in offers] == ['off_live']
+    assert partial is True
+    reserve.assert_awaited_once()
+
+
+def test_production_saved_test_search_requires_refresh(monkeypatch):
+    from app.v1.models import SearchRecord
+    from app.v1.routes import search_read
+    monkeypatch.setattr(get_settings(), 'environment', 'production')
+    monkeypatch.setattr(get_settings(), 'duffel_access_token', 'duffel_live_unit_test_only')
+    raw = normalize_offer(raw_offer()).model_dump(mode='json')
+    row = SearchRecord(id='saved-test-search', status='complete', request=request(return_date=None),
+        result={'results': [raw], 'inventory': [raw], 'total_offers': 1, 'live_mode': False})
+    response = search_read(row)
+    assert response.status == 'failed'
+    assert response.results == []
+    assert 'Search again for live flights' in response.error

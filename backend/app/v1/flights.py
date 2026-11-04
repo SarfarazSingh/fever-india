@@ -518,6 +518,8 @@ async def fetch_offers(req: SearchRequest, demo: bool) -> tuple[list[Offer], str
     for item in raw.values():
         try:
             offer = normalize_offer(item)
+            if get_settings().duffel_access_token.startswith("duffel_live_") and not offer.live_mode:
+                raise ValueError("Test inventory returned to a live search")
             expected = [(req.origin, req.destination, req.departure_date)]
             if req.return_date:
                 expected.append((req.destination, req.origin, req.return_date))

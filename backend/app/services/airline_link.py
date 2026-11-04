@@ -146,7 +146,21 @@ def pick_itinerary(payload: dict, flight_number: str, airline: str = "", *, toke
     return None
 
 
-def airline_booking_requests(options: list, target_price: float | None = None) -> list[dict]:
+def booking_cabin(ticket: dict) -> str | None:
+    """Read the booking option's cabin, which can differ from the search cabin."""
+    label = " ".join(str(ticket.get(k) or "") for k in ("travel_class", "option_title")).lower()
+    if re.search(r"premium[\s_-]*economy", label):
+        return "premium_economy"
+    if re.search(r"\beconomy\b|\bmain cabin\b", label):
+        return "economy"
+    if re.search(r"\bbusiness\b|\bclub (world|europe)\b|\bupper class\b", label):
+        return "business"
+    if re.search(r"\bfirst\b", label):
+        return "first"
+    return None
+
+
+def airline_booking_requests(options: list, target_price: float | None = None, *, required_cabin: str | None = None) -> list[dict]:
     """Carrier handoffs. Prefer the fare closest to the flight we showed."""
     found: list[tuple[float, dict]] = []
     for option in options:
@@ -158,6 +172,11 @@ def airline_booking_requests(options: list, target_price: float | None = None) -
             request = ticket.get("booking_request") or {}
             if not request.get("url"):
                 continue
+            if required_cabin:
+                actual_cabin = booking_cabin(ticket)
+                if actual_cabin is not None and actual_cabin != required_cabin:
+                    continue
+                request = {**request, "cabin_verified": actual_cabin == required_cabin}
             try:
                 price = float(ticket.get("price"))
             except (TypeError, ValueError):
@@ -195,11 +214,12 @@ _ECONOMY_MARKERS = (
 )
 
 
-def page_matches_cabin(url: str, cabin: str) -> bool:
+def page_matches_cabin(url: str, cabin: str, *, require_explicit: bool = False) -> bool:
     """True when the airline page is business or first, never economy."""
     # Airline metasearch links can specify each direction separately (cabin1,
     # cabin2). Never accept an explicitly downgraded fare from those links.
     aliases = {"eco": "economy", "economy": "economy", "y": "economy", "m": "economy", "w": "premium_economy", "premiumeconomy": "premium_economy", "business": "business", "club": "business", "c": "business", "j": "business", "first": "first", "f": "first"}
+    confirmed = False
     for key, values in parse_qs(urlparse(url).query).items():
         if not re.fullmatch(r"cabin\d*|cabinclass|travelclass|travel_class", key.lower()):
             continue
@@ -207,6 +227,10 @@ def page_matches_cabin(url: str, cabin: str) -> bool:
             actual = aliases.get(re.sub(r"[\s_-]", "", value.lower()))
             if actual and actual != cabin:
                 return False
+            if actual == cabin:
+                confirmed = True
+    if require_explicit and not confirmed:
+        return False
     text = url.lower().replace("%20", "").replace("+", "")
     if any(marker in text for marker in _ECONOMY_MARKERS):
         return False

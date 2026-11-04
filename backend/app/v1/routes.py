@@ -292,6 +292,17 @@ async def profile(
 
 def search_read(row: SearchRecord, cursor=0, limit=25, sort="best") -> SearchResponse:
     data = row.result or {}
+    if (get_settings().environment == "production"
+            and get_settings().duffel_access_token.startswith("duffel_live_")
+            and data.get("total_offers", 0) > 0
+            and not data.get("live_mode")):
+        return SearchResponse(
+            id=row.id, status="failed", progress="Run a new live search",
+            live_mode=False, results=[], total_offers=0, matching_itineraries=0,
+            exclusions={}, adjustments=[], coverage="Previous test inventory is no longer shown.",
+            error="This saved search used test inventory. Search again for live flights.",
+            request=row.request,
+        )
     results = list(data.get("results", []))
     if sort == "price":
         results.sort(key=lambda o: (o["currency"], Decimal(o["total_amount"])))
@@ -330,7 +341,10 @@ async def search(
     from app.v1.jobs import dispatch_search
 
     fingerprint = hashlib.sha256(
-        json.dumps(payload.model_dump(mode="json"), sort_keys=True).encode()
+        json.dumps({
+            "request": payload.model_dump(mode="json"),
+            "inventory_mode": "live" if get_settings().duffel_access_token.startswith("duffel_live_") else "test",
+        }, sort_keys=True).encode()
     ).hexdigest()
     cached = (
         (

@@ -209,3 +209,21 @@ def _google_transport(request: httpx.Request) -> httpx.Response:
     if found:
         return found
     return httpx.Response(200, text="<html>Still on Google Flights</html>")
+
+
+def test_booking_options_do_not_downgrade_a_business_search():
+    from app.services.airline_link import airline_booking_requests, page_matches_cabin
+    options = [
+        {'together': {'airline': True, 'price': 1099, 'option_title': 'Premium Economy',
+                      'booking_request': {'url': 'https://www.google.com/travel/clk', 'post_data': 'premium'}}},
+        {'together': {'airline': True, 'price': 3786, 'option_title': 'Flagship Business',
+                      'booking_request': {'url': 'https://www.google.com/travel/clk', 'post_data': 'business'}}},
+        {'together': {'airline': True, 'price': 4276, 'option_title': 'Flagship Business Plus',
+                      'booking_request': {'url': 'https://www.google.com/travel/clk', 'post_data': 'flex'}}},
+    ]
+    requests = airline_booking_requests(options, 3992, required_cabin='business')
+    assert [r['post_data'] for r in requests] == ['business', 'flex']
+    assert all(r['cabin_verified'] for r in requests)
+    assert not page_matches_cabin('https://www.aa.com/goto/metasearch', 'business', require_explicit=True)
+    assert page_matches_cabin('https://www.britishairways.com/book?cabin1=business', 'business', require_explicit=True)
+    assert not page_matches_cabin('https://www.britishairways.com/book?cabin1=business&cabin2=economy', 'business', require_explicit=True)
