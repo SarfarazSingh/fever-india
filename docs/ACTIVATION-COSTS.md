@@ -14,3 +14,5 @@ Existing hosting remains approximately $53/month before tax and usage, above the
 | Automated check-in | No production provider account is configured; legacy browser bots are not validated | No service purchase proposed; airline/provider support must be established before activation |
 
 Sources checked: https://duffel.com/pricing and https://developers.google.com/maps/billing-and-pricing/pricing . The current provider checkout and contract govern. Application quotas bound this app’s requests; Google’s free allowance is shared with other projects on the billing account. No live ticket or paid add-on is purchased by approving setup.
+
+On 4 November 2026 the owner approved live Duffel search up to $5/month. Production reserves at most 600 upstream Duffel cabin searches per UTC month across accounts; staging remains on test inventory. This bounds application requests, not other usage on the Duffel account or changes to provider pricing. In-app purchases remain disabled.

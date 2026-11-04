@@ -673,3 +673,26 @@ def test_ba_handoff_preserves_route_dates_cabin_without_selecting_another_flight
     assert query['travelClass'] == ['business'] and query['adults'] == ['1']
     assert query['trip'] == ['oneway']
     assert 'flight_number' not in query and 'ond1' not in query
+
+
+def test_live_search_monthly_budget_is_shared_and_enforced(client):
+    from sqlalchemy import delete
+    from app.v1.flights import reserve_live_search
+    from app.v1.models import Usage
+
+    async def check():
+        month = utcnow().date().replace(day=1).isoformat()
+        async with SessionLocal() as db:
+            await db.execute(delete(Usage).where(Usage.account_id == "provider:duffel"))
+            db.add(Usage(account_id="provider:duffel", day=month, kind="live_search_month", count=599))
+            await db.commit()
+        await reserve_live_search()
+        with pytest.raises(DuffelError, match="Monthly live flight search limit"):
+            await reserve_live_search()
+        async with SessionLocal() as db:
+            row = (await db.execute(select(Usage).where(Usage.account_id == "provider:duffel"))).scalar_one()
+            assert row.count == 600
+            await db.delete(row)
+            await db.commit()
+
+    asyncio.run(check())

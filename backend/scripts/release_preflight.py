@@ -28,8 +28,9 @@ async def main():
         raise RuntimeError("Private document storage requires a backend service key")
     if not s.app_url.startswith("https://") or not s.supabase_url.startswith("https://"):
         raise RuntimeError("Pilot origins must use HTTPS")
-    if not s.duffel_access_token.startswith("duffel_test_"):
-        raise RuntimeError("Pilot must use explicitly labeled Duffel test inventory")
+    required_prefix = "duffel_live_" if s.environment == "production" else "duffel_test_"
+    if not s.duffel_access_token.startswith(required_prefix):
+        raise RuntimeError("Duffel token does not match the deployment environment")
     if s.gmail_send_enabled and not (s.google_client_id and s.google_client_secret and s.token_encryption_key):
         raise RuntimeError("Gmail reminders require a configured, separate OAuth connection")
     if s.resend_api_key or s.notification_from or s.forwarding_domain:

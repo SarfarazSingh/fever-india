@@ -427,6 +427,30 @@ async def demo_offers(req: SearchRequest) -> list[Offer]:
     return result
 
 
+async def reserve_live_search():
+    """Reserve one upstream request against a shared UTC-month budget."""
+    from sqlalchemy import update
+    from sqlalchemy.dialects.postgresql import insert as pg_insert
+    from sqlalchemy.dialects.sqlite import insert as sqlite_insert
+    from app.database import SessionLocal
+    from app.v1.models import Usage
+
+    async with SessionLocal() as db:
+        month = utcnow().date().replace(day=1).isoformat()
+        insert = sqlite_insert if db.bind.dialect.name == "sqlite" else pg_insert
+        key = {"account_id": "provider:duffel", "day": month, "kind": "live_search_month"}
+        await db.execute(insert(Usage).values(**key, count=0).on_conflict_do_nothing(
+            index_elements=["account_id", "day", "kind"]
+        ))
+        result = await db.execute(update(Usage).where(
+            Usage.account_id == key["account_id"], Usage.day == month,
+            Usage.kind == key["kind"], Usage.count < 600,
+        ).values(count=Usage.count + 1))
+        await db.commit()
+        if result.rowcount != 1:
+            raise DuffelError("Monthly live flight search limit reached.")
+
+
 async def fetch_offers(req: SearchRequest, demo: bool) -> tuple[list[Offer], str, bool]:
     if demo:
         return (
@@ -442,6 +466,8 @@ async def fetch_offers(req: SearchRequest, demo: bool) -> tuple[list[Offer], str
     )
 
     async def fetch(cabin):
+        if get_settings().duffel_access_token.startswith("duffel_live_"):
+            await reserve_live_search()
         payload = await client.search_offers(
             req.origin,
             req.destination,
